@@ -61,3 +61,14 @@ export {
   getCorporateNewsDetail,
   getAllCorporateNewsIds,
 } from './corporate-news'
+
+export {
+  getMediaArticlesList,
+  getMediaArticleDetail,
+  getMediaArticleBySlug,
+  getAllMediaArticleIds,
+  getAllMediaArticleSlugs,
+  getMediaArticlesByCategory,
+  getMediaArticlesByTag,
+  getRelatedArticles,
+} from './media-articles'
