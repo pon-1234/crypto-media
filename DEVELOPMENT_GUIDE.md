@@ -77,7 +77,7 @@
 | **ドメイン / DNS** | **Cloudflare (Free)** – co.jp ドメインを NS 移管、自動 DNSSEC | *DNS only* モードで CDN は Vercel 側を使用 |
 | **フロント配信** | **Vercel Pro** – Next.js と相性最適、Edge CDN & ISR, SSL 自動 | Project 1 つ／環境変数に microCMS・Stripe・Firebase Key を登録 |
 | **CMS** | **microCMS Pro** – Headless/SaaS | 複数モデル（記事、お知らせ、執筆者等）を一元管理 |
-| **認証 & 会員DB** | **Firebase Auth + Firestore** – Google／Email SSO、No-Ops DB | `members` コレクションに `stripeCustomerId`, `membership` 等を**一元管理**。 |
+| **認証 & 会員DB** | **NextAuth.js + Firebase Auth/Firestore** – NextAuth.jsを認証の司令塔とし、Firebaseをバックエンド（ユーザーDB）として利用。 | NextAuth.jsのFirebase Adapterを介して`users`, `sessions`等のコレクションをFirestoreで管理。会員情報は`users`コレクションに統合。 |
 | **決済** | **Stripe** – 月額 ¥1,980 プラン | Webhook → Vercel Serverless `/api/stripe/webhook` (冪等チェック) |
 | **フォーム管理** | **TBD (未定)** | MVPでは外部サービス利用(推奨) or 自前実装(SendGrid等)を検討。実装方法は別途協議。 |
 | **画像 / OGP** | microCMS Image API (`?fm=webp&w=`) + Vercel OG Image | OGP 自動生成関数 `/api/og` |
