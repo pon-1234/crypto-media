@@ -1,23 +1,23 @@
-import '@testing-library/jest-dom'
-import { vi } from 'vitest'
+/**
+ * Vitest Setup File
+ * @issue #1 - プロジェクト基盤とCI/CDパイプラインの構築
+ */
 
-// Mock Next.js router
-vi.mock('next/navigation', () => ({
-  useRouter() {
-    return {
-      push: vi.fn(),
-      replace: vi.fn(),
-      prefetch: vi.fn(),
-      back: vi.fn(),
-    }
-  },
-  useSearchParams() {
-    return new URLSearchParams()
-  },
-  usePathname() {
-    return '/'
-  },
-}))
+import { vi } from 'vitest';
+import '@testing-library/jest-dom';
 
-// Mock environment variables
-vi.stubEnv('NEXT_PUBLIC_APP_URL', 'http://localhost:3000')
+// グローバルなfetch APIをモック
+global.fetch = vi.fn();
+
+// window.location.originを設定
+Object.defineProperty(window, 'location', {
+  value: {
+    origin: 'http://localhost:3000',
+    href: 'http://localhost:3000',
+    pathname: '/',
+  },
+  writable: true,
+});
+
+// NEXTAUTH_URLを設定
+process.env.NEXTAUTH_URL = 'http://localhost:3000';

@@ -1,0 +1,17 @@
+# CI設定のテスト用ファイル
+# @issue #1 - プロジェクト基盤とCI/CDパイプラインの構築
+
+# このファイルは、ci.ymlの設定が正しいことを確認するためのドキュメントです。
+# 実際のテストは、GitHub ActionsでPRを作成することで実行されます。
+
+# チェックリスト:
+# - [ ] pnpm install が実行される
+# - [ ] pnpm lint が実行される
+# - [ ] pnpm format --check が実行される
+# - [ ] pnpm typecheck が実行される
+# - [ ] pnpm test:run --coverage が実行される
+# - [ ] カバレッジが100%であることがチェックされる
+# - [ ] Lighthouse CIがPR時に実行される
+# - [ ] LCP < 2s, CLS < 0.1 の制約がチェックされる
+# - [ ] ビルドチェックが実行される
+# - [ ] 必要な環境変数がsecretsから取得される

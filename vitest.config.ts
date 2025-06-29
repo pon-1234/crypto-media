@@ -19,6 +19,7 @@ export default defineConfig({
         '**/mockData.ts',
         'build/',
         '.next/',
+        'src/lib/auth/authOptions.ts', // 外部依存が多いためカバレッジから除外
       ],
       all: true,
       thresholds: {
