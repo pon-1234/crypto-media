@@ -45,7 +45,7 @@ This is a Crypto Media & Corporate Site - a unified platform that combines:
 ## Tech Stack
 - **Frontend**: Next.js (App Router), React, TypeScript, Tailwind CSS
 - **CMS**: microCMS (Headless CMS)
-- **Auth**: Firebase Authentication (Google/Email SSO)
+- **Auth**: NextAuth.js with Firebase adapter (Google/Email SSO)
 - **Payments**: Stripe (subscription management)
 - **Hosting**: Vercel
 - **Testing**: Vitest, React Testing Library, Playwright, **Gemini CLI (Analysis)**
@@ -100,7 +100,7 @@ pnpm format
 - `corporate_news`: Company announcements.
 
 ### Key Implementation Areas
-1. **Authentication Flow**: Firebase Auth integration in `src/lib/firebase/` with an auth context provider and protected routes via middleware.
+1. **Authentication Flow**: NextAuth.js configuration in `src/lib/auth/` with Firebase adapter for user data storage and protected routes via middleware.
 2. **Paywall Logic**: Check article's `membershipLevel` from microCMS and verify user's subscription status from Firestore. Show a preview for non-members.
 3. **Stripe Integration**: Webhook at `/api/stripe/webhook`, subscription management in `/media/mypage/subscription`.
 4. **SEO Optimization**: Dynamic metadata generation, structured data (JSON-LD), and targeting Core Web Vitals (LCP < 2s, CLS < 0.1).

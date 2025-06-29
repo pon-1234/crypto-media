@@ -3,7 +3,7 @@
 ## アーキテクチャ決定
 - **構成**: 単一のNext.jsプロジェクト。
 - **ルーティング**: コーポレート(`/`)とメディア(`/media/`)でパスを分離。
-- **認証・会員DB**: Firebase Auth + Firestore。`membership`ステータスは`paid` (課金中), `free` (元有料)を管理。
+- **認証・会員DB**: NextAuth.js + Firebase Adapter + Firestore。`membership`ステータスは`paid` (課金中), `free` (元有料)を管理。
 - **決済**: Stripe。`/register/`ページからCheckoutフローを開始。WebhookでFirestoreを更新。
 - **フォーム**: MVPでは実装方法未定。`/api/contact`エンドポイントを用意し、バックエンドで処理。
 
