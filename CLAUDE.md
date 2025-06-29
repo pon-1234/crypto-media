@@ -99,6 +99,9 @@ pnpm format
 - `categories`, `tags`: Content taxonomy.
 - `corporate_news`: Company announcements.
 
+**★重要: 型定義のルール**
+microCMSの型定義は、`src/lib/schema/`配下のZodスキーマファイル（例: `article.schema.ts`）を信頼できる唯一の情報源（Single Source of Truth）とします。`z.infer<typeof ...>` を使用して型を推論してください。手動で`*.d.ts`ファイルに型を記述することは禁止です。
+
 ### Key Implementation Areas
 1. **Authentication Flow**: NextAuth.js configuration in `src/lib/auth/` with Firebase adapter for user data storage and protected routes via middleware.
 2. **Paywall Logic**: Check article's `membershipLevel` from microCMS and verify user's subscription status from Firestore. Show a preview for non-members.
@@ -134,7 +137,7 @@ src/
 
 ### Adding a New Article Type
 1. Update microCMS schema.
-2. Create/update TypeScript types in `src/types/`.
+2. Create/update a Zod schema file in `src/lib/schema/`. The TypeScript type will be automatically inferred from this schema.
 3. Add/update API client methods in `src/lib/microcms/`.
 4. Create components in `src/components/articles/`.
 5. Add routes in `src/app/media/`.
