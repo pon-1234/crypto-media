@@ -237,7 +237,7 @@ describe('microCMS Example Functions', () => {
         limit: 1,
       }
 
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation()
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       vi.mocked(client.get).mockResolvedValueOnce(mockResponse)
 
       const result = await getArticleBySlug('test-article')

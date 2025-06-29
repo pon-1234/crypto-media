@@ -13,6 +13,11 @@ vi.mock('next/font/google', () => ({
   })),
 }));
 
+// next/headersをモック
+vi.mock('next/headers', () => ({
+  headers: vi.fn(() => new Map([['x-layout-type', 'media']])),
+}));
+
 // NextAuthをモック
 vi.mock('next-auth/react', () => ({
   SessionProvider: ({ children }: { children: React.ReactNode }) => children,

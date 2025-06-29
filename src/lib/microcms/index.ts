@@ -54,3 +54,10 @@ export type {
   ArticleType,
   MembershipLevel,
 } from '@/lib/schema'
+
+// APIメソッド
+export {
+  getCorporateNewsList,
+  getCorporateNewsDetail,
+  getAllCorporateNewsIds,
+} from './corporate-news'

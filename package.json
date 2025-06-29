@@ -20,6 +20,7 @@
     "date-fns": "^4.1.0",
     "firebase": "^10.14.0",
     "firebase-admin": "^13.4.0",
+    "isomorphic-dompurify": "^2.25.0",
     "microcms-js-sdk": "^3.1.2",
     "next": "14.2.18",
     "next-auth": "^4.24.11",
