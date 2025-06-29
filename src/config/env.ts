@@ -84,6 +84,32 @@ function validateEnv(): Env {
     };
   }
 
+  // クライアントサイドでは検証を行わず、公開されている環境変数のみを返す
+  if (typeof window !== 'undefined') {
+    return {
+      NODE_ENV: process.env.NODE_ENV as 'development' | 'production' | 'test',
+      NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
+      NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
+      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
+      NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+      // サーバーサイドの環境変数はダミー値を設定
+      FIREBASE_ADMIN_PROJECT_ID: '',
+      FIREBASE_ADMIN_CLIENT_EMAIL: 'dummy@example.com',
+      FIREBASE_ADMIN_PRIVATE_KEY: '',
+      MICROCMS_SERVICE_DOMAIN: '',
+      MICROCMS_API_KEY: '',
+      STRIPE_SECRET_KEY: '',
+      STRIPE_WEBHOOK_SECRET: '',
+      NEXTAUTH_URL: '',
+      NEXTAUTH_SECRET: '',
+      GOOGLE_CLIENT_ID: '',
+      GOOGLE_CLIENT_SECRET: '',
+    } as Env;
+  }
+
   const parsed = envSchema.safeParse({
     NODE_ENV: process.env.NODE_ENV,
     // Firebase
