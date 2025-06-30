@@ -1,0 +1,33 @@
+import { initializeApp, getApps, cert } from 'firebase-admin/app'
+import { getFirestore } from 'firebase-admin/firestore'
+
+/**
+ * Firebase Admin SDK initialization
+ * @doc Initializes Firebase Admin SDK for server-side operations
+ * @related src/app/api/stripe/webhook/route.ts - Uses this to update user membership status
+ */
+const initializeFirebaseAdmin = () => {
+  if (getApps().length > 0) {
+    return getApps()[0]
+  }
+
+  if (!process.env.FIREBASE_ADMIN_PROJECT_ID ||
+      !process.env.FIREBASE_ADMIN_CLIENT_EMAIL ||
+      !process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
+    throw new Error('Firebase Admin environment variables are not configured')
+  }
+
+  return initializeApp({
+    credential: cert({
+      projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    }),
+  })
+}
+
+// Initialize the app
+const app = initializeFirebaseAdmin()
+
+// Export Firestore instance
+export const adminDb = getFirestore(app)
