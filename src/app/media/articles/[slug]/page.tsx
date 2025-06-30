@@ -17,6 +17,8 @@ import {
   getOptimizedImageUrl,
 } from '@/lib/microcms'
 import { ArticleCard } from '@/components/media/ArticleCard'
+import { Paywall } from '@/components/media/Paywall'
+import { hasAccess } from '@/lib/auth/membership'
 
 /**
  * ISR（Incremental Static Regeneration）設定
@@ -123,9 +125,12 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
 
   // HTMLコンテンツをサニタイズ
   const sanitizedContent = DOMPurify.sanitize(article.content)
+  
+  // ユーザーのアクセス権限をチェック
+  const userHasAccess = await hasAccess(article.membershipLevel)
 
   // 構造化データ（JSON-LD）を生成
-  const structuredData: any = {
+  const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: article.title,
@@ -156,11 +161,11 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
   // 有料記事の場合は構造化データにペイウォール情報を追加
   if (article.membershipLevel === 'paid') {
     structuredData.isAccessibleForFree = 'False'
-    structuredData.hasPart = {
+    structuredData.hasPart = [{
       '@type': 'WebPageElement',
       isAccessibleForFree: 'False',
-      cssSelector: '.paid-content',
-    }
+      cssSelector: '.article-body',
+    }]
   }
 
   return (
@@ -259,11 +264,23 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            {/* 記事本文 */}
-            <div
-              className="prose prose-lg max-w-none mb-8"
-              dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-            />
+            {/* 記事本文またはペイウォール */}
+            <div className="article-body">
+              {userHasAccess ? (
+                <div
+                  className="prose prose-lg max-w-none mb-8"
+                  dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                />
+              ) : (
+                <div className="mb-8">
+                  <Paywall
+                    title={article.title}
+                    preview={article.previewContent || sanitizedContent.slice(0, 500) + '...'}
+                    isHtml={true}
+                  />
+                </div>
+              )}
+            </div>
 
             {/* タグ */}
             {article.tags && article.tags.length > 0 && (
