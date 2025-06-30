@@ -71,7 +71,7 @@ export default async function MembershipPage() {
   };
 
   const currentPaymentStatus = membership?.paymentStatus || 'active';
-  const paymentInfo = paymentStatusDisplay[currentPaymentStatus] || paymentStatusDisplay.active;
+  const paymentInfo = paymentStatusDisplay[currentPaymentStatus as keyof typeof paymentStatusDisplay] || paymentStatusDisplay.active;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">

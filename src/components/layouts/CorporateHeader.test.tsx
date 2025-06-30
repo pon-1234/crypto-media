@@ -12,8 +12,14 @@ vi.mock('next-auth/react', () => ({
   signOut: vi.fn(),
 }))
 
+interface NextImageProps {
+  src: string;
+  alt: string;
+  [key: string]: unknown;
+}
+
 vi.mock('next/image', () => ({
-  default: ({ src, alt, ...props }: any) => <img src={src} alt={alt} {...props} />,
+  default: ({ src, alt, ...props }: NextImageProps) => <img src={src} alt={alt} {...props} />,
 }))
 
 describe('CorporateHeader', () => {
@@ -24,7 +30,7 @@ describe('CorporateHeader', () => {
     vi.mocked(useSession).mockReturnValue({
       data: null,
       status: 'unauthenticated',
-    } as any)
+    } as ReturnType<typeof useSession>)
     
     render(<CorporateHeader />)
     expect(screen.getByText('CORP')).toBeInTheDocument()
@@ -34,7 +40,7 @@ describe('CorporateHeader', () => {
     vi.mocked(useSession).mockReturnValue({
       data: null,
       status: 'unauthenticated',
-    } as any)
+    } as ReturnType<typeof useSession>)
     
     render(<CorporateHeader />)
     
@@ -49,7 +55,7 @@ describe('CorporateHeader', () => {
     vi.mocked(useSession).mockReturnValue({
       data: null,
       status: 'unauthenticated',
-    } as any)
+    } as ReturnType<typeof useSession>)
     
     render(<CorporateHeader />)
     
@@ -64,7 +70,7 @@ describe('CorporateHeader', () => {
     vi.mocked(useSession).mockReturnValue({
       data: null,
       status: 'unauthenticated',
-    } as any)
+    } as ReturnType<typeof useSession>)
     
     render(<CorporateHeader />)
     
@@ -76,7 +82,7 @@ describe('CorporateHeader', () => {
     vi.mocked(useSession).mockReturnValue({
       data: null,
       status: 'unauthenticated',
-    } as any)
+    } as ReturnType<typeof useSession>)
     
     render(<CorporateHeader />)
     
@@ -98,7 +104,7 @@ describe('CorporateHeader', () => {
       vi.mocked(useSession).mockReturnValue({
         data: null,
         status: 'unauthenticated',
-      } as any)
+      } as ReturnType<typeof useSession>)
 
       render(<CorporateHeader />)
       
@@ -110,7 +116,7 @@ describe('CorporateHeader', () => {
       vi.mocked(useSession).mockReturnValue({
         data: null,
         status: 'loading',
-      } as any)
+      } as ReturnType<typeof useSession>)
 
       render(<CorporateHeader />)
       
@@ -127,7 +133,7 @@ describe('CorporateHeader', () => {
           },
         },
         status: 'authenticated',
-      } as any)
+      } as ReturnType<typeof useSession>)
 
       render(<CorporateHeader />)
       
@@ -145,7 +151,7 @@ describe('CorporateHeader', () => {
           },
         },
         status: 'authenticated',
-      } as any)
+      } as ReturnType<typeof useSession>)
 
       render(<CorporateHeader />)
       
@@ -161,7 +167,7 @@ describe('CorporateHeader', () => {
           },
         },
         status: 'authenticated',
-      } as any)
+      } as ReturnType<typeof useSession>)
 
       render(<CorporateHeader />)
       
@@ -169,7 +175,7 @@ describe('CorporateHeader', () => {
       expect(screen.queryByText('マイページ')).not.toBeInTheDocument()
       
       // アバターをクリックしてメニューを開く
-      const avatarButton = screen.getByText('T').parentElement.parentElement
+      const avatarButton = screen.getByText('T').parentElement?.parentElement as HTMLElement
       fireEvent.click(avatarButton)
       
       await waitFor(() => {
@@ -195,12 +201,12 @@ describe('CorporateHeader', () => {
           },
         },
         status: 'authenticated',
-      } as any)
+      } as ReturnType<typeof useSession>)
 
       render(<CorporateHeader />)
       
       // メニューを開く
-      const avatarButton = screen.getByText('T').parentElement.parentElement
+      const avatarButton = screen.getByText('T').parentElement?.parentElement as HTMLElement
       fireEvent.click(avatarButton)
       
       // ログアウトボタンをクリック

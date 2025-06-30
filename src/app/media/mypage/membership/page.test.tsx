@@ -16,7 +16,7 @@ vi.mock('@/lib/auth/membership', () => ({
 }));
 
 vi.mock('next/link', () => ({
-  default: vi.fn(({ children, href }: any) => <a href={href}>{children}</a>),
+  default: vi.fn(({ children, href }: { children: React.ReactNode; href: string }) => <a href={href}>{children}</a>),
 }));
 
 import { getServerSession } from 'next-auth';
@@ -45,14 +45,17 @@ describe('MembershipPage', () => {
           name: 'テストユーザー',
         },
         expires: '2025-08-15',
-      } as any);
+      });
 
       vi.mocked(getUserMembership).mockResolvedValue({
         userId: 'user123',
         email: 'test@example.com',
         membership: 'free',
         membershipUpdatedAt: '2025-06-30T10:00:00Z',
-      });
+        stripeCustomerId: undefined,
+        stripeSubscriptionId: undefined,
+        paymentStatus: undefined,
+      } as Membership & { stripeCustomerId: undefined; stripeSubscriptionId: undefined; paymentStatus: undefined });
     });
 
     it('無料会員プランを表示する', async () => {
@@ -100,7 +103,7 @@ describe('MembershipPage', () => {
           name: '有料会員ユーザー',
         },
         expires: '2025-08-15',
-      } as any);
+      });
     });
 
     it('有料会員プランを表示する（支払い正常）', async () => {
@@ -128,6 +131,7 @@ describe('MembershipPage', () => {
         userId: 'user456',
         email: 'paid@example.com',
         membership: 'paid',
+        membershipUpdatedAt: '2025-06-01T10:00:00Z',
         stripeCustomerId: 'cus_123456',
         stripeSubscriptionId: 'sub_123456',
         paymentStatus: 'past_due',
@@ -145,6 +149,7 @@ describe('MembershipPage', () => {
         userId: 'user456',
         email: 'paid@example.com',
         membership: 'paid',
+        membershipUpdatedAt: '2025-06-01T10:00:00Z',
         stripeCustomerId: 'cus_123456',
         stripeSubscriptionId: 'sub_123456',
         paymentStatus: 'active',
@@ -167,6 +172,7 @@ describe('MembershipPage', () => {
         userId: 'user456',
         email: 'paid@example.com',
         membership: 'paid',
+        membershipUpdatedAt: '2025-06-01T10:00:00Z',
         stripeCustomerId: 'cus_123456',
         stripeSubscriptionId: 'sub_123456',
         paymentStatus: 'active',
@@ -187,12 +193,16 @@ describe('MembershipPage', () => {
           email: 'user@example.com',
         },
         expires: '2025-08-15',
-      } as any);
+      });
 
       vi.mocked(getUserMembership).mockResolvedValue({
         userId: 'user789',
         email: 'user@example.com',
         membership: 'free',
+        membershipUpdatedAt: '2025-06-30T10:00:00Z',
+        stripeCustomerId: undefined,
+        stripeSubscriptionId: undefined,
+        paymentStatus: undefined,
       });
     });
 
@@ -232,7 +242,7 @@ describe('MembershipPage', () => {
           email: 'test@example.com',
         },
         expires: '2025-08-15',
-      } as any);
+      });
     });
 
     it('キャンセル済みステータスを表示する', async () => {
@@ -240,7 +250,9 @@ describe('MembershipPage', () => {
         userId: 'user123',
         email: 'test@example.com',
         membership: 'paid',
+        membershipUpdatedAt: '2025-06-01T10:00:00Z',
         stripeCustomerId: 'cus_123456',
+        stripeSubscriptionId: undefined,
         paymentStatus: 'canceled',
       });
 
@@ -256,7 +268,9 @@ describe('MembershipPage', () => {
         userId: 'user123',
         email: 'test@example.com',
         membership: 'paid',
+        membershipUpdatedAt: '2025-06-01T10:00:00Z',
         stripeCustomerId: 'cus_123456',
+        stripeSubscriptionId: undefined,
         paymentStatus: 'unpaid',
       });
 

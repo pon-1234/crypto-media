@@ -89,9 +89,9 @@ describe('POST /api/stripe/webhook', () => {
           customer: mockCustomerId,
           subscription: mockSubscriptionId,
           metadata: { userId: mockUserId },
-        } as any,
+        } as unknown as Stripe.Checkout.Session,
       },
-    } as any
+    } as Stripe.Event
 
     vi.mocked(stripe.webhooks.constructEvent).mockReturnValue(mockEvent)
 
@@ -112,14 +112,14 @@ describe('POST /api/stripe/webhook', () => {
       if (collection === 'webhook_events') {
         return {
           doc: vi.fn(() => mockEventRef),
-        } as any
+        } as unknown as ReturnType<typeof adminDb.collection>
       }
       if (collection === 'users') {
         return {
           doc: vi.fn(() => mockUserRef),
-        } as any
+        } as unknown as ReturnType<typeof adminDb.collection>
       }
-      return {} as any
+      return {} as unknown as ReturnType<typeof adminDb.collection>
     })
 
     const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
@@ -153,8 +153,8 @@ describe('POST /api/stripe/webhook', () => {
       id: mockEventId,
       type: 'checkout.session.completed',
       created: Date.now(),
-      data: { object: {} as any },
-    } as any
+      data: { object: {} as Stripe.Checkout.Session },
+    } as Stripe.Event
 
     vi.mocked(stripe.webhooks.constructEvent).mockReturnValue(mockEvent)
 
@@ -168,7 +168,7 @@ describe('POST /api/stripe/webhook', () => {
 
     vi.mocked(adminDb.collection).mockImplementation(() => ({
       doc: vi.fn(() => mockEventRef),
-    }) as any)
+    }) as unknown as ReturnType<typeof adminDb.collection>)
 
     const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
       method: 'POST',
@@ -194,9 +194,9 @@ describe('POST /api/stripe/webhook', () => {
       data: {
         object: {
           id: mockSubscriptionId,
-        } as any,
+        } as Stripe.Subscription,
       },
-    } as any
+    } as Stripe.Event
 
     vi.mocked(stripe.webhooks.constructEvent).mockReturnValue(mockEvent)
 
@@ -220,7 +220,7 @@ describe('POST /api/stripe/webhook', () => {
       if (collection === 'webhook_events') {
         return {
           doc: vi.fn(() => mockEventRef),
-        } as any
+        } as unknown as ReturnType<typeof adminDb.collection>
       }
       if (collection === 'users') {
         return {
@@ -229,9 +229,9 @@ describe('POST /api/stripe/webhook', () => {
               get: vi.fn().mockResolvedValue(mockSnapshot),
             })),
           })),
-        } as any
+        } as unknown as ReturnType<typeof adminDb.collection>
       }
-      return {} as any
+      return {} as unknown as ReturnType<typeof adminDb.collection>
     })
 
     const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
@@ -263,9 +263,9 @@ describe('POST /api/stripe/webhook', () => {
         object: {
           mode: 'subscription',
           metadata: { userId: mockUserId },
-        } as any,
+        } as unknown as Stripe.Checkout.Session,
       },
-    } as any
+    } as Stripe.Event
 
     vi.mocked(stripe.webhooks.constructEvent).mockReturnValue(mockEvent)
 
@@ -277,7 +277,7 @@ describe('POST /api/stripe/webhook', () => {
 
     vi.mocked(adminDb.collection).mockImplementation(() => ({
       doc: vi.fn(() => mockEventRef),
-    }) as any)
+    }) as unknown as ReturnType<typeof adminDb.collection>)
 
     const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
       method: 'POST',

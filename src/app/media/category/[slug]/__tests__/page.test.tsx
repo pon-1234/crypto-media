@@ -27,8 +27,10 @@ vi.mock('@/components/ui/Breadcrumbs', () => ({
   ),
 }))
 
+import type { MediaArticle } from '@/lib/schema/article.schema'
+
 vi.mock('@/components/media/ArticleGrid', () => ({
-  ArticleGrid: ({ articles }: { articles: any[] }) => (
+  ArticleGrid: ({ articles }: { articles: MediaArticle[] }) => (
     <div data-testid="article-grid">
       {articles.map((article) => (
         <div key={article.id}>{article.title}</div>

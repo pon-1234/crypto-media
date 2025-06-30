@@ -130,7 +130,7 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
   const userHasAccess = await hasAccess(article.membershipLevel)
 
   // 構造化データ（JSON-LD）を生成
-  const structuredData = {
+  const structuredData: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: article.title,

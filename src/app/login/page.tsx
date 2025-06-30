@@ -3,7 +3,6 @@
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 
 /**

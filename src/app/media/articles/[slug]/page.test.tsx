@@ -18,8 +18,13 @@ vi.mock('@/components/media/ArticleCard', () => ({
   ArticleCard: vi.fn(() => <div data-testid="article-card">Article Card</div>),
 }));
 
+interface PaywallProps {
+  title: string;
+  preview: string;
+}
+
 vi.mock('@/components/media/Paywall', () => ({
-  Paywall: vi.fn(({ title, preview }: any) => (
+  Paywall: vi.fn(({ title, preview }: PaywallProps) => (
     <div data-testid="paywall">
       <h1>{title}</h1>
       <div>{preview}</div>
@@ -31,8 +36,13 @@ vi.mock('next/navigation', () => ({
   notFound: vi.fn(),
 }));
 
+interface NextImageProps {
+  src: string;
+  alt: string;
+}
+
 vi.mock('next/image', () => ({
-  default: vi.fn(({ src, alt }: any) => <img src={src} alt={alt} />),
+  default: vi.fn(({ src, alt }: NextImageProps) => <img src={src} alt={alt} />),
 }));
 
 import { getMediaArticleBySlug, getRelatedArticles } from '@/lib/microcms';
@@ -269,7 +279,7 @@ describe('MediaArticleDetailPage', () => {
         await MediaArticleDetailPage({
           params: { slug: 'non-existent' },
         });
-      } catch (error) {
+      } catch {
         // notFoundは例外をスローする可能性がある
       }
 

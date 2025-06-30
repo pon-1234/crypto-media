@@ -6,7 +6,7 @@ import Stripe from 'stripe';
 
 // Stripe SDKの初期化
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-02-24.acacia',
 });
 
 /**
@@ -67,7 +67,7 @@ export async function POST() {
     // Stripeエラーの場合、詳細なエラー情報を返す
     // instanceof チェックがモックで動作しないため、プロパティの存在で判定
     if (error && typeof error === 'object' && 'statusCode' in error && 'type' in error) {
-      const stripeError = error as any;
+      const stripeError = error as Error & { statusCode?: number; type: string };
       return NextResponse.json(
         { 
           error: 'Failed to create portal session',

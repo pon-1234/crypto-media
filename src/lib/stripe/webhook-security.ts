@@ -67,7 +67,7 @@ export interface WebhookLog {
   processedAt?: string;
   success: boolean;
   error?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**

@@ -57,7 +57,7 @@ export default async function MyPage() {
   };
 
   const currentMembership = membership?.membership || 'free';
-  const membershipInfo = membershipDisplay[currentMembership];
+  const membershipInfo = membershipDisplay[currentMembership as keyof typeof membershipDisplay];
 
   // メニュー項目
   const menuItems = [

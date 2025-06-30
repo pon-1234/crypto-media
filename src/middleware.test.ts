@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 import { middleware } from './middleware'
 
@@ -12,7 +12,7 @@ vi.mock('next/server', () => {
     set: vi.fn(),
   }
   
-  const mockRedirect = vi.fn((url: string | URL) => ({
+  const mockRedirect = vi.fn(() => ({
     headers: mockHeaders,
   }))
   
@@ -128,7 +128,7 @@ describe('middleware', () => {
       vi.mocked(getToken).mockResolvedValue({
         sub: 'user-123',
         email: 'test@example.com',
-      } as any)
+      })
 
       const mockRequest = {
         nextUrl: {

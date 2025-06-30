@@ -25,11 +25,19 @@ describe('RegisterPage', () => {
       email: 'test@example.com',
       name: 'Test User',
     },
+    expires: '2025-08-15',
   }
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useRouter).mockReturnValue({ push: mockPush } as any)
+    vi.mocked(useRouter).mockReturnValue({ 
+      push: mockPush,
+      refresh: vi.fn(),
+      replace: vi.fn(),
+      prefetch: vi.fn(),
+      back: vi.fn(),
+      forward: vi.fn(),
+    } as ReturnType<typeof useRouter>)
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
       json: async () => ({ url: 'https://checkout.stripe.com/pay/cs_test_123' }),
@@ -37,7 +45,11 @@ describe('RegisterPage', () => {
   })
 
   it('renders the registration page with plan details', () => {
-    vi.mocked(useSession).mockReturnValue({ data: null, status: 'unauthenticated' } as any)
+    vi.mocked(useSession).mockReturnValue({ 
+      data: null, 
+      status: 'unauthenticated',
+      update: vi.fn()
+    })
 
     render(<RegisterPage />)
 
@@ -50,7 +62,11 @@ describe('RegisterPage', () => {
   })
 
   it('shows login prompt when user is not authenticated', () => {
-    vi.mocked(useSession).mockReturnValue({ data: null, status: 'unauthenticated' } as any)
+    vi.mocked(useSession).mockReturnValue({ 
+      data: null, 
+      status: 'unauthenticated',
+      update: vi.fn()
+    })
 
     render(<RegisterPage />)
 
@@ -59,7 +75,11 @@ describe('RegisterPage', () => {
   })
 
   it('shows loading state while checking session', () => {
-    vi.mocked(useSession).mockReturnValue({ data: null, status: 'loading' } as any)
+    vi.mocked(useSession).mockReturnValue({ 
+      data: null, 
+      status: 'loading',
+      update: vi.fn()
+    })
 
     const { container } = render(<RegisterPage />)
 
@@ -68,7 +88,11 @@ describe('RegisterPage', () => {
   })
 
   it('redirects to login when clicking checkout without session', async () => {
-    vi.mocked(useSession).mockReturnValue({ data: null, status: 'unauthenticated' } as any)
+    vi.mocked(useSession).mockReturnValue({ 
+      data: null, 
+      status: 'unauthenticated',
+      update: vi.fn()
+    })
 
     render(<RegisterPage />)
 
@@ -77,7 +101,11 @@ describe('RegisterPage', () => {
   })
 
   it('creates checkout session when authenticated user clicks register', async () => {
-    vi.mocked(useSession).mockReturnValue({ data: mockSession, status: 'authenticated' } as any)
+    vi.mocked(useSession).mockReturnValue({ 
+      data: mockSession, 
+      status: 'authenticated',
+      update: vi.fn()
+    })
 
     const mockLocation = { href: '' }
     Object.defineProperty(window, 'location', {
@@ -105,7 +133,11 @@ describe('RegisterPage', () => {
   })
 
   it('shows error message when checkout session creation fails', async () => {
-    vi.mocked(useSession).mockReturnValue({ data: mockSession, status: 'authenticated' } as any)
+    vi.mocked(useSession).mockReturnValue({ 
+      data: mockSession, 
+      status: 'authenticated',
+      update: vi.fn()
+    })
     vi.mocked(global.fetch).mockResolvedValueOnce({
       ok: false,
       json: async () => ({ error: 'サーバーエラーが発生しました' }),
@@ -122,7 +154,11 @@ describe('RegisterPage', () => {
   })
 
   it('shows generic error message on unexpected error', async () => {
-    vi.mocked(useSession).mockReturnValue({ data: mockSession, status: 'authenticated' } as any)
+    vi.mocked(useSession).mockReturnValue({ 
+      data: mockSession, 
+      status: 'authenticated',
+      update: vi.fn()
+    })
     vi.mocked(global.fetch).mockRejectedValueOnce(new Error('Network error'))
 
     render(<RegisterPage />)
@@ -136,7 +172,11 @@ describe('RegisterPage', () => {
   })
 
   it('disables button while processing', async () => {
-    vi.mocked(useSession).mockReturnValue({ data: mockSession, status: 'authenticated' } as any)
+    vi.mocked(useSession).mockReturnValue({ 
+      data: mockSession, 
+      status: 'authenticated',
+      update: vi.fn()
+    })
     
     // Simulate slow response
     vi.mocked(global.fetch).mockImplementation(() => 
@@ -156,7 +196,11 @@ describe('RegisterPage', () => {
   })
 
   it('shows links to terms and privacy policy', () => {
-    vi.mocked(useSession).mockReturnValue({ data: null, status: 'unauthenticated' } as any)
+    vi.mocked(useSession).mockReturnValue({ 
+      data: null, 
+      status: 'unauthenticated',
+      update: vi.fn()
+    })
 
     render(<RegisterPage />)
 

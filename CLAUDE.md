@@ -184,6 +184,7 @@ Required variables (see `DEVELOPMENT_GUIDE.md` for full list and details):
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: Stripe public key
 
 ## ★ Important Rules
+- **NEVER use `any` type**: TypeScriptの`any`型は、型安全性を損なうため原則として使用を禁止します。型が特定できない場合は`unknown`を使用し、型ガードを実装してください。
 - **Refer to `DEVELOPMENT_GUIDE.md` for any ambiguity.**
 - **All code MUST be accompanied by passing tests to achieve 100% coverage.**
 - **All major functions and classes MUST have JSDoc comments**, including `@doc`, `@related`, `@issue` where applicable.

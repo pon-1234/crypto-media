@@ -6,7 +6,7 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 
 // モックハンドラーを定義
-const mockHandler = vi.fn((req: any) => {
+const mockHandler = vi.fn(() => {
   return new Response(JSON.stringify({ message: 'Mocked NextAuth response' }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
@@ -27,13 +27,13 @@ vi.mock('@/lib/auth/authOptions', () => ({
 
 // ダイナミックインポートで route.ts を読み込む
 const loadRoute = async () => {
-  const module = await import('../route');
-  return module;
+  const routeModule = await import('../route');
+  return routeModule;
 };
 
 describe('NextAuth Route Handlers', () => {
-  let GET: any;
-  let POST: any;
+  let GET: (request: Request) => Promise<Response>;
+  let POST: (request: Request) => Promise<Response>;
 
   beforeAll(async () => {
     const route = await loadRoute();

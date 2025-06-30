@@ -20,17 +20,17 @@ vi.mock('microcms-js-sdk', () => ({
 }))
 
 // モジュールを動的にインポート
-let client: any
-let defaultQueries: any
-let MAX_LIMIT: any
-let getOptimizedImageUrl: any
+let client: ReturnType<typeof createClient>
+let defaultQueries: { limit: number; orders: string }
+let MAX_LIMIT: number
+let getOptimizedImageUrl: (url: string, options?: { width?: number; height?: number; format?: 'webp' | 'jpg' | 'png'; quality?: number }) => string
 
 beforeAll(async () => {
-  const module = await import('../client')
-  client = module.client
-  defaultQueries = module.defaultQueries
-  MAX_LIMIT = module.MAX_LIMIT
-  getOptimizedImageUrl = module.getOptimizedImageUrl
+  const clientModule = await import('../client')
+  client = clientModule.client
+  defaultQueries = clientModule.defaultQueries
+  MAX_LIMIT = clientModule.MAX_LIMIT
+  getOptimizedImageUrl = clientModule.getOptimizedImageUrl
 })
 
 describe('microCMS Client', () => {

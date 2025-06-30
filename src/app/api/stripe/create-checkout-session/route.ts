@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth/authOptions'
 import { stripe, MONTHLY_PRICE_ID } from '@/lib/stripe'
@@ -107,7 +107,7 @@ export async function POST() {
     // Stripeエラーの詳細なハンドリング
     if (error instanceof Error) {
       // Stripeの型エラーを正しく処理
-      const stripeError = error as any
+      const stripeError = error as Error & { type?: string }
       
       if (stripeError.type === 'StripeInvalidRequestError') {
         return NextResponse.json(

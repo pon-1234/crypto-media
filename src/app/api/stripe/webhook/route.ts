@@ -219,7 +219,7 @@ export async function POST(request: NextRequest) {
           }
           
           const userDoc = userSnapshot.docs[0]
-          const updates: any = {
+          const updates: Record<string, string> = {
             membershipUpdatedAt: new Date().toISOString(),
           }
           
@@ -239,7 +239,7 @@ export async function POST(request: NextRequest) {
         } else {
           // userIdがある場合の高速処理
           const userRef = adminDb.collection('users').doc(userId)
-          const updates: any = {
+          const updates: Record<string, string> = {
             membershipUpdatedAt: new Date().toISOString(),
           }
           
@@ -358,9 +358,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Stripeが推奨するWebhookのベストプラクティス
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}

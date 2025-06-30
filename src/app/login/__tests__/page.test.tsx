@@ -24,10 +24,15 @@ describe('LoginPage', () => {
     vi.clearAllMocks()
     vi.mocked(useRouter).mockReturnValue({
       push: mockPush,
-    } as any)
+      refresh: vi.fn(),
+      replace: vi.fn(),
+      prefetch: vi.fn(),
+      back: vi.fn(),
+      forward: vi.fn(),
+    } as ReturnType<typeof useRouter>)
     vi.mocked(useSearchParams).mockReturnValue({
       get: mockGet,
-    } as any)
+    } as unknown as ReturnType<typeof useSearchParams>)
   })
 
   describe('未認証状態', () => {
@@ -35,7 +40,8 @@ describe('LoginPage', () => {
       vi.mocked(useSession).mockReturnValue({
         data: null,
         status: 'unauthenticated',
-      } as any)
+        update: vi.fn(),
+      } as ReturnType<typeof useSession>)
     })
 
     it('ログインページが正しく表示される', () => {
@@ -94,7 +100,8 @@ describe('LoginPage', () => {
       vi.mocked(useSession).mockReturnValue({
         data: null,
         status: 'loading',
-      } as any)
+        update: vi.fn(),
+      } as ReturnType<typeof useSession>)
       mockGet.mockReturnValue(null)
 
       render(<LoginPage />)
@@ -106,9 +113,10 @@ describe('LoginPage', () => {
   describe('認証済み状態', () => {
     it('callbackUrlにリダイレクトされる', async () => {
       vi.mocked(useSession).mockReturnValue({
-        data: { user: { name: 'Test User' } },
+        data: { user: { name: 'Test User' }, expires: '2025-08-15' },
         status: 'authenticated',
-      } as any)
+        update: vi.fn(),
+      } as unknown as ReturnType<typeof useSession>)
       mockGet.mockReturnValue('/media/mypage')
 
       render(<LoginPage />)
@@ -120,9 +128,10 @@ describe('LoginPage', () => {
 
     it('callbackUrlがない場合はルートにリダイレクトされる', async () => {
       vi.mocked(useSession).mockReturnValue({
-        data: { user: { name: 'Test User' } },
+        data: { user: { name: 'Test User' }, expires: '2025-08-15' },
         status: 'authenticated',
-      } as any)
+        update: vi.fn(),
+      } as unknown as ReturnType<typeof useSession>)
       mockGet.mockReturnValue(null)
 
       render(<LoginPage />)
@@ -138,7 +147,8 @@ describe('LoginPage', () => {
       vi.mocked(useSession).mockReturnValue({
         data: null,
         status: 'unauthenticated',
-      } as any)
+        update: vi.fn(),
+      } as ReturnType<typeof useSession>)
       mockGet.mockReturnValue(null)
 
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})

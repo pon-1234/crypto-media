@@ -54,8 +54,8 @@ export default async function NewsDetailPage({ params }: PageProps) {
   let news
   try {
     news = await getCorporateNewsDetail(id)
-  } catch (error) {
-    // クライアント側でエラーログは出力済み
+  } catch {
+    // エラー処理はhandleError内で完了しているためエラー自体は使用しない
     notFound()
   }
 

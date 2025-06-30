@@ -37,7 +37,7 @@ vi.mock('stripe', () => {
   }));
   
   // Stripe.errors.StripeError をモッククラスに設定
-  MockStripe.errors = {
+  (MockStripe as unknown as { errors: { StripeError: typeof MockStripeError } }).errors = {
     StripeError: MockStripeError,
   };
   
@@ -65,14 +65,14 @@ import { getUserMembership } from '@/lib/auth/membership';
 import Stripe from 'stripe';
 
 describe('/api/stripe/portal', () => {
-  let mockStripeCreate: any;
+  let mockStripeCreate: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     vi.clearAllMocks();
     
     // StripeのcreateメソッドをモックからアクセスできるようにStore
-    const stripe = new Stripe('test', { apiVersion: '2024-12-18.acacia' });
-    mockStripeCreate = stripe.billingPortal.sessions.create;
+    const stripe = new (Stripe as unknown as new (key: string, options: { apiVersion: string }) => Stripe)('test', { apiVersion: '2025-02-24.acacia' });
+    mockStripeCreate = stripe.billingPortal.sessions.create as typeof mockStripeCreate;
     
     // 環境変数のモック
     process.env.STRIPE_SECRET_KEY = 'sk_test_mock';
@@ -94,7 +94,7 @@ describe('/api/stripe/portal', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user123' },
         expires: '2025-08-15',
-      } as any);
+      });
       vi.mocked(getUserMembership).mockResolvedValue(null);
 
       const response = await POST();
@@ -108,12 +108,15 @@ describe('/api/stripe/portal', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user123' },
         expires: '2025-08-15',
-      } as any);
+      });
       vi.mocked(getUserMembership).mockResolvedValue({
         userId: 'user123',
         email: 'test@example.com',
         membership: 'free',
-        // stripeCustomerIdなし
+        membershipUpdatedAt: '2025-06-30T10:00:00Z',
+        stripeCustomerId: undefined,
+        stripeSubscriptionId: undefined,
+        paymentStatus: undefined,
       });
 
       const response = await POST();
@@ -127,12 +130,15 @@ describe('/api/stripe/portal', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user456' },
         expires: '2025-08-15',
-      } as any);
+      });
       vi.mocked(getUserMembership).mockResolvedValue({
         userId: 'user456',
         email: 'paid@example.com',
         membership: 'paid',
+        membershipUpdatedAt: '2025-06-30T10:00:00Z',
         stripeCustomerId: 'cus_123456',
+        stripeSubscriptionId: 'sub_123456',
+        paymentStatus: 'active',
       });
       mockStripeCreate.mockResolvedValue({
         url: 'https://billing.stripe.com/session/test_123',
@@ -149,26 +155,29 @@ describe('/api/stripe/portal', () => {
         'https://billing.stripe.com/session/test_123'
       );
       expect(response.status).toBe(307);
-      expect(response.headers.Location).toBe('https://billing.stripe.com/session/test_123');
+      expect((response as Response & { headers: { Location: string } }).headers?.Location).toBe('https://billing.stripe.com/session/test_123');
     });
 
     it('Stripeエラーの場合、適切なエラーレスポンスを返す', async () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user789' },
         expires: '2025-08-15',
-      } as any);
+      });
       vi.mocked(getUserMembership).mockResolvedValue({
         userId: 'user789',
         email: 'test@example.com',
         membership: 'paid',
+        membershipUpdatedAt: '2025-06-30T10:00:00Z',
         stripeCustomerId: 'cus_invalid',
+        stripeSubscriptionId: 'sub_invalid',
+        paymentStatus: 'active',
       });
       
       // Stripe.errors.StripeErrorと同じ構造のエラーオブジェクトを作成
       const stripeError = Object.assign(new Error('Customer not found'), {
         statusCode: 404,
         type: 'resource_missing',
-      });
+      }) as Error & { statusCode: number; type: string };
       mockStripeCreate.mockRejectedValue(stripeError);
 
       const response = await POST();
@@ -186,12 +195,15 @@ describe('/api/stripe/portal', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user999' },
         expires: '2025-08-15',
-      } as any);
+      });
       vi.mocked(getUserMembership).mockResolvedValue({
         userId: 'user999',
         email: 'test@example.com',
         membership: 'paid',
+        membershipUpdatedAt: '2025-06-30T10:00:00Z',
         stripeCustomerId: 'cus_123456',
+        stripeSubscriptionId: 'sub_123456',
+        paymentStatus: 'active',
       });
       mockStripeCreate.mockRejectedValue(new Error('Network error'));
 
@@ -208,22 +220,25 @@ describe('/api/stripe/portal', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user123' },
         expires: '2025-08-15',
-      } as any);
+      });
       vi.mocked(getUserMembership).mockResolvedValue({
         userId: 'user123',
         email: 'test@example.com',
         membership: 'paid',
+        membershipUpdatedAt: '2025-06-30T10:00:00Z',
         stripeCustomerId: 'cus_123456',
+        stripeSubscriptionId: 'sub_123456',
+        paymentStatus: 'active',
       });
       mockStripeCreate.mockResolvedValue({
         url: 'https://billing.stripe.com/session/test_456',
-      });
+      } as Stripe.BillingPortal.Session);
 
       const response = await GET();
 
       expect(mockStripeCreate).toHaveBeenCalled();
       expect(response.status).toBe(307);
-      expect(response.headers.Location).toBe('https://billing.stripe.com/session/test_456');
+      expect((response as Response & { headers: { Location: string } }).headers?.Location).toBe('https://billing.stripe.com/session/test_456');
     });
   });
 });

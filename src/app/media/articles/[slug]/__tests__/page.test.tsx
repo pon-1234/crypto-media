@@ -19,13 +19,13 @@ vi.mock('@/lib/microcms', () => ({
   getMediaArticleBySlug: vi.fn(),
   getAllMediaArticleSlugs: vi.fn(),
   getRelatedArticles: vi.fn(),
-  getOptimizedImageUrl: vi.fn((url) => url),
+  getOptimizedImageUrl: vi.fn((url: string) => url),
 }))
 
 // DOMPurifyのモック
 vi.mock('isomorphic-dompurify', () => ({
   default: {
-    sanitize: vi.fn((html, options) => {
+    sanitize: vi.fn((html: string, options?: { ALLOWED_TAGS?: string[] }) => {
       // ALLOWED_TAGSが空の場合はテキストのみを返す
       if (options?.ALLOWED_TAGS && options.ALLOWED_TAGS.length === 0) {
         return html.replace(/<[^>]*>/g, '')
@@ -169,7 +169,7 @@ describe('MediaArticleDetailPage', () => {
 
       try {
         await MediaArticleDetailPage({ params: { slug: 'not-found' } })
-      } catch (error) {
+      } catch {
         // notFoundはエラーをスローするため、catch内で確認
       }
 

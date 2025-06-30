@@ -49,7 +49,7 @@ describe('MediaHeader', () => {
 
   it('should show user avatar when authenticated and dropdown on click', async () => {
     const { useSession } = await import('next-auth/react')
-    ;(useSession as any).mockReturnValue({ 
+    ;(useSession as ReturnType<typeof vi.fn>).mockReturnValue({ 
       data: { 
         user: { 
           email: 'test@example.com',
@@ -66,8 +66,10 @@ describe('MediaHeader', () => {
     expect(screen.getByText('T')).toBeInTheDocument()
     
     // アバターをクリックしてドロップダウンを開く
-    const avatarButton = screen.getByText('T').parentElement.parentElement
-    fireEvent.click(avatarButton)
+    const avatarButton = screen.getByText('T').parentElement?.parentElement
+    if (avatarButton) {
+      fireEvent.click(avatarButton)
+    }
     
     // ドロップダウンメニューの内容を確認
     expect(screen.getByText('マイページ')).toBeInTheDocument()

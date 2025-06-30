@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getUserMembership, isPaidMember, hasAccess } from './membership';
+import type { Session } from 'next-auth';
 
 // Mockの設定
 vi.mock('next-auth', () => ({
@@ -40,7 +41,7 @@ describe('membership.ts', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { email: 'test@example.com' },
         expires: '2025-08-15',
-      } as any);
+      } as Session);
 
       const result = await getUserMembership();
       expect(result).toBeNull();
@@ -50,12 +51,12 @@ describe('membership.ts', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user123', email: 'test@example.com' },
         expires: '2025-08-15',
-      } as any);
+      } as Session);
 
       const mockGet = vi.fn().mockResolvedValue({ exists: false });
       vi.mocked(adminDb.collection).mockReturnValue({
         doc: vi.fn().mockReturnValue({ get: mockGet }),
-      } as any);
+      } as unknown as ReturnType<typeof adminDb.collection>);
 
       const result = await getUserMembership();
       expect(result).toBeNull();
@@ -65,7 +66,7 @@ describe('membership.ts', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user123', email: 'test@example.com' },
         expires: '2025-08-15',
-      } as any);
+      } as Session);
 
       const mockUserData = {
         email: 'test@example.com',
@@ -79,7 +80,7 @@ describe('membership.ts', () => {
       });
       vi.mocked(adminDb.collection).mockReturnValue({
         doc: vi.fn().mockReturnValue({ get: mockGet }),
-      } as any);
+      } as unknown as ReturnType<typeof adminDb.collection>);
 
       const result = await getUserMembership();
       expect(result).toEqual({
@@ -97,7 +98,7 @@ describe('membership.ts', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user456', email: 'paid@example.com' },
         expires: '2025-08-15',
-      } as any);
+      } as Session);
 
       const mockUserData = {
         email: 'paid@example.com',
@@ -114,7 +115,7 @@ describe('membership.ts', () => {
       });
       vi.mocked(adminDb.collection).mockReturnValue({
         doc: vi.fn().mockReturnValue({ get: mockGet }),
-      } as any);
+      } as unknown as ReturnType<typeof adminDb.collection>);
 
       const result = await getUserMembership();
       expect(result).toEqual({
@@ -139,7 +140,7 @@ describe('membership.ts', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user789', email: 'test@example.com' },
         expires: '2025-08-15',
-      } as any);
+      } as Session);
 
       const mockUserData = {
         email: 'test@example.com',
@@ -152,7 +153,7 @@ describe('membership.ts', () => {
       });
       vi.mocked(adminDb.collection).mockReturnValue({
         doc: vi.fn().mockReturnValue({ get: mockGet }),
-      } as any);
+      } as unknown as ReturnType<typeof adminDb.collection>);
 
       const result = await getUserMembership();
       expect(result?.membership).toBe('free');
@@ -164,7 +165,7 @@ describe('membership.ts', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user123', email: 'test@example.com' },
         expires: '2025-08-15',
-      } as any);
+      } as Session);
 
       const mockGet = vi.fn().mockResolvedValue({
         exists: true,
@@ -172,7 +173,7 @@ describe('membership.ts', () => {
       });
       vi.mocked(adminDb.collection).mockReturnValue({
         doc: vi.fn().mockReturnValue({ get: mockGet }),
-      } as any);
+      } as unknown as ReturnType<typeof adminDb.collection>);
 
       const result = await isPaidMember();
       expect(result).toBe(true);
@@ -182,7 +183,7 @@ describe('membership.ts', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user123', email: 'test@example.com' },
         expires: '2025-08-15',
-      } as any);
+      } as Session);
 
       const mockGet = vi.fn().mockResolvedValue({
         exists: true,
@@ -190,7 +191,7 @@ describe('membership.ts', () => {
       });
       vi.mocked(adminDb.collection).mockReturnValue({
         doc: vi.fn().mockReturnValue({ get: mockGet }),
-      } as any);
+      } as unknown as ReturnType<typeof adminDb.collection>);
 
       const result = await isPaidMember();
       expect(result).toBe(false);
@@ -216,7 +217,7 @@ describe('membership.ts', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user123', email: 'test@example.com' },
         expires: '2025-08-15',
-      } as any);
+      } as Session);
 
       const mockGet = vi.fn().mockResolvedValue({
         exists: true,
@@ -224,7 +225,7 @@ describe('membership.ts', () => {
       });
       vi.mocked(adminDb.collection).mockReturnValue({
         doc: vi.fn().mockReturnValue({ get: mockGet }),
-      } as any);
+      } as unknown as ReturnType<typeof adminDb.collection>);
 
       const result = await hasAccess('paid');
       expect(result).toBe(true);
@@ -234,7 +235,7 @@ describe('membership.ts', () => {
       vi.mocked(getServerSession).mockResolvedValue({
         user: { id: 'user123', email: 'test@example.com' },
         expires: '2025-08-15',
-      } as any);
+      } as Session);
 
       const mockGet = vi.fn().mockResolvedValue({
         exists: true,
@@ -242,7 +243,7 @@ describe('membership.ts', () => {
       });
       vi.mocked(adminDb.collection).mockReturnValue({
         doc: vi.fn().mockReturnValue({ get: mockGet }),
-      } as any);
+      } as unknown as ReturnType<typeof adminDb.collection>);
 
       const result = await hasAccess('paid');
       expect(result).toBe(false);

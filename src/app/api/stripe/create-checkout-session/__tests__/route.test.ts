@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server'
 import { POST } from '../route'
 import { getServerSession } from 'next-auth'
 import { stripe } from '@/lib/stripe'
+import type Stripe from 'stripe'
 
 // Mock next-auth
 vi.mock('next-auth', () => ({
@@ -46,11 +47,11 @@ describe('POST /api/stripe/create-checkout-session', () => {
   it('returns 401 when user is not authenticated', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null)
 
-    const request = new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
+    new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
       method: 'POST',
     })
 
-    const response = await POST(request)
+    const response = await POST()
     const data = await response.json()
 
     expect(response.status).toBe(401)
@@ -64,17 +65,17 @@ describe('POST /api/stripe/create-checkout-session', () => {
       has_more: false,
       object: 'list',
       url: '/v1/customers',
-    } as any)
+    } as unknown as Stripe.Response<Stripe.ApiList<Stripe.Customer>>)
     vi.mocked(stripe.checkout.sessions.create).mockResolvedValue({
       url: 'https://checkout.stripe.com/pay/cs_test_123',
       id: 'cs_test_123',
-    } as any)
+    } as Stripe.Response<Stripe.Checkout.Session>)
 
-    const request = new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
+    new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
       method: 'POST',
     })
 
-    const response = await POST(request)
+    const response = await POST()
     const data = await response.json()
 
     expect(response.status).toBe(200)
@@ -110,21 +111,21 @@ describe('POST /api/stripe/create-checkout-session', () => {
   it('creates checkout session for existing customer', async () => {
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
     vi.mocked(stripe.customers.list).mockResolvedValue({
-      data: [{ id: 'cus_existing123', email: 'test@example.com' }],
+      data: [{ id: 'cus_existing123', email: 'test@example.com' } as Stripe.Customer],
       has_more: false,
       object: 'list',
       url: '/v1/customers',
-    } as any)
+    } as unknown as Stripe.Response<Stripe.ApiList<Stripe.Customer>>)
     vi.mocked(stripe.checkout.sessions.create).mockResolvedValue({
       url: 'https://checkout.stripe.com/pay/cs_test_456',
       id: 'cs_test_456',
-    } as any)
+    } as Stripe.Response<Stripe.Checkout.Session>)
 
-    const request = new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
+    new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
       method: 'POST',
     })
 
-    const response = await POST(request)
+    const response = await POST()
     const data = await response.json()
 
     expect(response.status).toBe(200)
@@ -145,17 +146,17 @@ describe('POST /api/stripe/create-checkout-session', () => {
       has_more: false,
       object: 'list',
       url: '/v1/customers',
-    } as any)
+    } as unknown as Stripe.Response<Stripe.ApiList<Stripe.Customer>>)
     
-    const stripeError = new Error('Invalid request') as any
+    const stripeError = new Error('Invalid request') as Error & { type: string }
     stripeError.type = 'StripeInvalidRequestError'
     vi.mocked(stripe.checkout.sessions.create).mockRejectedValue(stripeError)
 
-    const request = new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
+    new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
       method: 'POST',
     })
 
-    const response = await POST(request)
+    const response = await POST()
     const data = await response.json()
 
     expect(response.status).toBe(400)
@@ -166,11 +167,11 @@ describe('POST /api/stripe/create-checkout-session', () => {
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
     vi.mocked(stripe.customers.list).mockRejectedValue(new Error('Network error'))
 
-    const request = new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
+    new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
       method: 'POST',
     })
 
-    const response = await POST(request)
+    const response = await POST()
     const data = await response.json()
 
     expect(response.status).toBe(500)
@@ -186,11 +187,11 @@ describe('POST /api/stripe/create-checkout-session', () => {
     const configError = new Error('Configuration error')
     vi.mocked(stripe.customers.list).mockRejectedValue(configError)
 
-    const request = new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
+    new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
       method: 'POST',
     })
 
-    const response = await POST(request)
+    const response = await POST()
     const data = await response.json()
 
     expect(response.status).toBe(500)

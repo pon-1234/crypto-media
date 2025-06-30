@@ -44,7 +44,7 @@ describe('Firebase Admin', () => {
     process.env.FIREBASE_ADMIN_CLIENT_EMAIL = 'test@example.com'
     process.env.FIREBASE_ADMIN_PRIVATE_KEY = 'test-key'
 
-    vi.mocked(getApps).mockReturnValueOnce([{ name: 'existing-app' }] as any)
+    vi.mocked(getApps).mockReturnValueOnce([{ name: 'existing-app' }] as ReturnType<typeof getApps>)
 
     const { adminDb } = await import('./admin')
 

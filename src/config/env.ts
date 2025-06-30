@@ -48,6 +48,10 @@ const envSchema = z.object({
   SENDGRID_API_KEY: z.string().optional(),
   CONTACT_EMAIL_TO: z.string().email().optional(),
   CONTACT_EMAIL_FROM: z.string().email().optional(),
+
+  // HubSpot設定（オプション）
+  NEXT_PUBLIC_HUBSPOT_PORTAL_ID: z.string().optional(),
+  NEXT_PUBLIC_HUBSPOT_FORM_ID: z.string().optional(),
 });
 
 /**
@@ -109,6 +113,8 @@ function validateEnv(): Env {
       NEXTAUTH_SECRET: '',
       GOOGLE_CLIENT_ID: '',
       GOOGLE_CLIENT_SECRET: '',
+      NEXT_PUBLIC_HUBSPOT_PORTAL_ID: process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID,
+      NEXT_PUBLIC_HUBSPOT_FORM_ID: process.env.NEXT_PUBLIC_HUBSPOT_FORM_ID,
     } as Env;
   }
 
@@ -137,6 +143,9 @@ function validateEnv(): Env {
     // Google OAuth
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    // HubSpot
+    NEXT_PUBLIC_HUBSPOT_PORTAL_ID: process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID,
+    NEXT_PUBLIC_HUBSPOT_FORM_ID: process.env.NEXT_PUBLIC_HUBSPOT_FORM_ID,
     // Email
     SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
     CONTACT_EMAIL_TO: process.env.CONTACT_EMAIL_TO,

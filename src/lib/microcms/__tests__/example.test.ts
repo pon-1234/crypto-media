@@ -13,7 +13,6 @@ import {
   getSiteSettings,
 } from '../example'
 import { client } from '../client'
-import * as schemas from '@/lib/schema'
 
 // clientのモック
 vi.mock('../client', () => ({
@@ -398,7 +397,7 @@ describe('microCMS Example Functions', () => {
         heroImage: undefined,
       }
 
-      const result = getOptimizedArticleImage(article as any)
+      const result = getOptimizedArticleImage(article as unknown as Parameters<typeof getOptimizedArticleImage>[0])
 
       expect(result).toBeNull()
     })

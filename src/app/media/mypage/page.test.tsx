@@ -15,8 +15,13 @@ vi.mock('@/lib/auth/membership', () => ({
   getUserMembership: vi.fn(),
 }));
 
+interface LinkProps {
+  children: React.ReactNode;
+  href: string;
+}
+
 vi.mock('next/link', () => ({
-  default: vi.fn(({ children, href }: any) => <a href={href}>{children}</a>),
+  default: vi.fn(({ children, href }: LinkProps) => <a href={href}>{children}</a>),
 }));
 
 import { getServerSession } from 'next-auth';
@@ -45,13 +50,16 @@ describe('MyPage', () => {
           name: 'テストユーザー',
         },
         expires: '2025-08-15',
-      } as any);
+      });
 
       vi.mocked(getUserMembership).mockResolvedValue({
         userId: 'user123',
         email: 'test@example.com',
         membership: 'free',
         membershipUpdatedAt: '2025-06-30T10:00:00Z',
+        stripeCustomerId: undefined,
+        stripeSubscriptionId: undefined,
+        paymentStatus: undefined,
       });
     });
 
@@ -103,7 +111,7 @@ describe('MyPage', () => {
           name: '有料会員ユーザー',
         },
         expires: '2025-08-15',
-      } as any);
+      });
 
       vi.mocked(getUserMembership).mockResolvedValue({
         userId: 'user456',
@@ -149,7 +157,7 @@ describe('MyPage', () => {
           email: 'user@example.com',
         },
         expires: '2025-08-15',
-      } as any);
+      });
 
       vi.mocked(getUserMembership).mockResolvedValue(null);
     });
@@ -196,12 +204,16 @@ describe('MyPage', () => {
           email: 'test@example.com',
         },
         expires: '2025-08-15',
-      } as any);
+      });
 
       vi.mocked(getUserMembership).mockResolvedValue({
         userId: 'user123',
         email: 'test@example.com',
         membership: 'free',
+        membershipUpdatedAt: '2025-06-30T10:00:00Z',
+        stripeCustomerId: undefined,
+        stripeSubscriptionId: undefined,
+        paymentStatus: undefined,
       });
     });
 
