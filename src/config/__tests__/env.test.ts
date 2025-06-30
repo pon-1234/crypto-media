@@ -40,6 +40,8 @@ describe('env validation', () => {
     vi.stubEnv('STRIPE_WEBHOOK_SECRET', 'whsec_test');
     vi.stubEnv('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY', 'pk_test_12345');
     vi.stubEnv('NEXTAUTH_SECRET', 'test-secret');
+    vi.stubEnv('NEXT_PUBLIC_HUBSPOT_PORTAL_ID', 'test-portal-id');
+    vi.stubEnv('NEXT_PUBLIC_HUBSPOT_FORM_ID', 'test-form-id');
     vi.stubEnv('GOOGLE_CLIENT_ID', 'test-client-id');
     vi.stubEnv('GOOGLE_CLIENT_SECRET', 'test-client-secret');
 
@@ -81,6 +83,8 @@ describe('env validation', () => {
     vi.stubEnv('STRIPE_WEBHOOK_SECRET', 'whsec_test');
     vi.stubEnv('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY', 'pk_test_12345');
     vi.stubEnv('NEXTAUTH_SECRET', 'test-secret');
+    vi.stubEnv('NEXT_PUBLIC_HUBSPOT_PORTAL_ID', 'test-portal-id');
+    vi.stubEnv('NEXT_PUBLIC_HUBSPOT_FORM_ID', 'test-form-id');
     vi.stubEnv('GOOGLE_CLIENT_ID', 'test-client-id');
     vi.stubEnv('GOOGLE_CLIENT_SECRET', 'test-client-secret');
 
@@ -115,6 +119,8 @@ describe('env validation', () => {
     vi.stubEnv('STRIPE_WEBHOOK_SECRET', 'whsec_test');
     vi.stubEnv('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY', 'pk_test_12345');
     vi.stubEnv('NEXTAUTH_SECRET', 'test-secret');
+    vi.stubEnv('NEXT_PUBLIC_HUBSPOT_PORTAL_ID', 'test-portal-id');
+    vi.stubEnv('NEXT_PUBLIC_HUBSPOT_FORM_ID', 'test-form-id');
     vi.stubEnv('GOOGLE_CLIENT_ID', 'test-client-id');
     vi.stubEnv('GOOGLE_CLIENT_SECRET', 'test-client-secret');
 
@@ -145,6 +151,8 @@ describe('env validation', () => {
     vi.stubEnv('STRIPE_WEBHOOK_SECRET', 'whsec_test');
     vi.stubEnv('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY', 'pk_test_12345');
     vi.stubEnv('NEXTAUTH_SECRET', 'test-secret');
+    vi.stubEnv('NEXT_PUBLIC_HUBSPOT_PORTAL_ID', 'test-portal-id');
+    vi.stubEnv('NEXT_PUBLIC_HUBSPOT_FORM_ID', 'test-form-id');
     vi.stubEnv('GOOGLE_CLIENT_ID', 'test-client-id');
     vi.stubEnv('GOOGLE_CLIENT_SECRET', 'test-client-secret');
 

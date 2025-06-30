@@ -12,6 +12,8 @@ describe('env in test environment', () => {
     expect(env.NEXT_PUBLIC_FIREBASE_API_KEY).toBe('test-api-key');
     expect(env.MICROCMS_SERVICE_DOMAIN).toBe('test-service');
     expect(env.STRIPE_SECRET_KEY).toBe('sk_test_12345');
+    expect(env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID).toBe('test-portal-id');
+    expect(env.NEXT_PUBLIC_HUBSPOT_FORM_ID).toBe('test-form-id');
   });
 
   it('環境判定ヘルパー関数がテスト環境で正しく動作する', () => {

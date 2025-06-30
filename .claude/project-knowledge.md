@@ -5,7 +5,7 @@
 - **ルーティング**: コーポレート(`/`)とメディア(`/media/`)でパスを分離。
 - **認証・会員DB**: NextAuth.js + Firebase Adapter + Firestore。`membership`ステータスは`paid` (課金中), `free` (元有料)を管理。
 - **決済**: Stripe。`/register/`ページからCheckoutフローを開始。WebhookでFirestoreを更新。
-- **フォーム**: MVPでは実装方法未定。`/api/contact`エンドポイントを用意し、バックエンドで処理。
+- **フォーム**: HubSpotフォームをiframeで埋め込む形式で実装する。自前のAPIエンドポイントは不要。
 
 ## microCMS データモデル設計
 **型定義の方針**: TypeScriptの型は、`src/lib/schema/`配下のZodスキーマ定義から`z.infer`を用いて自動推論する。手動の型定義ファイルは作成しない。

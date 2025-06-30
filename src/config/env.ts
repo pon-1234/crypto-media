@@ -81,6 +81,8 @@ function validateEnv(): Env {
       NEXTAUTH_SECRET: 'test-secret',
       GOOGLE_CLIENT_ID: 'test-client-id',
       GOOGLE_CLIENT_SECRET: 'test-client-secret',
+      NEXT_PUBLIC_HUBSPOT_PORTAL_ID: 'test-portal-id',
+      NEXT_PUBLIC_HUBSPOT_FORM_ID: 'test-form-id',
     };
   }
 
