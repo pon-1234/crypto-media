@@ -39,29 +39,41 @@ describe('MediaHeader', () => {
 
   it('should show login and register buttons when not authenticated', async () => {
     const { useSession } = await import('next-auth/react')
-    ;(useSession as ReturnType<typeof vi.fn>).mockReturnValue({ data: null })
+    ;(useSession as ReturnType<typeof vi.fn>).mockReturnValue({ data: null, status: 'unauthenticated' })
     
     render(<MediaHeader />)
     
     expect(screen.getByText('ログイン')).toBeInTheDocument()
-    expect(screen.getByText('無料会員登録')).toBeInTheDocument()
+    expect(screen.getByText('有料会員登録')).toBeInTheDocument()
   })
 
-  it('should show mypage and logout buttons when authenticated', async () => {
+  it('should show user avatar when authenticated and dropdown on click', async () => {
     const { useSession } = await import('next-auth/react')
     ;(useSession as any).mockReturnValue({ 
       data: { 
-        user: { email: 'test@example.com' },
+        user: { 
+          email: 'test@example.com',
+          name: 'Test User'
+        },
         expires: '2024-01-01'
-      } 
+      },
+      status: 'authenticated'
     })
     
     render(<MediaHeader />)
     
+    // ユーザーアバターが表示されることを確認
+    expect(screen.getByText('T')).toBeInTheDocument()
+    
+    // アバターをクリックしてドロップダウンを開く
+    const avatarButton = screen.getByText('T').parentElement.parentElement
+    fireEvent.click(avatarButton)
+    
+    // ドロップダウンメニューの内容を確認
     expect(screen.getByText('マイページ')).toBeInTheDocument()
     expect(screen.getByText('ログアウト')).toBeInTheDocument()
     expect(screen.queryByText('ログイン')).not.toBeInTheDocument()
-    expect(screen.queryByText('無料会員登録')).not.toBeInTheDocument()
+    expect(screen.queryByText('有料会員登録')).not.toBeInTheDocument()
   })
 
   it('should have correct links for navigation items', async () => {
