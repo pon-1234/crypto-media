@@ -1,3 +1,5 @@
+---
+
 # CLAUDE.md - Claude Code Development Guide
 
 You are the primary AI assistant for this project. Your primary goal is to help developers write high-quality, consistent code by strictly following the guidelines defined in this document and the master specification.
@@ -30,8 +32,19 @@ You are the primary AI assistant for this project. Your primary goal is to help 
 
 - **`gemini-analyze` のトリガー:** ユーザーの要求が **3つ以上のディレクトリ**の分析を必要とする場合や、コードベースに対して **「レビュー」「分析」「要約」** を求められた場合。
 - **`gemini-search` のトリガー:** ユーザーが **新しいライブラリ、API、または最新の情報** について尋ねた場合。
+- **`gemini-analyze` の自動提案:** あなたが新しいコードとテストを生成し、テストがパスした**後**、最終的な品質チェックとしてGeminiによるレビューを実行することを**提案または自動実行**してください。
 
-**呼び出し後の応答方法:** Geminiの生の出力を貼り付けず、**要約**して簡潔な計画や結果を提示してください。
+**呼び出し後の応答方法:**
+- **Geminiの生の出力を貼り付けないでください。**
+- あなたの主な責務は、Geminiの発見を **要約** し、全体の目標と統合し、簡潔な計画や結果を私に提示することです。
+
+**★レビューのループを避けるためのルール:**
+1. **レビューは1回を原則とする:** Geminiによるレビューと、それに基づくあなたの修正は、**1サイクルを原則**とします。
+2. **2回目以降のレビューは人間の判断を仰ぐ:**
+   - あなたがGeminiの指摘を修正した後、同じ箇所に対して再度Geminiから異なる、あるいは矛盾する指摘があった場合。
+   - Geminiの指摘が、プロジェクトの規約（`DEVELOPMENT_GUIDE.md`）や既存のコードスタイルと明らかに矛盾する場合。
+   - このような場合は、**自己判断で修正を繰り返さず**、「Geminiから以下の追加指摘がありましたが、当初の要件と矛盾する可能性があります。どのように対応しますか？」と**開発者に判断を仰いでください。**
+3. **重要な指摘を優先する:** レビュー結果の中から、セキュリティリスク、バグの可能性、パフォーマンスに大きく影響する指摘を優先的に扱ってください。単なるコードスタイルやコメントの好みに関する指摘は、重要度が低いと判断して良いです。
 
 ---
 
@@ -130,8 +143,21 @@ src/
 ### Testing Approach
 - **Unit tests** for utilities and hooks (`*.test.ts`).
 - **Component tests** for UI components (`*.test.tsx`).
-- **E2E tests** for critical user flows (`*.spec.ts`).
-- **You MUST generate Vitest unit tests for all new functions/components. Maintain 100% test coverage.**
+- **E2E tests** for critical user flows (`playwright.config.ts`参照).
+
+### ★ Code Generation & Review Workflow
+あなたは以下の開発サイクルを厳守する必要があります。
+1.  **Implement & Generate Tests**: ユーザーの指示に基づき、機能コードとVitestのユニットテスト (`*.test.tsx`) を**同時に**生成します。
+2.  **Run & Pass Tests**: 生成したテストを実行 (`pnpm test:run`) し、カバレッジを含め**すべてのテストがパスする**ことを確認します。エラーがあれば自己修正してください。
+3.  **Perform Gemini Review**: テストがパスした後、`gemini-analyze`タスクを使用して、生成した機能コードのレビューを実行します。これは必須の品質保証ステップです。
+    - **思考プロセス例:**
+      1. ユーザー: 「新しい認証モジュールを実装して」
+      2. 私の思考: 「コードとテストを生成した。`pnpm test`は成功した。次にAI Collaboration Policyに従い、Geminiでレビューしよう。」
+      3. 私の行動 (バックグラウンド): `/task gemini-analyze -p "@src/auth/NewModule.tsx このコードをレビューしてください。"`
+      4. 私からユーザーへの応答: 「実装とテストが完了しました。現在、Geminiを使用して追加の品質レビューを実行しています。結果を追って報告します。」
+4.  **Refine & Finalize**: Geminiのフィードバックに基づき、コードを改善します。問題がなければ、最終的なコードを提示します。
+
+**重要: テストカバレッジは常に100%を維持する必要があります。**
 
 ## Common Tasks
 

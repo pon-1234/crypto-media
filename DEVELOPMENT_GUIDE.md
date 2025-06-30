@@ -1,8 +1,8 @@
 
 ---
 
-### **【統合・改訂版 v2.1】microCMS 実装設計書 兼 Claude Code 開発ガイド**
-最終更新: 2025-06-29
+### **【統合・改訂版 v2.2】microCMS 実装設計書 兼 Claude Code 開発ガイド**
+最終更新: 2025-06-30
 
 このドキュメントは、Crypto Media & Corporate Siteプロジェクトの技術仕様を定義するとともに、AIアシスタント「Claude Code」を活用した効率的な開発ワークフローのガイドラインを定めます。
 
@@ -270,27 +270,33 @@ cp .env.example .env
 claude /init
 ```
 
-##### 8.2 Claude Codeを活用した開発サイクル
+##### 8.2 Claude Codeを活用した開発サイクル (★更新)
 
-1.  **機能実装の依頼**:
-    具体的な要件と、参照すべき設計書（`CLAUDE.md`や`.claude/`内のファイル）を指示します。
+1.  **機能実装とテスト生成の依頼**:
+    具体的な要件と参照すべき設計書を指示し、コードとテストの同時生成を依頼します。
     ```bash
-    # 例: GitHub Issueを元にしたペイウォールコンポーネントの作成依頼
-    claude Implement the component according to GitHub Issue #123.
-    Create a new React component 'Paywall' in 'src/components/media/'.
-    It should follow the paywall logic in '.claude/project-knowledge.md'.
-    Add a comment in the code with '@issue #123 - Implement Paywall component'.
-    Also, generate a unit test file for it.
+    claude Implement the 'Paywall' component based on issue #123 and '.claude/project-knowledge.md'. Generate a unit test file as well.
     ```
 
-2.  **テストの実行**:
-    Claude Codeがコードとテストを生成したら、必ずテストを実行して動作を検証させます。
+2.  **テストの実行とパス**:
+    生成されたコードに対してテストを実行し、パスすることを確認させます。
     ```bash
-    # テストの実行と、失敗した場合の修正依頼
-    claude run 'pnpm test' and if any tests fail, fix the code to pass all tests.
+    claude Run 'pnpm test' for the newly created 'Paywall.test.tsx'. Fix any errors to ensure all tests pass.
     ```
 
-3.  **リファクタリングと品質向上**:
+3.  **GeminiによるAIコードレビュー (★新規ステップ)**:
+    テストがパスしたコードに対して、Geminiによるコードレビューを実施させます。これにより、テストだけでは見つけられない可読性やベストプラクティスからの逸脱、潜在的な問題を洗い出します。
+    ```bash
+    claude /task gemini-analyze -p "@src/components/media/Paywall.tsx をレビューしてください。特に、可読性、パフォーマンス、DEVELOPMENT_GUIDE.mdで定義された規約への準拠を確認してください。"
+    ```
+
+4.  **レビューフィードバックの反映**:
+    GeminiからのフィードバックをClaudeに渡し、コードを修正させます。
+    ```bash
+    claude Gemini's review found potential N+1 problem. Please fix this.
+    ```
+
+5.  **リファクタリングと最終確認**:
     既存のコードを改善する場合も、Claude Codeに規約を遵守させます。
     ```bash
     # 例: 既存コンポーネントのリファクタリング依頼
@@ -298,6 +304,7 @@ claude /init
     Ensure it adheres to the coding conventions in 'CLAUDE.md',
     especially regarding JSDoc comments and linking to related issues.
     ```
+> **Note:** AIレビューサイクルでAI間の意見が対立した場合や、修正がループしそうな場合は、AIに最終判断を委ねず、開発者が介入して方針を決定してください。AIはあくまで強力なアシスタントであり、最終的な意思決定者は開発者です。
 
 ##### 8.3 知見の更新 (重要)
 

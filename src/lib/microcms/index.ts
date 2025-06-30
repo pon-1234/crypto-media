@@ -72,3 +72,15 @@ export {
   getMediaArticlesByTag,
   getRelatedArticles,
 } from './media-articles'
+
+export {
+  getCategories,
+  getCategoryBySlug,
+  getCategoryById,
+} from './categories'
+
+export {
+  getTags,
+  getTagBySlug,
+  getTagById,
+} from './tags'
