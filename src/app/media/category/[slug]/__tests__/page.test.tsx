@@ -47,8 +47,6 @@ vi.mock('@/components/media/ArticleGrid', () => ({
 }))
 
 describe('CategoryPage', () => {
-  const originalEnv = process.env
-  
   const mockCategory = {
     id: 'cat1',
     name: 'ブロックチェーン',
