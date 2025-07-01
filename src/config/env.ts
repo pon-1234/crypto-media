@@ -65,6 +65,11 @@ export type Env = z.infer<typeof envSchema>
  * 環境変数のバリデーションと取得
  */
 function validateEnv(): Env {
+  // 開発環境でのデバッグ情報
+  if (process.env.NODE_ENV === 'development' && typeof window === 'undefined') {
+    console.log('🔍 環境変数の検証を開始します...')
+  }
+
   // テスト環境またはCI環境ではモック値を返す
   if (
     process.env.NODE_ENV === 'test' ||
@@ -101,18 +106,18 @@ function validateEnv(): Env {
   if (typeof window !== 'undefined') {
     return {
       NODE_ENV: process.env.NODE_ENV as 'development' | 'production' | 'test',
-      NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
+      NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'dummy-api-key',
       NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:
-        process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
+        process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'dummy.firebaseapp.com',
       NEXT_PUBLIC_FIREBASE_PROJECT_ID:
-        process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
+        process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'dummy-project',
       NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET:
-        process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
+        process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || 'dummy.appspot.com',
       NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID:
-        process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
-      NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
+        process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '123456789',
+      NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || 'dummy-app-id',
       NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
-        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy',
       // サーバーサイドの環境変数はダミー値を設定
       FIREBASE_ADMIN_PROJECT_ID: '',
       FIREBASE_ADMIN_CLIENT_EMAIL: 'dummy@example.com',

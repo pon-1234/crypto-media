@@ -55,11 +55,13 @@ export default async function MediaArticlesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         {/* ページヘッダー */}
-        <div className="mb-8">
-          <h1 className="mb-4 text-3xl font-bold text-gray-900">記事一覧</h1>
-          <p className="text-gray-600">
+        <div className="mb-8 sm:mb-12">
+          <h1 className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
+            記事一覧
+          </h1>
+          <p className="max-w-3xl text-base text-gray-600 sm:text-lg">
             暗号資産・ブロックチェーンに関する最新の記事、調査レポート、お知らせをお届けします。
           </p>
         </div>
@@ -67,7 +69,7 @@ export default async function MediaArticlesPage() {
         {/* 記事一覧 */}
         {articlesResponse.contents.length > 0 ? (
           <>
-            <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="mb-8 grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
               {articlesResponse.contents.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -75,17 +77,17 @@ export default async function MediaArticlesPage() {
 
             {/* ページネーション（将来的に実装） */}
             {articlesResponse.totalCount > articlesResponse.limit && (
-              <div className="text-center text-gray-600">
-                <p>
-                  {articlesResponse.totalCount}件中{' '}
-                  {articlesResponse.contents.length}件を表示
+              <div className="mt-8 border-t border-gray-200 pt-8 text-center">
+                <p className="text-sm text-gray-600 sm:text-base">
+                  全{articlesResponse.totalCount}件中{' '}
+                  {articlesResponse.contents.length}件を表示しています
                 </p>
                 {/* TODO: ページネーションコンポーネントの実装 */}
               </div>
             )}
           </>
         ) : (
-          <div className="py-16 text-center">
+          <div className="py-16 text-center sm:py-24">
             <p className="text-gray-600">記事がありません。</p>
           </div>
         )}
