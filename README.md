@@ -53,6 +53,30 @@
 
 ---
 
+## 🔧 HubSpotフォームの設定
+
+このプロジェクトでは、お問い合わせフォームにHubSpotを使用しています。
+
+### 必要な環境変数
+
+```bash
+# HubSpotポータルID（HubSpotアカウントで確認）
+NEXT_PUBLIC_HUBSPOT_PORTAL_ID=your_portal_id
+
+# コーポレートサイト用フォームID
+NEXT_PUBLIC_HUBSPOT_CORPORATE_FORM_ID=corporate_form_id
+
+# メディアサイト用フォームID
+NEXT_PUBLIC_HUBSPOT_MEDIA_FORM_ID=media_form_id
+```
+
+### フォームの使用箇所
+
+- `/contact/` - コーポレートサイトのお問い合わせページ
+- `/media/contact/` - メディアサイトのお問い合わせページ
+
+---
+
 ## 📖 詳細なドキュメント
 
 このプロジェクトのアーキテクチャ、データモデル、開発ワークフロー、AI連携のルールなどの詳細については、以下のドキュメントを参照してください。
