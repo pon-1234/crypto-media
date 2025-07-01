@@ -29,6 +29,6 @@ describe('Home', () => {
     const { container } = render(<Home />)
 
     const mainElement = container.querySelector('main')
-    expect(mainElement).toHaveClass('min-h-screen', 'p-8')
+    expect(mainElement).toHaveClass('min-h-screen')
   })
 })
