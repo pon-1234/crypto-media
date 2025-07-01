@@ -23,7 +23,15 @@ vi.mock('microcms-js-sdk', () => ({
 let client: ReturnType<typeof createClient>
 let defaultQueries: { limit: number; orders: string }
 let MAX_LIMIT: number
-let getOptimizedImageUrl: (url: string, options?: { width?: number; height?: number; format?: 'webp' | 'jpg' | 'png'; quality?: number }) => string
+let getOptimizedImageUrl: (
+  url: string,
+  options?: {
+    width?: number
+    height?: number
+    format?: 'webp' | 'jpg' | 'png'
+    quality?: number
+  }
+) => string
 
 beforeAll(async () => {
   const clientModule = await import('../client')
@@ -116,26 +124,26 @@ describe('環境変数チェック', () => {
     // 環境変数を一時的に削除
     const originalServiceDomain = process.env.MICROCMS_SERVICE_DOMAIN
     const originalApiKey = process.env.MICROCMS_API_KEY
-    
+
     vi.resetModules()
-    
+
     // サービスドメインがない場合
     delete process.env.MICROCMS_SERVICE_DOMAIN
     process.env.MICROCMS_API_KEY = 'test-key'
-    
+
     await expect(async () => {
       await import('../client')
     }).rejects.toThrow('MICROCMS_SERVICE_DOMAIN is required')
-    
+
     // APIキーがない場合
     process.env.MICROCMS_SERVICE_DOMAIN = 'test-domain'
     delete process.env.MICROCMS_API_KEY
     vi.resetModules()
-    
+
     await expect(async () => {
       await import('../client')
     }).rejects.toThrow('MICROCMS_API_KEY is required')
-    
+
     // 環境変数を復元
     process.env.MICROCMS_SERVICE_DOMAIN = originalServiceDomain
     process.env.MICROCMS_API_KEY = originalApiKey

@@ -66,11 +66,16 @@ export function HubSpotForm({
         }}
       />
       {hasError ? (
-        <div className={`bg-yellow-50 border border-yellow-400 text-yellow-800 px-4 py-3 rounded ${className || ''}`}>
+        <div
+          className={`rounded border border-yellow-400 bg-yellow-50 px-4 py-3 text-yellow-800 ${className || ''}`}
+        >
           <p className="font-semibold">フォームの読み込みに失敗しました</p>
-          <p className="text-sm mt-1">
+          <p className="mt-1 text-sm">
             お手数ですが、ページを再読み込みするか、
-            <a href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'contact@example.com'}`} className="underline">
+            <a
+              href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'contact@example.com'}`}
+              className="underline"
+            >
               メールでお問い合わせ
             </a>
             ください。

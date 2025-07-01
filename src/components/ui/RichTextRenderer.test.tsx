@@ -9,15 +9,15 @@ import { RichTextRenderer } from './RichTextRenderer'
 // DOMPurifyのモック
 vi.mock('isomorphic-dompurify', () => ({
   default: {
-    sanitize: vi.fn((content) => content)
-  }
+    sanitize: vi.fn((content) => content),
+  },
 }))
 
 describe('RichTextRenderer', () => {
   it('HTMLコンテンツを正しく表示する', () => {
     const content = '<p>テストコンテンツ</p>'
     render(<RichTextRenderer content={content} />)
-    
+
     const element = screen.getByText('テストコンテンツ')
     expect(element).toBeInTheDocument()
     expect(element.tagName).toBe('P')
@@ -33,7 +33,7 @@ describe('RichTextRenderer', () => {
       </ul>
     `
     render(<RichTextRenderer content={content} />)
-    
+
     expect(screen.getByText('見出し')).toBeInTheDocument()
     expect(screen.getByText('段落です。')).toBeInTheDocument()
     expect(screen.getByText('リスト項目1')).toBeInTheDocument()
@@ -45,7 +45,7 @@ describe('RichTextRenderer', () => {
     const { container } = render(
       <RichTextRenderer content={content} className="custom-class" />
     )
-    
+
     const wrapper = container.firstChild
     expect(wrapper).toHaveClass('prose')
     expect(wrapper).toHaveClass('prose-lg')
@@ -55,7 +55,7 @@ describe('RichTextRenderer', () => {
 
   it('空のコンテンツを処理する', () => {
     const { container } = render(<RichTextRenderer content="" />)
-    
+
     const wrapper = container.firstChild
     expect(wrapper).toBeInTheDocument()
     expect(wrapper).toHaveClass('prose')
@@ -64,15 +64,17 @@ describe('RichTextRenderer', () => {
   it('特殊文字を含むコンテンツを処理する', () => {
     const content = '<p>&lt;script&gt;alert("XSS")&lt;/script&gt;</p>'
     render(<RichTextRenderer content={content} />)
-    
+
     // DOMPurifyがサニタイズするので、スクリプトタグはテキストとして表示される
-    expect(screen.getByText(/<script>alert\("XSS"\)<\/script>/)).toBeInTheDocument()
+    expect(
+      screen.getByText(/<script>alert\("XSS"\)<\/script>/)
+    ).toBeInTheDocument()
   })
 
   it('画像タグを含むコンテンツを処理する', () => {
     const content = '<img src="test.jpg" alt="テスト画像" />'
     render(<RichTextRenderer content={content} />)
-    
+
     const img = screen.getByAltText('テスト画像')
     expect(img).toBeInTheDocument()
     expect(img).toHaveAttribute('src', 'test.jpg')
@@ -81,7 +83,7 @@ describe('RichTextRenderer', () => {
   it('リンクタグを含むコンテンツを処理する', () => {
     const content = '<a href="https://example.com">リンクテキスト</a>'
     render(<RichTextRenderer content={content} />)
-    
+
     const link = screen.getByText('リンクテキスト')
     expect(link).toBeInTheDocument()
     expect(link).toHaveAttribute('href', 'https://example.com')

@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { collectWebhookMetrics, detectAnomalies, sendAlert } from './webhook-monitoring'
+import {
+  collectWebhookMetrics,
+  detectAnomalies,
+  sendAlert,
+} from './webhook-monitoring'
 import { adminDb } from '@/lib/firebase/admin'
 
 // Mock Firebase Admin
@@ -21,7 +25,7 @@ describe('collectWebhookMetrics', () => {
     mockCollection.mockReturnValue({ where: mockWhere })
     mockWhere.mockReturnValue({ get: mockGet })
     ;(adminDb.collection as ReturnType<typeof vi.fn>).mockImplementation(
-      mockCollection,
+      mockCollection
     )
   })
 
@@ -74,7 +78,11 @@ describe('collectWebhookMetrics', () => {
     })
 
     expect(mockCollection).toHaveBeenCalledWith('webhook_events')
-    expect(mockWhere).toHaveBeenCalledWith('processed_at', '>=', expect.any(String))
+    expect(mockWhere).toHaveBeenCalledWith(
+      'processed_at',
+      '>=',
+      expect.any(String)
+    )
   })
 
   it('イベントがない場合のメトリクスを返す', async () => {
@@ -121,14 +129,16 @@ describe('collectWebhookMetrics', () => {
   })
 
   it('データベースエラーの場合はエラーをスローする', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const consoleErrorSpy = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {})
     const error = new Error('Database error')
     mockGet.mockRejectedValue(error)
 
     await expect(collectWebhookMetrics(24)).rejects.toThrow('Database error')
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'Failed to collect webhook metrics:',
-      error,
+      error
     )
   })
 
@@ -144,7 +154,7 @@ describe('collectWebhookMetrics', () => {
     const timestampArg = whereCall[2]
     const timestamp = new Date(timestampArg)
     const hoursDiff = (Date.now() - timestamp.getTime()) / (1000 * 60 * 60)
-    
+
     expect(hoursDiff).toBeCloseTo(48, 0)
   })
 })
@@ -161,7 +171,7 @@ describe('detectAnomalies', () => {
     mockCollection.mockReturnValue({ where: mockWhere })
     mockWhere.mockReturnValue({ where: mockWhere, get: mockGet })
     ;(adminDb.collection as ReturnType<typeof vi.fn>).mockImplementation(
-      mockCollection,
+      mockCollection
     )
   })
 
@@ -185,7 +195,11 @@ describe('detectAnomalies', () => {
         }
         for (let i = 0; i < 5; i++) {
           callback({
-            data: () => ({ success: false, error: 'error', processingTime: 100 }),
+            data: () => ({
+              success: false,
+              error: 'error',
+              processingTime: 100,
+            }),
           })
         }
       },
@@ -251,7 +265,9 @@ describe('detectAnomalies', () => {
 
     const alerts = await detectAnomalies()
 
-    expect(alerts).toContain('3 duplicate subscription attempts in the last hour')
+    expect(alerts).toContain(
+      '3 duplicate subscription attempts in the last hour'
+    )
   })
 
   it('問題がない場合は空の配列を返す', async () => {
@@ -282,7 +298,9 @@ describe('detectAnomalies', () => {
   })
 
   it('エラーが発生した場合はエラーメッセージを返す', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const consoleErrorSpy = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {})
     const error = new Error('Database connection failed')
     mockGet.mockRejectedValue(error)
 
@@ -291,7 +309,10 @@ describe('detectAnomalies', () => {
     expect(alerts).toEqual([
       'Anomaly detection failed: Error: Database connection failed',
     ])
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to detect anomalies:', error)
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Failed to detect anomalies:',
+      error
+    )
   })
 
   it('イベント数が少ない場合はエラー率のアラートを出さない', async () => {
@@ -309,7 +330,11 @@ describe('detectAnomalies', () => {
         }
         for (let i = 0; i < 2; i++) {
           callback({
-            data: () => ({ success: false, error: 'error', processingTime: 100 }),
+            data: () => ({
+              success: false,
+              error: 'error',
+              processingTime: 100,
+            }),
           })
         }
       },
@@ -335,7 +360,7 @@ describe('sendAlert', () => {
     vi.clearAllMocks()
     mockCollection.mockReturnValue({ add: mockAdd })
     ;(adminDb.collection as ReturnType<typeof vi.fn>).mockImplementation(
-      mockCollection,
+      mockCollection
     )
   })
 
@@ -380,7 +405,9 @@ describe('sendAlert', () => {
 
     await sendAlert('Test critical message', 'critical')
 
-    expect(consoleLogSpy).toHaveBeenCalledWith('[CRITICAL] Test critical message')
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      '[CRITICAL] Test critical message'
+    )
     expect(mockAdd).toHaveBeenCalledWith({
       message: 'Test critical message',
       severity: 'critical',
@@ -391,7 +418,9 @@ describe('sendAlert', () => {
 
   it('Firestoreへの保存が失敗してもエラーを投げない', async () => {
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const consoleErrorSpy = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {})
 
     mockAdd.mockRejectedValue(new Error('Firestore error'))
 
@@ -401,7 +430,7 @@ describe('sendAlert', () => {
     expect(consoleLogSpy).toHaveBeenCalledWith('[INFO] Test message')
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'Failed to save alert to Firestore:',
-      expect.any(Error),
+      expect.any(Error)
     )
   })
 })

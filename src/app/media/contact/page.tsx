@@ -9,7 +9,8 @@ import { HubSpotForm } from '@/components/forms/HubSpotForm'
  */
 export const metadata: Metadata = {
   title: 'お問い合わせ | Crypto Media',
-  description: 'Crypto Mediaへのお問い合わせはこちらのフォームからお願いいたします。',
+  description:
+    'Crypto Mediaへのお問い合わせはこちらのフォームからお願いいたします。',
 }
 
 export default function MediaContactPage() {
@@ -18,17 +19,17 @@ export default function MediaContactPage() {
 
   return (
     <div className="container mx-auto px-4 py-16">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">お問い合わせ</h1>
-        
+      <div className="mx-auto max-w-2xl">
+        <h1 className="mb-8 text-3xl font-bold">お問い合わせ</h1>
+
         <div className="prose prose-lg mb-8">
           <p>
             Crypto Mediaへのお問い合わせは下記フォームよりお願いいたします。
           </p>
-          
-          <div className="bg-blue-50 border-l-4 border-blue-400 p-4 my-4">
-            <p className="font-semibold mb-2">お問い合わせ内容例：</p>
-            <ul className="list-disc list-inside text-sm">
+
+          <div className="my-4 border-l-4 border-blue-400 bg-blue-50 p-4">
+            <p className="mb-2 font-semibold">お問い合わせ内容例：</p>
+            <ul className="list-inside list-disc text-sm">
               <li>記事内容に関するご質問・ご指摘</li>
               <li>取材・執筆のご依頼</li>
               <li>広告掲載のご相談</li>
@@ -36,14 +37,14 @@ export default function MediaContactPage() {
               <li>その他メディアに関するご意見・ご要望</li>
             </ul>
           </div>
-          
+
           <p className="text-sm text-gray-600">
             ※ 内容により回答にお時間をいただく場合がございます。
           </p>
         </div>
 
         {portalId && formId ? (
-          <div className="bg-gray-50 p-8 rounded-lg">
+          <div className="rounded-lg bg-gray-50 p-8">
             <HubSpotForm
               portalId={portalId}
               formId={formId}
@@ -56,10 +57,13 @@ export default function MediaContactPage() {
             />
           </div>
         ) : (
-          <div className="bg-yellow-50 border border-yellow-400 text-yellow-800 px-4 py-3 rounded">
-            <p className="font-semibold">お問い合わせフォームの設定が必要です</p>
-            <p className="text-sm mt-1">
-              環境変数 NEXT_PUBLIC_HUBSPOT_PORTAL_ID および NEXT_PUBLIC_HUBSPOT_MEDIA_FORM_ID を設定してください。
+          <div className="rounded border border-yellow-400 bg-yellow-50 px-4 py-3 text-yellow-800">
+            <p className="font-semibold">
+              お問い合わせフォームの設定が必要です
+            </p>
+            <p className="mt-1 text-sm">
+              環境変数 NEXT_PUBLIC_HUBSPOT_PORTAL_ID および
+              NEXT_PUBLIC_HUBSPOT_MEDIA_FORM_ID を設定してください。
             </p>
           </div>
         )}

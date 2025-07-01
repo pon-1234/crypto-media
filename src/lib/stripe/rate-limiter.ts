@@ -7,7 +7,7 @@ import { Redis } from '@upstash/redis'
  */
 
 // Upstash Redisクライアント（環境変数から設定）
-const redis = process.env.UPSTASH_REDIS_REST_URL 
+const redis = process.env.UPSTASH_REDIS_REST_URL
   ? new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL,
       token: process.env.UPSTASH_REDIS_REST_TOKEN!,
@@ -25,7 +25,10 @@ export interface RateLimiter {
  * メモリベースのrate limiter（開発環境用）
  */
 export class MemoryRateLimiter implements RateLimiter {
-  private requestCounts = new Map<string, { count: number; resetTime: number }>()
+  private requestCounts = new Map<
+    string,
+    { count: number; resetTime: number }
+  >()
   private readonly maxRequests: number
   private readonly windowMs: number
 
@@ -37,16 +40,16 @@ export class MemoryRateLimiter implements RateLimiter {
   async checkLimit(key: string): Promise<boolean> {
     const now = Date.now()
     const limit = this.requestCounts.get(key)
-    
+
     if (!limit || now > limit.resetTime) {
       this.requestCounts.set(key, { count: 1, resetTime: now + this.windowMs })
       return true
     }
-    
+
     if (limit.count >= this.maxRequests) {
       return false
     }
-    
+
     limit.count++
     return true
   }
@@ -73,12 +76,12 @@ export class RedisRateLimiter implements RateLimiter {
     try {
       const redisKey = `rate_limit:${key}`
       const current = await redis.incr(redisKey)
-      
+
       if (current === 1) {
         // 初回リクエストの場合、TTLを設定
         await redis.expire(redisKey, this.windowSeconds)
       }
-      
+
       return current <= this.maxRequests
     } catch (error) {
       console.error('Redis rate limit error:', error)

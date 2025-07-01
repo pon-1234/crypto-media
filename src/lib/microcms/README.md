@@ -19,7 +19,7 @@ import { client, mediaArticleSchema } from '@/lib/microcms'
 // 記事一覧を取得
 const articles = await client.get({
   endpoint: 'media_articles',
-  queries: { limit: 10 }
+  queries: { limit: 10 },
 })
 
 // バリデーション
@@ -33,7 +33,7 @@ const validated = mediaArticleSchema.parse(articles)
 const preview = await client.get({
   endpoint: 'media_articles',
   contentId: 'xxx',
-  queries: { draftKey: 'yyy' }
+  queries: { draftKey: 'yyy' },
 })
 ```
 
@@ -45,7 +45,7 @@ import { getOptimizedImageUrl } from '@/lib/microcms'
 const optimizedUrl = getOptimizedImageUrl(imageUrl, {
   width: 800,
   format: 'webp',
-  quality: 85
+  quality: 85,
 })
 ```
 
@@ -54,6 +54,7 @@ const optimizedUrl = getOptimizedImageUrl(imageUrl, {
 すべてのmicroCMSモデルの型定義は、Zodスキーマから自動的に推論されます。詳細は `schemas.ts` を参照してください。
 
 主要な型：
+
 - `MediaArticle` - メディア記事
 - `Expert` - 執筆者・監修者
 - `Category` - カテゴリ
@@ -65,6 +66,7 @@ const optimizedUrl = getOptimizedImageUrl(imageUrl, {
 ## 環境変数
 
 必須の環境変数：
+
 - `MICROCMS_SERVICE_DOMAIN` - microCMSのサービスドメイン
 - `MICROCMS_API_KEY` - APIキー
 

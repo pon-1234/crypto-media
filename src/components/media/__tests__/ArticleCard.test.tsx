@@ -26,7 +26,9 @@ vi.mock('date-fns/locale', () => ({
 /**
  * テスト用の記事データを作成
  */
-const createMockArticle = (overrides?: Partial<MediaArticle>): MediaArticle => ({
+const createMockArticle = (
+  overrides?: Partial<MediaArticle>
+): MediaArticle => ({
   id: 'test-article-1',
   createdAt: '2024-01-15T00:00:00.000Z',
   updatedAt: '2024-01-15T00:00:00.000Z',
@@ -96,7 +98,9 @@ describe('ArticleCard', () => {
     render(<ArticleCard article={article} />)
 
     // タイトルが表示される
-    expect(screen.getByRole('heading', { name: 'テスト記事タイトル' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'テスト記事タイトル' })
+    ).toBeInTheDocument()
 
     // 公開日が表示される
     expect(screen.getByText('2024年01月15日')).toBeInTheDocument()
@@ -225,7 +229,9 @@ describe('ArticleCard', () => {
 
   it('カスタムクラス名を適用できる', () => {
     const article = createMockArticle()
-    const { container } = render(<ArticleCard article={article} className="custom-class" />)
+    const { container } = render(
+      <ArticleCard article={article} className="custom-class" />
+    )
 
     const articleElement = container.querySelector('article')
     expect(articleElement).toHaveClass('custom-class')

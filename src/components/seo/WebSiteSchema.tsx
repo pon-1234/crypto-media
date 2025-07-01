@@ -1,4 +1,4 @@
-import { StructuredData } from './StructuredData';
+import { StructuredData } from './StructuredData'
 
 /**
  * WebSite構造化データを生成するコンポーネント
@@ -6,15 +6,16 @@ import { StructuredData } from './StructuredData';
  * @related src/app/layout.tsx
  */
 export function WebSiteSchema() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp';
-  
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp'
+
   const webSiteData = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Crypto Media',
     alternateName: 'クリプトメディア',
     url: baseUrl,
-    description: '仮想通貨・ブロックチェーンの最新情報、投資戦略、税金対策などを網羅的に提供するメディアプラットフォーム',
+    description:
+      '仮想通貨・ブロックチェーンの最新情報、投資戦略、税金対策などを網羅的に提供するメディアプラットフォーム',
     publisher: {
       '@type': 'Organization',
       name: 'Crypto Media',
@@ -40,7 +41,7 @@ export function WebSiteSchema() {
       '@type': 'Organization',
       name: 'Crypto Media',
     },
-  };
+  }
 
-  return <StructuredData data={webSiteData} />;
+  return <StructuredData data={webSiteData} />
 }

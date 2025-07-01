@@ -74,10 +74,7 @@ describe('Breadcrumbs', () => {
   })
 
   it('has proper accessibility attributes', () => {
-    const items = [
-      { label: 'Home', href: '/' },
-      { label: 'Current' },
-    ]
+    const items = [{ label: 'Home', href: '/' }, { label: 'Current' }]
 
     render(<Breadcrumbs items={items} />)
 

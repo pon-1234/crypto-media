@@ -38,13 +38,16 @@ jobs:
 
       - name: Run tests with coverage
         run: pnpm test:run --coverage
+        env:
+          CI: true
+          NODE_ENV: test
 
       - name: Check test coverage
         run: |
           # Extract coverage percentages
           COVERAGE_OUTPUT=$(pnpm test:run --coverage 2>&1)
           echo "$COVERAGE_OUTPUT"
-          
+
           # Check if all coverage metrics are 100%
           if echo "$COVERAGE_OUTPUT" | grep -q "Statements.*100%.*Branches.*100%.*Functions.*100%.*Lines.*100%"; then
             echo "✅ Coverage check passed - 100% coverage achieved!"
@@ -127,7 +130,7 @@ jobs:
             const results = JSON.parse(
               fs.readFileSync('${{ steps.lighthouse.outputs.resultsPath }}', 'utf8')
             );
-            
+
             const formatResult = (result) => {
               const { audits } = result;
               const metrics = {
@@ -152,7 +155,7 @@ jobs:
               
               return comment;
             };
-            
+
             const comment = results.map(formatResult).join('\n');
             github.rest.issues.createComment({
               issue_number: context.issue.number,

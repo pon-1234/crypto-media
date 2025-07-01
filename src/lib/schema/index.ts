@@ -12,10 +12,7 @@ export {
   type MicroCMSListResponse,
 } from './base.schema'
 
-export {
-  microCMSImageSchema,
-  type MicroCMSImage,
-} from './image.schema'
+export { microCMSImageSchema, type MicroCMSImage } from './image.schema'
 
 // モデルスキーマ
 export {
@@ -23,26 +20,13 @@ export {
   type CorporateNews,
 } from './corporate-news.schema'
 
-export {
-  expertSchema,
-  type Expert,
-  type ExpertRole,
-} from './expert.schema'
+export { expertSchema, type Expert, type ExpertRole } from './expert.schema'
 
-export {
-  categorySchema,
-  type Category,
-} from './category.schema'
+export { categorySchema, type Category } from './category.schema'
 
-export {
-  tagSchema,
-  type Tag,
-} from './tag.schema'
+export { tagSchema, type Tag } from './tag.schema'
 
-export {
-  featureSchema,
-  type Feature,
-} from './feature.schema'
+export { featureSchema, type Feature } from './feature.schema'
 
 export {
   mediaArticleSchema,
@@ -51,10 +35,7 @@ export {
   type MembershipLevel,
 } from './article.schema'
 
-export {
-  siteSettingsSchema,
-  type SiteSettings,
-} from './site-settings.schema'
+export { siteSettingsSchema, type SiteSettings } from './site-settings.schema'
 
 export {
   researchSurveySchema,
@@ -77,11 +58,15 @@ import { mediaArticleSchema } from './article.schema'
 import { researchSurveySchema } from './research-survey.schema'
 import { pageCorporateSchema } from './page-corporate.schema'
 
-export const corporateNewsListSchema = createListResponseSchema(corporateNewsSchema)
+export const corporateNewsListSchema =
+  createListResponseSchema(corporateNewsSchema)
 export const expertListSchema = createListResponseSchema(expertSchema)
 export const categoryListSchema = createListResponseSchema(categorySchema)
 export const tagListSchema = createListResponseSchema(tagSchema)
 export const featureListSchema = createListResponseSchema(featureSchema)
-export const mediaArticleListSchema = createListResponseSchema(mediaArticleSchema)
-export const researchSurveyListSchema = createListResponseSchema(researchSurveySchema)
-export const pageCorporateListSchema = createListResponseSchema(pageCorporateSchema)
+export const mediaArticleListSchema =
+  createListResponseSchema(mediaArticleSchema)
+export const researchSurveyListSchema =
+  createListResponseSchema(researchSurveySchema)
+export const pageCorporateListSchema =
+  createListResponseSchema(pageCorporateSchema)

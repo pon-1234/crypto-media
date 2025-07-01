@@ -16,17 +16,25 @@ describe('AboutPage', () => {
 
   it('すべてのセクションが表示される', () => {
     render(<AboutPage />)
-    
+
     // セクションタイトルの確認
-    expect(screen.getByRole('heading', { name: '私たちについて' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: '会社情報' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'ミッション' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'ビジョン' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: '私たちについて' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: '会社情報' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'ミッション' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'ビジョン' })
+    ).toBeInTheDocument()
   })
 
   it('会社情報テーブルが正しく表示される', () => {
     render(<AboutPage />)
-    
+
     // テーブルヘッダーの確認
     expect(screen.getByText('会社名')).toBeInTheDocument()
     expect(screen.getByText('設立')).toBeInTheDocument()
@@ -35,7 +43,7 @@ describe('AboutPage', () => {
     expect(screen.getByText('所在地')).toBeInTheDocument()
     expect(screen.getByText('従業員数')).toBeInTheDocument()
     expect(screen.getByText('事業内容')).toBeInTheDocument()
-    
+
     // テーブルデータの確認
     expect(screen.getByText('株式会社クリプトメディア')).toBeInTheDocument()
     expect(screen.getByText('2023年4月1日')).toBeInTheDocument()
@@ -53,13 +61,13 @@ describe('AboutPage', () => {
 
   it('ビジョンリストが正しく表示される', () => {
     render(<AboutPage />)
-    
+
     const visionItems = [
       '正確で信頼できる情報の提供を通じて、暗号資産市場の健全な発展に貢献する',
       '初心者から上級者まで、すべての人に価値ある知識とインサイトを届ける',
       'ブロックチェーン技術が創る新しい未来を、わかりやすく伝える',
     ]
-    
+
     visionItems.forEach((item) => {
       expect(screen.getByText(item)).toBeInTheDocument()
     })
@@ -69,7 +77,7 @@ describe('AboutPage', () => {
     const { container } = render(<AboutPage />)
     const main = container.querySelector('main')
     expect(main).toHaveClass('container', 'mx-auto', 'px-4', 'py-8')
-    
+
     const contentWrapper = container.querySelector('.max-w-4xl')
     expect(contentWrapper).toBeInTheDocument()
   })

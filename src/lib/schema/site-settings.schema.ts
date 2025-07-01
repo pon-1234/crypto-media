@@ -14,9 +14,14 @@ import { microCMSImageSchema } from './image.schema'
 export const siteSettingsSchema = microCMSBaseSchema.extend({
   site_title: z.string().min(1).describe('サイトタイトル'),
   site_description: z.string().min(1).describe('サイトの説明'),
-  default_og_image: microCMSImageSchema.optional().describe('デフォルトOGP画像'),
+  default_og_image: microCMSImageSchema
+    .optional()
+    .describe('デフォルトOGP画像'),
   google_analytics_id: z.string().optional().describe('Google Analytics ID'),
-  metadata: z.string().optional().describe('その他のメタデータ（JSON形式で自由に設定可能）'),
+  metadata: z
+    .string()
+    .optional()
+    .describe('その他のメタデータ（JSON形式で自由に設定可能）'),
 })
 
 /**

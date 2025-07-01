@@ -92,7 +92,9 @@ export async function getAllMediaArticleIds(): Promise<string[]> {
       },
     })
 
-    allIds.push(...response.contents.map((content: { id: string }) => content.id))
+    allIds.push(
+      ...response.contents.map((content: { id: string }) => content.id)
+    )
 
     if (response.offset + response.limit >= response.totalCount) {
       break
@@ -123,7 +125,9 @@ export async function getAllMediaArticleSlugs(): Promise<string[]> {
       },
     })
 
-    allSlugs.push(...response.contents.map((content: { slug: string }) => content.slug))
+    allSlugs.push(
+      ...response.contents.map((content: { slug: string }) => content.slug)
+    )
 
     if (response.offset + response.limit >= response.totalCount) {
       break
@@ -201,7 +205,7 @@ export async function getRelatedArticles(
     })
 
     const parsed = mediaArticleListSchema.parse(response)
-    
+
     // 指定数に満たない場合は最新記事で補完
     if (parsed.contents.length < limit) {
       const additionalResponse = await client.getList({

@@ -26,7 +26,9 @@ export interface ArticleCardProps {
  * @returns 記事カードのJSX要素
  */
 export function ArticleCard({ article, className = '' }: ArticleCardProps) {
-  const publishedDate = article.publishedAt ? format(new Date(article.publishedAt), 'yyyy年MM月dd日', { locale: ja }) : ''
+  const publishedDate = article.publishedAt
+    ? format(new Date(article.publishedAt), 'yyyy年MM月dd日', { locale: ja })
+    : ''
   const articleTypeLabel = getArticleTypeLabel(article.type)
   const optimizedImageUrl = getOptimizedImageUrl(article.heroImage.url, {
     width: 640,
@@ -35,7 +37,9 @@ export function ArticleCard({ article, className = '' }: ArticleCardProps) {
   })
 
   return (
-    <article className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow ${className}`}>
+    <article
+      className={`overflow-hidden rounded-lg bg-white shadow-md transition-shadow hover:shadow-lg ${className}`}
+    >
       <Link href={`/media/articles/${article.slug}`} className="block">
         {/* ヒーロー画像 */}
         <div className="relative aspect-video w-full overflow-hidden">
@@ -48,15 +52,15 @@ export function ArticleCard({ article, className = '' }: ArticleCardProps) {
             priority={false}
           />
           {/* 記事タイプラベル */}
-          <div className="absolute top-2 left-2">
-            <span className="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">
+          <div className="absolute left-2 top-2">
+            <span className="rounded bg-blue-600 px-2 py-1 text-xs font-bold text-white">
               {articleTypeLabel}
             </span>
           </div>
           {/* 有料会員限定ラベル */}
           {article.membershipLevel === 'paid' && (
-            <div className="absolute top-2 right-2">
-              <span className="bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded">
+            <div className="absolute right-2 top-2">
+              <span className="rounded bg-yellow-500 px-2 py-1 text-xs font-bold text-white">
                 有料会員限定
               </span>
             </div>
@@ -64,17 +68,21 @@ export function ArticleCard({ article, className = '' }: ArticleCardProps) {
         </div>
 
         {/* 記事情報 */}
-        <div className="p-4 space-y-3">
+        <div className="space-y-3 p-4">
           {/* カテゴリと公開日 */}
           <div className="flex items-center justify-between text-sm text-gray-600">
             {article.category && (
-              <span className="text-blue-600 font-medium">{article.category.name}</span>
+              <span className="font-medium text-blue-600">
+                {article.category.name}
+              </span>
             )}
-            {article.publishedAt && <time dateTime={article.publishedAt}>{publishedDate}</time>}
+            {article.publishedAt && (
+              <time dateTime={article.publishedAt}>{publishedDate}</time>
+            )}
           </div>
 
           {/* タイトル */}
-          <h3 className="text-lg font-bold text-gray-900 line-clamp-2 hover:text-blue-600 transition-colors">
+          <h3 className="line-clamp-2 text-lg font-bold text-gray-900 transition-colors hover:text-blue-600">
             {article.title}
           </h3>
 
@@ -84,13 +92,15 @@ export function ArticleCard({ article, className = '' }: ArticleCardProps) {
               {article.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag.id}
-                  className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded"
+                  className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-600"
                 >
                   #{tag.name}
                 </span>
               ))}
               {article.tags.length > 3 && (
-                <span className="text-xs text-gray-500">+{article.tags.length - 3}</span>
+                <span className="text-xs text-gray-500">
+                  +{article.tags.length - 3}
+                </span>
               )}
             </div>
           )}

@@ -4,31 +4,31 @@
  * @issue #1 - プロジェクト基盤とCI/CDパイプラインの構築
  */
 
-'use client';
+'use client'
 
-import { useEffect } from 'react';
-import Link from 'next/link';
-import { SITE_CONFIG } from '@/config';
+import { useEffect } from 'react'
+import Link from 'next/link'
+import { SITE_CONFIG } from '@/config'
 
 export default function Error({
   error,
   reset,
 }: {
-  error: Error & { digest?: string };
-  reset: () => void;
+  error: Error & { digest?: string }
+  reset: () => void
 }) {
   useEffect(() => {
     // エラーをロギングサービスに送信
-    console.error('Error boundary caught:', error);
-  }, [error]);
+    console.error('Error boundary caught:', error)
+  }, [error])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full text-center px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md px-4 text-center">
         <div className="mb-8">
-          <div className="mx-auto w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mb-4">
+          <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-red-100">
             <svg
-              className="w-12 h-12 text-red-600"
+              className="h-12 w-12 text-red-600"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -44,11 +44,11 @@ export default function Error({
           <h1 className="text-2xl font-semibold text-gray-900">
             エラーが発生しました
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="mt-2 text-gray-600">
             申し訳ございません。予期しないエラーが発生しました。
           </p>
           {process.env.NODE_ENV === 'development' && error.digest && (
-            <p className="text-xs text-gray-500 mt-2 font-mono">
+            <p className="mt-2 font-mono text-xs text-gray-500">
               Error ID: {error.digest}
             </p>
           )}
@@ -57,13 +57,13 @@ export default function Error({
         <div className="space-y-3">
           <button
             onClick={reset}
-            className="block w-full px-6 py-3 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+            className="block w-full rounded-lg bg-blue-600 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-blue-700"
           >
             もう一度試す
           </button>
           <Link
             href={SITE_CONFIG.urls.corporate.top}
-            className="block w-full px-6 py-3 text-base font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+            className="block w-full rounded-lg bg-blue-50 px-6 py-3 text-base font-medium text-blue-600 transition-colors hover:bg-blue-100"
           >
             トップページへ戻る
           </Link>
@@ -83,5 +83,5 @@ export default function Error({
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -10,81 +10,85 @@ describe('isStripeIp', () => {
 
   it('開発環境では常にtrueを返す', () => {
     vi.stubEnv('NODE_ENV', 'development')
-    
+
     const request = new NextRequest('https://example.com/webhook', {
       headers: new Headers({
         'x-real-ip': '192.168.1.1',
       }),
     })
-    
+
     expect(isStripeIp(request)).toBe(true)
   })
 
   it('本番環境でStripeのIPアドレスからのリクエストはtrueを返す', () => {
     vi.stubEnv('NODE_ENV', 'production')
-    
+
     const request = new NextRequest('https://example.com/webhook', {
       headers: new Headers({
         'x-real-ip': '3.18.12.33', // StripeのIP範囲内
       }),
     })
-    
+
     expect(isStripeIp(request)).toBe(true)
   })
 
   it('本番環境で非StripeのIPアドレスからのリクエストはfalseを返す', () => {
     vi.stubEnv('NODE_ENV', 'production')
-    
+
     const request = new NextRequest('https://example.com/webhook', {
       headers: new Headers({
         'x-real-ip': '192.168.1.1', // StripeのIP範囲外
       }),
     })
-    
+
     expect(isStripeIp(request)).toBe(false)
   })
 
   it('x-forwarded-forヘッダーから最初のIPを使用する', () => {
     vi.stubEnv('NODE_ENV', 'production')
-    
+
     const request = new NextRequest('https://example.com/webhook', {
       headers: new Headers({
         'x-forwarded-for': '3.18.12.33, 192.168.1.1, 10.0.0.1',
       }),
     })
-    
+
     expect(isStripeIp(request)).toBe(true)
   })
 
   it('IPアドレスが取得できない場合は警告を出してtrueを返す', () => {
     vi.stubEnv('NODE_ENV', 'production')
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const consoleWarnSpy = vi
+      .spyOn(console, 'warn')
+      .mockImplementation(() => {})
 
     const request = new NextRequest('https://example.com/webhook', {
       headers: new Headers({}),
     })
-    
+
     expect(isStripeIp(request)).toBe(true)
-    expect(consoleWarnSpy).toHaveBeenCalledWith('Could not determine client IP for Stripe webhook')
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      'Could not determine client IP for Stripe webhook'
+    )
   })
 
   it('様々なStripeのIP範囲をテストする', () => {
     vi.stubEnv('NODE_ENV', 'production')
-    
+
     const stripeIps = [
-      '3.130.192.129',  // 3.130.192.128/26
-      '13.235.14.130',  // 13.235.14.128/26
-      '18.211.135.33',  // 18.211.135.32/27
-      '54.187.216.65',  // 54.187.216.64/26
+      '3.130.192.129', // 3.130.192.128/26
+      '13.235.14.130', // 13.235.14.128/26
+      '18.211.135.33', // 18.211.135.32/27
+      '54.187.216.65', // 54.187.216.64/26
     ]
-    
-    stripeIps.forEach(ip => {
+
+    stripeIps.forEach((ip) => {
       const request = new NextRequest('https://example.com/webhook', {
         headers: new Headers({
           'x-real-ip': ip,
         }),
       })
-      
+
       expect(isStripeIp(request)).toBe(true)
     })
   })
@@ -108,9 +112,9 @@ describe('logWebhookEvent', () => {
       receivedAt: '2023-01-01T00:00:00Z',
       success: true,
     }
-    
+
     logWebhookEvent(log)
-    
+
     expect(consoleLogSpy).toHaveBeenCalledWith(
       JSON.stringify({
         service: 'stripe-webhook',
@@ -134,9 +138,9 @@ describe('logWebhookEvent', () => {
       success: false,
       error: 'Payment failed',
     }
-    
+
     logWebhookEvent(log)
-    
+
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       JSON.stringify({
         service: 'stripe-webhook',
@@ -161,9 +165,9 @@ describe('logWebhookEvent', () => {
         amount: 1980,
       },
     }
-    
+
     logWebhookEvent(log)
-    
+
     expect(consoleLogSpy).toHaveBeenCalledWith(
       JSON.stringify({
         service: 'stripe-webhook',
@@ -191,31 +195,35 @@ describe('WebhookTimer', () => {
 
   it('処理時間をログに出力できる', () => {
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const consoleWarnSpy = vi
+      .spyOn(console, 'warn')
+      .mockImplementation(() => {})
 
     const timer = new WebhookTimer()
     vi.advanceTimersByTime(500) // 500ms進める
     timer.logDuration('checkout.session.completed')
 
     expect(consoleLogSpy).toHaveBeenCalledWith(
-      'Webhook processing time for checkout.session.completed: 500ms',
+      'Webhook processing time for checkout.session.completed: 500ms'
     )
     expect(consoleWarnSpy).not.toHaveBeenCalled()
   })
 
   it('処理時間が5秒を超える場合は警告を出力する', () => {
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const consoleWarnSpy = vi
+      .spyOn(console, 'warn')
+      .mockImplementation(() => {})
 
     const timer = new WebhookTimer()
     vi.advanceTimersByTime(6000) // 6秒進める
     timer.logDuration('checkout.session.completed')
 
     expect(consoleLogSpy).toHaveBeenCalledWith(
-      'Webhook processing time for checkout.session.completed: 6000ms',
+      'Webhook processing time for checkout.session.completed: 6000ms'
     )
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      'Slow webhook processing detected for checkout.session.completed: 6000ms',
+      'Slow webhook processing detected for checkout.session.completed: 6000ms'
     )
   })
 

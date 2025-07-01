@@ -1,46 +1,46 @@
-import { Metadata } from 'next';
+import { Metadata } from 'next'
 
 /**
  * OGP画像生成のパラメータ
  */
 interface OgImageParams {
-  title: string;
-  description?: string;
-  type?: 'default' | 'article' | 'corporate' | 'media';
-  category?: string;
+  title: string
+  description?: string
+  type?: 'default' | 'article' | 'corporate' | 'media'
+  category?: string
 }
 
 /**
  * URLSearchParamsを生成するヘルパー関数
  */
 function createOgImageUrl(params: OgImageParams): string {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp';
-  const searchParams = new URLSearchParams();
-  
-  searchParams.append('title', params.title);
-  if (params.description) searchParams.append('description', params.description);
-  if (params.type) searchParams.append('type', params.type);
-  if (params.category) searchParams.append('category', params.category);
-  
-  return `${baseUrl}/api/og?${searchParams.toString()}`;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp'
+  const searchParams = new URLSearchParams()
+
+  searchParams.append('title', params.title)
+  if (params.description) searchParams.append('description', params.description)
+  if (params.type) searchParams.append('type', params.type)
+  if (params.category) searchParams.append('category', params.category)
+
+  return `${baseUrl}/api/og?${searchParams.toString()}`
 }
 
 /**
  * ページメタデータ生成のオプション
  */
 export interface GenerateMetadataOptions {
-  title: string;
-  description: string;
-  path?: string;
-  ogType?: 'website' | 'article';
-  ogImageParams?: OgImageParams;
-  keywords?: string[];
-  noindex?: boolean;
-  publishedTime?: string;
-  modifiedTime?: string;
-  authors?: string[];
-  category?: string;
-  tags?: string[];
+  title: string
+  description: string
+  path?: string
+  ogType?: 'website' | 'article'
+  ogImageParams?: OgImageParams
+  keywords?: string[]
+  noindex?: boolean
+  publishedTime?: string
+  modifiedTime?: string
+  authors?: string[]
+  category?: string
+  tags?: string[]
 }
 
 /**
@@ -48,8 +48,10 @@ export interface GenerateMetadataOptions {
  * @doc https://nextjs.org/docs/app/api-reference/functions/generate-metadata
  * @related src/app/api/og/route.tsx
  */
-export function generatePageMetadata(options: GenerateMetadataOptions): Metadata {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp';
+export function generatePageMetadata(
+  options: GenerateMetadataOptions
+): Metadata {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp'
   const {
     title,
     description,
@@ -63,15 +65,15 @@ export function generatePageMetadata(options: GenerateMetadataOptions): Metadata
     authors = [],
     category,
     tags = [],
-  } = options;
-  
-  const url = `${baseUrl}${path}`;
-  
+  } = options
+
+  const url = `${baseUrl}${path}`
+
   // OGP画像のURL生成
-  const ogImageUrl = ogImageParams 
+  const ogImageUrl = ogImageParams
     ? createOgImageUrl(ogImageParams)
-    : createOgImageUrl({ title, description, type: 'default' });
-  
+    : createOgImageUrl({ title, description, type: 'default' })
+
   const metadata: Metadata = {
     title,
     description,
@@ -114,8 +116,8 @@ export function generatePageMetadata(options: GenerateMetadataOptions): Metadata
         'max-snippet': -1,
       },
     },
-  };
-  
+  }
+
   // 記事固有のメタデータ
   if (ogType === 'article' && metadata.openGraph) {
     metadata.openGraph = {
@@ -125,12 +127,12 @@ export function generatePageMetadata(options: GenerateMetadataOptions): Metadata
       modifiedTime,
       authors,
       tags,
-    };
-    
+    }
+
     if (category) {
-      metadata.openGraph.section = category;
+      metadata.openGraph.section = category
     }
   }
-  
-  return metadata;
+
+  return metadata
 }

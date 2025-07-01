@@ -1,18 +1,18 @@
-import { StructuredData } from './StructuredData';
+import { StructuredData } from './StructuredData'
 
 /**
  * パンくずリストの項目
  */
 export interface BreadcrumbItem {
-  name: string;
-  url: string;
+  name: string
+  url: string
 }
 
 /**
  * BreadcrumbSchemaのProps
  */
 interface BreadcrumbSchemaProps {
-  items: BreadcrumbItem[];
+  items: BreadcrumbItem[]
 }
 
 /**
@@ -21,8 +21,8 @@ interface BreadcrumbSchemaProps {
  * @related src/components/common/Breadcrumb.tsx
  */
 export function BreadcrumbSchema({ items }: BreadcrumbSchemaProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp';
-  
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp'
+
   const breadcrumbData = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -32,7 +32,7 @@ export function BreadcrumbSchema({ items }: BreadcrumbSchemaProps) {
       name: item.name,
       item: item.url.startsWith('http') ? item.url : `${baseUrl}${item.url}`,
     })),
-  };
+  }
 
-  return <StructuredData data={breadcrumbData} />;
+  return <StructuredData data={breadcrumbData} />
 }

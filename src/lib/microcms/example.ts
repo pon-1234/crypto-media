@@ -4,12 +4,12 @@
  * @issue #2 - microCMSクライアントと型定義の実装
  */
 import { client, defaultQueries, getOptimizedImageUrl } from './client'
-import { 
-  mediaArticleSchema, 
+import {
+  mediaArticleSchema,
   mediaArticleListSchema,
   siteSettingsSchema,
   type MediaArticle,
-  type SiteSettings
+  type SiteSettings,
 } from './index'
 
 /**
@@ -24,7 +24,7 @@ export async function getArticles(limit = 10): Promise<MediaArticle[]> {
         limit,
       },
     })
-    
+
     // zodでバリデーション
     const validated = mediaArticleListSchema.parse(response)
     return validated.contents
@@ -38,7 +38,9 @@ export async function getArticles(limit = 10): Promise<MediaArticle[]> {
  * 特定の記事を取得する例（改善版）
  * slugで記事を検索し、見つからない場合はnullを返す
  */
-export async function getArticleBySlug(slug: string): Promise<MediaArticle | null> {
+export async function getArticleBySlug(
+  slug: string
+): Promise<MediaArticle | null> {
   try {
     const response = await client.get({
       endpoint: 'media_articles',
@@ -47,19 +49,21 @@ export async function getArticleBySlug(slug: string): Promise<MediaArticle | nul
         limit: 1,
       },
     })
-    
+
     const validated = mediaArticleListSchema.parse(response)
-    
+
     // 記事が見つからない場合
     if (validated.totalCount === 0) {
       return null
     }
-    
+
     // 念のため、totalCountが1であることを確認
     if (validated.totalCount !== 1) {
-      console.warn(`Expected 1 article with slug "${slug}", but found ${validated.totalCount}`)
+      console.warn(
+        `Expected 1 article with slug "${slug}", but found ${validated.totalCount}`
+      )
     }
-    
+
     return validated.contents[0]
   } catch (error) {
     // microCMSのエラーレスポンスを適切に処理
@@ -69,7 +73,7 @@ export async function getArticleBySlug(slug: string): Promise<MediaArticle | nul
         return null
       }
     }
-    
+
     console.error('Failed to fetch article:', error)
     throw error
   }
@@ -79,7 +83,7 @@ export async function getArticleBySlug(slug: string): Promise<MediaArticle | nul
  * プレビュー用に記事を取得する例
  */
 export async function getArticlePreview(
-  contentId: string, 
+  contentId: string,
   draftKey: string
 ): Promise<MediaArticle> {
   try {
@@ -90,7 +94,7 @@ export async function getArticlePreview(
         draftKey,
       },
     })
-    
+
     // 単一記事のバリデーション
     const validated = mediaArticleSchema.parse(response)
     return validated
@@ -112,7 +116,7 @@ export async function getPaidArticles(): Promise<MediaArticle[]> {
         filters: 'membershipLevel[equals]paid',
       },
     })
-    
+
     const validated = mediaArticleListSchema.parse(response)
     return validated.contents
   } catch (error) {
@@ -126,7 +130,7 @@ export async function getPaidArticles(): Promise<MediaArticle[]> {
  */
 export function getOptimizedArticleImage(article: MediaArticle) {
   if (!article.heroImage) return null
-  
+
   return {
     // デスクトップ用
     desktop: getOptimizedImageUrl(article.heroImage.url, {
@@ -158,7 +162,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     const response = await client.get({
       endpoint: 'site_settings',
     })
-    
+
     // シングルトンAPIはオブジェクトを直接返す
     const validated = siteSettingsSchema.parse(response)
     return validated

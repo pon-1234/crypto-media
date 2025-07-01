@@ -37,9 +37,9 @@ export default function LoginPage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-gray-900"></div>
           <p className="mt-4 text-gray-600">読み込み中...</p>
         </div>
       </div>
@@ -47,8 +47,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             ログイン
@@ -61,9 +61,9 @@ export default function LoginPage() {
           <div>
             <button
               onClick={handleGoogleSignIn}
-              className="group relative w-full flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="group relative flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-              <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                 <svg
                   className="h-5 w-5"
                   viewBox="0 0 24 24"
@@ -94,11 +94,17 @@ export default function LoginPage() {
           <div className="text-center">
             <p className="text-xs text-gray-500">
               ログインすることで、
-              <Link href="/terms" className="text-indigo-600 hover:text-indigo-500">
+              <Link
+                href="/terms"
+                className="text-indigo-600 hover:text-indigo-500"
+              >
                 利用規約
               </Link>
               および
-              <Link href="/privacy-policy" className="text-indigo-600 hover:text-indigo-500">
+              <Link
+                href="/privacy-policy"
+                className="text-indigo-600 hover:text-indigo-500"
+              >
                 プライバシーポリシー
               </Link>
               に同意したものとみなされます。

@@ -8,13 +8,24 @@ describe('Button', () => {
     render(<Button>Click me</Button>)
     const button = screen.getByRole('button', { name: 'Click me' })
     expect(button).toBeInTheDocument()
-    expect(button).toHaveClass('bg-indigo-600', 'text-white', 'px-4', 'py-2', 'text-sm')
+    expect(button).toHaveClass(
+      'bg-indigo-600',
+      'text-white',
+      'px-4',
+      'py-2',
+      'text-sm'
+    )
   })
 
   it('renders with outline variant', () => {
     render(<Button variant="outline">Outline Button</Button>)
     const button = screen.getByRole('button', { name: 'Outline Button' })
-    expect(button).toHaveClass('border', 'border-gray-300', 'bg-white', 'text-gray-700')
+    expect(button).toHaveClass(
+      'border',
+      'border-gray-300',
+      'bg-white',
+      'text-gray-700'
+    )
   })
 
   it('renders with ghost variant', () => {
@@ -63,10 +74,10 @@ describe('Button', () => {
   it('handles onClick event', async () => {
     const handleClick = vi.fn()
     const user = userEvent.setup()
-    
+
     render(<Button onClick={handleClick}>Clickable Button</Button>)
     const button = screen.getByRole('button', { name: 'Clickable Button' })
-    
+
     await user.click(button)
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
@@ -74,13 +85,20 @@ describe('Button', () => {
   it('respects disabled state', async () => {
     const handleClick = vi.fn()
     const user = userEvent.setup()
-    
-    render(<Button onClick={handleClick} disabled>Disabled Button</Button>)
+
+    render(
+      <Button onClick={handleClick} disabled>
+        Disabled Button
+      </Button>
+    )
     const button = screen.getByRole('button', { name: 'Disabled Button' })
-    
+
     expect(button).toBeDisabled()
-    expect(button).toHaveClass('disabled:opacity-50', 'disabled:pointer-events-none')
-    
+    expect(button).toHaveClass(
+      'disabled:opacity-50',
+      'disabled:pointer-events-none'
+    )
+
     await user.click(button)
     expect(handleClick).not.toHaveBeenCalled()
   })
@@ -99,12 +117,7 @@ describe('Button', () => {
 
   it('combines multiple props correctly', () => {
     render(
-      <Button 
-        variant="outline" 
-        size="lg" 
-        fullWidth 
-        className="custom-class"
-      >
+      <Button variant="outline" size="lg" fullWidth className="custom-class">
         Combined Props
       </Button>
     )

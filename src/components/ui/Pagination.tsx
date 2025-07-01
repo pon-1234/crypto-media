@@ -49,12 +49,12 @@ export const Pagination: FC<PaginationProps> = ({
       pageNumbers.push('...')
     }
   }
-  
+
   // 間のページ番号を追加
   for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(i)
   }
-  
+
   // 最後のページと省略記号を追加
   if (endPage < totalPages) {
     if (endPage < totalPages - 1) {
@@ -71,7 +71,7 @@ export const Pagination: FC<PaginationProps> = ({
           <li>
             <Link
               href={`${basePath}?page=${currentPage - 1}`}
-              className="px-4 py-2 border rounded hover:bg-gray-100 transition-colors"
+              className="rounded border px-4 py-2 transition-colors hover:bg-gray-100"
             >
               前へ
             </Link>
@@ -86,7 +86,7 @@ export const Pagination: FC<PaginationProps> = ({
             ) : (
               <Link
                 href={`${basePath}?page=${page}`}
-                className={`px-4 py-2 border rounded transition-colors ${
+                className={`rounded border px-4 py-2 transition-colors ${
                   page === currentPage
                     ? 'bg-blue-600 text-white'
                     : 'hover:bg-gray-100'
@@ -103,7 +103,7 @@ export const Pagination: FC<PaginationProps> = ({
           <li>
             <Link
               href={`${basePath}?page=${currentPage + 1}`}
-              className="px-4 py-2 border rounded hover:bg-gray-100 transition-colors"
+              className="rounded border px-4 py-2 transition-colors hover:bg-gray-100"
             >
               次へ
             </Link>
@@ -112,4 +112,4 @@ export const Pagination: FC<PaginationProps> = ({
       </ul>
     </nav>
   )
-} 
+}

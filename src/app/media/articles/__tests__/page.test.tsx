@@ -70,8 +70,14 @@ describe('MediaArticlesPage', () => {
     render(Page)
 
     // ページタイトルとコンテンツの確認
-    expect(screen.getByRole('heading', { name: '記事一覧' })).toBeInTheDocument()
-    expect(screen.getByText('暗号資産・ブロックチェーンに関する最新の記事、調査レポート、お知らせをお届けします。')).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: '記事一覧' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        '暗号資産・ブロックチェーンに関する最新の記事、調査レポート、お知らせをお届けします。'
+      )
+    ).toBeInTheDocument()
 
     // 記事カードが表示されることを確認
     expect(screen.getByText('テスト記事1')).toBeInTheDocument()
@@ -102,23 +108,25 @@ describe('MediaArticlesPage', () => {
 
   it('ページネーション情報を表示する', async () => {
     const mockArticles = {
-      contents: Array(20).fill(null).map((_, i) => ({
-        id: `article-${i}`,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
-        publishedAt: '2024-01-01T00:00:00.000Z',
-        revisedAt: '2024-01-01T00:00:00.000Z',
-        title: `テスト記事${i}`,
-        slug: `test-article-${i}`,
-        type: 'article' as const,
-        membershipLevel: 'public' as const,
-        content: '<p>内容</p>',
-        heroImage: {
-          url: 'https://example.com/image.jpg',
-          height: 720,
-          width: 1280,
-        },
-      })),
+      contents: Array(20)
+        .fill(null)
+        .map((_, i) => ({
+          id: `article-${i}`,
+          createdAt: '2024-01-01T00:00:00.000Z',
+          updatedAt: '2024-01-01T00:00:00.000Z',
+          publishedAt: '2024-01-01T00:00:00.000Z',
+          revisedAt: '2024-01-01T00:00:00.000Z',
+          title: `テスト記事${i}`,
+          slug: `test-article-${i}`,
+          type: 'article' as const,
+          membershipLevel: 'public' as const,
+          content: '<p>内容</p>',
+          heroImage: {
+            url: 'https://example.com/image.jpg',
+            height: 720,
+            width: 1280,
+          },
+        })),
       totalCount: 50,
       offset: 0,
       limit: 20,

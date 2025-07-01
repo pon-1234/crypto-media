@@ -1,11 +1,11 @@
-import { MetadataRoute } from 'next';
-import { client } from '@/lib/microcms/client';
-import type { MediaArticle } from '@/lib/schema/article.schema';
-import type { CorporateNews } from '@/lib/schema/corporate-news.schema';
-import type { Category } from '@/lib/schema/category.schema';
-import type { Tag } from '@/lib/schema/tag.schema';
-import type { Expert } from '@/lib/schema/expert.schema';
-import type { Feature } from '@/lib/schema/feature.schema';
+import { MetadataRoute } from 'next'
+import { client } from '@/lib/microcms/client'
+import type { MediaArticle } from '@/lib/schema/article.schema'
+import type { CorporateNews } from '@/lib/schema/corporate-news.schema'
+import type { Category } from '@/lib/schema/category.schema'
+import type { Tag } from '@/lib/schema/tag.schema'
+import type { Expert } from '@/lib/schema/expert.schema'
+import type { Feature } from '@/lib/schema/feature.schema'
 
 /**
  * サイトマップを生成
@@ -13,11 +13,10 @@ import type { Feature } from '@/lib/schema/feature.schema';
  * @returns サイトマップの定義
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp'
 
   // 現在の日時
-  const now = new Date();
+  const now = new Date()
 
   // 静的ページのサイトマップエントリ
   const staticPages: MetadataRoute.Sitemap = [
@@ -168,11 +167,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.7,
     },
-  ];
+  ]
 
   // CI環境では動的コンテンツの取得をスキップ
   if (process.env.CI === 'true') {
-    return staticPages;
+    return staticPages
   }
 
   try {
@@ -227,7 +226,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             fields: 'id,slug',
           },
         }),
-      ]);
+      ])
 
     // 動的ページのサイトマップエントリ
     const dynamicPages: MetadataRoute.Sitemap = [
@@ -273,12 +272,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: 'weekly' as const,
         priority: 0.6,
       })),
-    ];
+    ]
 
-    return [...staticPages, ...dynamicPages];
+    return [...staticPages, ...dynamicPages]
   } catch (error) {
-    console.error('Failed to generate sitemap:', error);
+    console.error('Failed to generate sitemap:', error)
     // エラーが発生した場合は静的ページのみ返す
-    return staticPages;
+    return staticPages
   }
 }

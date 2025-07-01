@@ -16,9 +16,11 @@ const initializeFirebaseAdmin = () => {
     return getApps()[0]
   }
 
-  if (!process.env.FIREBASE_ADMIN_PROJECT_ID ||
-      !process.env.FIREBASE_ADMIN_CLIENT_EMAIL ||
-      !process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
+  if (
+    !process.env.FIREBASE_ADMIN_PROJECT_ID ||
+    !process.env.FIREBASE_ADMIN_CLIENT_EMAIL ||
+    !process.env.FIREBASE_ADMIN_PRIVATE_KEY
+  ) {
     throw new Error('Firebase Admin environment variables are not configured')
   }
 
@@ -35,21 +37,22 @@ const initializeFirebaseAdmin = () => {
 const app = initializeFirebaseAdmin()
 
 // Export Firestore instance
-export const adminDb = process.env.CI === 'true' 
-  ? // CI環境ではモックインスタンスを返す
-    ({
-      collection: () => ({
-        doc: () => ({
-          set: async () => ({}),
-          get: async () => ({ exists: false, data: () => ({}) }),
-          update: async () => ({}),
-          delete: async () => ({}),
-        }),
-        add: async () => ({ id: 'mock-id' }),
-        where: () => ({
+export const adminDb =
+  process.env.CI === 'true'
+    ? // CI環境ではモックインスタンスを返す
+      ({
+        collection: () => ({
+          doc: () => ({
+            set: async () => ({}),
+            get: async () => ({ exists: false, data: () => ({}) }),
+            update: async () => ({}),
+            delete: async () => ({}),
+          }),
+          add: async () => ({ id: 'mock-id' }),
+          where: () => ({
+            get: async () => ({ empty: true, docs: [] }),
+          }),
           get: async () => ({ empty: true, docs: [] }),
         }),
-        get: async () => ({ empty: true, docs: [] }),
-      }),
-    } as unknown as Firestore)
-  : getFirestore(app!)
+      } as unknown as Firestore)
+    : getFirestore(app!)

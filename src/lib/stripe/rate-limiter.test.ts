@@ -10,7 +10,7 @@ const mockRedisInstance = {
 // Mock Upstash Redis
 vi.mock('@upstash/redis', () => {
   return {
-    Redis: vi.fn().mockImplementation(() => mockRedisInstance)
+    Redis: vi.fn().mockImplementation(() => mockRedisInstance),
   }
 })
 
@@ -42,7 +42,7 @@ describe('MemoryRateLimiter', () => {
     await limiter.checkLimit('test-key')
     await limiter.checkLimit('test-key')
     await limiter.checkLimit('test-key')
-    
+
     // 4回目は拒否される
     expect(await limiter.checkLimit('test-key')).toBe(false)
   })
@@ -52,13 +52,13 @@ describe('MemoryRateLimiter', () => {
     await limiter.checkLimit('test-key')
     await limiter.checkLimit('test-key')
     await limiter.checkLimit('test-key')
-    
+
     // 制限を超えているので拒否
     expect(await limiter.checkLimit('test-key')).toBe(false)
-    
+
     // 時間を進める
     vi.advanceTimersByTime(60001)
-    
+
     // リセットされているので許可
     expect(await limiter.checkLimit('test-key')).toBe(true)
   })
@@ -69,17 +69,17 @@ describe('MemoryRateLimiter', () => {
     await limiter.checkLimit('key1')
     await limiter.checkLimit('key1')
     expect(await limiter.checkLimit('key1')).toBe(false)
-    
+
     // key2は別カウントなので許可
     expect(await limiter.checkLimit('key2')).toBe(true)
   })
 
   it('カスタムパラメータで初期化できる', async () => {
     const customLimiter = new MemoryRateLimiter(1, 1000) // 1 request per second
-    
+
     expect(await customLimiter.checkLimit('test')).toBe(true)
     expect(await customLimiter.checkLimit('test')).toBe(false)
-    
+
     vi.advanceTimersByTime(1001)
     expect(await customLimiter.checkLimit('test')).toBe(true)
   })
@@ -97,7 +97,9 @@ describe('RedisRateLimiter', () => {
   })
 
   it('Redisが設定されていない場合は警告を出して許可する', async () => {
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const consoleWarnSpy = vi
+      .spyOn(console, 'warn')
+      .mockImplementation(() => {})
     // Redis環境変数を設定しない
 
     const limiter = new RedisRateLimiter(3, 60)
@@ -105,12 +107,14 @@ describe('RedisRateLimiter', () => {
 
     expect(result).toBe(true)
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      'Redis not configured, skipping rate limit',
+      'Redis not configured, skipping rate limit'
     )
   })
 
   it('カスタムパラメータで初期化できる', async () => {
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const consoleWarnSpy = vi
+      .spyOn(console, 'warn')
+      .mockImplementation(() => {})
     const limiter = new RedisRateLimiter(5, 120)
 
     // カスタムパラメータが正しく設定されていることを確認
@@ -119,7 +123,7 @@ describe('RedisRateLimiter', () => {
 
     expect(result).toBe(true)
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      'Redis not configured, skipping rate limit',
+      'Redis not configured, skipping rate limit'
     )
   })
 })

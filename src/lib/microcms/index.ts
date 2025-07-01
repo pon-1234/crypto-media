@@ -5,7 +5,12 @@
  */
 
 // クライアント
-export { client, defaultQueries, MAX_LIMIT, getOptimizedImageUrl } from './client'
+export {
+  client,
+  defaultQueries,
+  MAX_LIMIT,
+  getOptimizedImageUrl,
+} from './client'
 
 // スキーマとバリデーション
 export {
@@ -19,7 +24,7 @@ export {
   siteSettingsSchema,
   researchSurveySchema,
   pageCorporateSchema,
-  
+
   // リストレスポンススキーマ
   corporateNewsListSchema,
   expertListSchema,
@@ -29,10 +34,10 @@ export {
   mediaArticleListSchema,
   researchSurveyListSchema,
   pageCorporateListSchema,
-  
+
   // ヘルパー関数
   createListResponseSchema,
-  
+
   // 型
   type CorporateNews,
   type Expert,
@@ -73,14 +78,6 @@ export {
   getRelatedArticles,
 } from './media-articles'
 
-export {
-  getCategories,
-  getCategoryBySlug,
-  getCategoryById,
-} from './categories'
+export { getCategories, getCategoryBySlug, getCategoryById } from './categories'
 
-export {
-  getTags,
-  getTagBySlug,
-  getTagById,
-} from './tags'
+export { getTags, getTagBySlug, getTagById } from './tags'

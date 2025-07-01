@@ -2,7 +2,7 @@
  * 構造化データのProps
  */
 interface StructuredDataProps {
-  data: Record<string, unknown> & { '@type': string };
+  data: Record<string, unknown> & { '@type': string }
 }
 
 /**
@@ -21,5 +21,5 @@ export function StructuredData({ data }: StructuredDataProps) {
         __html: JSON.stringify(data),
       }}
     />
-  );
+  )
 }

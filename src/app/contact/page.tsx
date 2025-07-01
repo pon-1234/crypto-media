@@ -18,9 +18,9 @@ export default function ContactPage() {
 
   return (
     <div className="container mx-auto px-4 py-16">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">お問い合わせ</h1>
-        
+      <div className="mx-auto max-w-2xl">
+        <h1 className="mb-8 text-3xl font-bold">お問い合わせ</h1>
+
         <div className="prose prose-lg mb-8">
           <p>
             お問い合わせは下記フォームよりお願いいたします。
@@ -32,7 +32,7 @@ export default function ContactPage() {
         </div>
 
         {portalId && formId ? (
-          <div className="bg-gray-50 p-8 rounded-lg">
+          <div className="rounded-lg bg-gray-50 p-8">
             <HubSpotForm
               portalId={portalId}
               formId={formId}
@@ -45,10 +45,13 @@ export default function ContactPage() {
             />
           </div>
         ) : (
-          <div className="bg-yellow-50 border border-yellow-400 text-yellow-800 px-4 py-3 rounded">
-            <p className="font-semibold">お問い合わせフォームの設定が必要です</p>
-            <p className="text-sm mt-1">
-              環境変数 NEXT_PUBLIC_HUBSPOT_PORTAL_ID および NEXT_PUBLIC_HUBSPOT_CORPORATE_FORM_ID を設定してください。
+          <div className="rounded border border-yellow-400 bg-yellow-50 px-4 py-3 text-yellow-800">
+            <p className="font-semibold">
+              お問い合わせフォームの設定が必要です
+            </p>
+            <p className="mt-1 text-sm">
+              環境変数 NEXT_PUBLIC_HUBSPOT_PORTAL_ID および
+              NEXT_PUBLIC_HUBSPOT_CORPORATE_FORM_ID を設定してください。
             </p>
           </div>
         )}

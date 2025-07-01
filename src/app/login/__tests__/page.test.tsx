@@ -50,7 +50,9 @@ describe('LoginPage', () => {
 
       expect(screen.getByText('ログイン')).toBeInTheDocument()
       expect(
-        screen.getByText('会員限定コンテンツへアクセスするにはログインが必要です')
+        screen.getByText(
+          '会員限定コンテンツへアクセスするにはログインが必要です'
+        )
       ).toBeInTheDocument()
       expect(screen.getByText('Googleでログイン')).toBeInTheDocument()
     })
@@ -88,7 +90,9 @@ describe('LoginPage', () => {
       render(<LoginPage />)
 
       const termsLink = screen.getByRole('link', { name: '利用規約' })
-      const privacyLink = screen.getByRole('link', { name: 'プライバシーポリシー' })
+      const privacyLink = screen.getByRole('link', {
+        name: 'プライバシーポリシー',
+      })
 
       expect(termsLink).toHaveAttribute('href', '/terms')
       expect(privacyLink).toHaveAttribute('href', '/privacy-policy')
@@ -151,7 +155,9 @@ describe('LoginPage', () => {
       } as ReturnType<typeof useSession>)
       mockGet.mockReturnValue(null)
 
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {})
       const error = new Error('Sign in failed')
       vi.mocked(signIn).mockRejectedValue(error)
 

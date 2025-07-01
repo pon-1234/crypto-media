@@ -44,7 +44,9 @@ export function createMockStripeResponse<T>(data: T): Stripe.Response<T> {
  * @param overrides カスタマイズするプロパティ
  * @returns Stripe.Customerのモック
  */
-export function createMockCustomer(overrides?: Partial<Stripe.Customer>): Stripe.Customer {
+export function createMockCustomer(
+  overrides?: Partial<Stripe.Customer>
+): Stripe.Customer {
   return {
     id: 'cus_test_123',
     object: 'customer',

@@ -32,7 +32,9 @@ vi.mock('../client', () => ({
 /**
  * モック記事データを作成
  */
-const createMockArticle = (overrides?: Partial<MediaArticle>): MediaArticle => ({
+const createMockArticle = (
+  overrides?: Partial<MediaArticle>
+): MediaArticle => ({
   id: 'article-1',
   createdAt: '2024-01-15T00:00:00.000Z',
   updatedAt: '2024-01-15T00:00:00.000Z',
@@ -175,8 +177,16 @@ describe('media-articles API', () => {
     it('すべての記事IDを取得できる', async () => {
       const mockResponse1 = {
         contents: [
-          { id: 'id-1', createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-01T00:00:00.000Z' },
-          { id: 'id-2', createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-01T00:00:00.000Z' },
+          {
+            id: 'id-1',
+            createdAt: '2024-01-01T00:00:00.000Z',
+            updatedAt: '2024-01-01T00:00:00.000Z',
+          },
+          {
+            id: 'id-2',
+            createdAt: '2024-01-01T00:00:00.000Z',
+            updatedAt: '2024-01-01T00:00:00.000Z',
+          },
         ],
         totalCount: 3,
         offset: 0,
@@ -184,7 +194,11 @@ describe('media-articles API', () => {
       }
       const mockResponse2 = {
         contents: [
-          { id: 'id-3', createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-01T00:00:00.000Z' },
+          {
+            id: 'id-3',
+            createdAt: '2024-01-01T00:00:00.000Z',
+            updatedAt: '2024-01-01T00:00:00.000Z',
+          },
         ],
         totalCount: 3,
         offset: 2,
@@ -206,8 +220,18 @@ describe('media-articles API', () => {
     it('すべての記事スラッグを取得できる', async () => {
       const mockResponse1 = {
         contents: [
-          { id: 'id-1', slug: 'slug-1', createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-01T00:00:00.000Z' },
-          { id: 'id-2', slug: 'slug-2', createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-01T00:00:00.000Z' },
+          {
+            id: 'id-1',
+            slug: 'slug-1',
+            createdAt: '2024-01-01T00:00:00.000Z',
+            updatedAt: '2024-01-01T00:00:00.000Z',
+          },
+          {
+            id: 'id-2',
+            slug: 'slug-2',
+            createdAt: '2024-01-01T00:00:00.000Z',
+            updatedAt: '2024-01-01T00:00:00.000Z',
+          },
         ],
         totalCount: 3,
         offset: 0,
@@ -215,7 +239,12 @@ describe('media-articles API', () => {
       }
       const mockResponse2 = {
         contents: [
-          { id: 'id-3', slug: 'slug-3', createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-01T00:00:00.000Z' },
+          {
+            id: 'id-3',
+            slug: 'slug-3',
+            createdAt: '2024-01-01T00:00:00.000Z',
+            updatedAt: '2024-01-01T00:00:00.000Z',
+          },
         ],
         totalCount: 3,
         offset: 2,
@@ -316,7 +345,8 @@ describe('media-articles API', () => {
       expect(client.getList).toHaveBeenCalledWith({
         endpoint: 'media_articles',
         queries: {
-          filters: 'category.id[equals]category-1[and]id[not_equals]current-article',
+          filters:
+            'category.id[equals]category-1[and]id[not_equals]current-article',
           limit: 3,
           orders: '-publishedAt',
         },

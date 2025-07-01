@@ -1,6 +1,7 @@
 # プロジェクト知見集
 
 ## アーキテクチャ決定
+
 - **構成**: 単一のNext.jsプロジェクト。
 - **ルーティング**: コーポレート(`/`)とメディア(`/media/`)でパスを分離。
 - **認証・会員DB**: NextAuth.js + Firebase Adapter + Firestore。`membership`ステータスは`paid` (課金中), `free` (元有料)を管理。
@@ -8,6 +9,7 @@
 - **フォーム**: HubSpotフォームをiframeで埋め込む形式で実装する。自前のAPIエンドポイントは不要。
 
 ## microCMS データモデル設計
+
 **型定義の方針**: TypeScriptの型は、`src/lib/schema/`配下のZodスキーマ定義から`z.infer`を用いて自動推論する。手動の型定義ファイルは作成しない。
 
 - **`corporate_news` vs `media_articles`**: コーポレート用とメディア用のお知らせは、扱う内容が異なるため、それぞれ別のモデルで管理する。
@@ -19,6 +21,7 @@
   - `features` (Multi-Reference): 記事が属する特集を複数紐づける。
 
 ## 実装パターン
+
 - **ペイウォール (記事単位のアクセス制御)**: 記事の`membershipLevel`が`paid`の場合、Firestoreのユーザーの`membership`ステータスをチェックしてアクセスを制御する。
 - **状態管理**: シンプルな用途ではReact Context APIを使用。複雑化する場合はZustandを検討。
 - **データフェッチ**: SWRまたはReact Query (TanStack Query) を使用し、キャッシュ戦略を統一する。

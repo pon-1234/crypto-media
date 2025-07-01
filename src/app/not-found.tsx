@@ -4,19 +4,19 @@
  * @issue #1 - プロジェクト基盤とCI/CDパイプラインの構築
  */
 
-import Link from 'next/link';
-import { SITE_CONFIG } from '@/config';
+import Link from 'next/link'
+import { SITE_CONFIG } from '@/config'
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full text-center px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md px-4 text-center">
         <div className="mb-8">
           <h1 className="text-9xl font-bold text-gray-300">404</h1>
-          <p className="text-2xl font-semibold text-gray-900 mt-4">
+          <p className="mt-4 text-2xl font-semibold text-gray-900">
             ページが見つかりません
           </p>
-          <p className="text-gray-600 mt-2">
+          <p className="mt-2 text-gray-600">
             お探しのページは、移動または削除された可能性があります。
           </p>
         </div>
@@ -24,13 +24,13 @@ export default function NotFound() {
         <div className="space-y-3">
           <Link
             href={SITE_CONFIG.urls.corporate.top}
-            className="block w-full px-6 py-3 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+            className="block w-full rounded-lg bg-blue-600 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-blue-700"
           >
             コーポレートサイトへ
           </Link>
           <Link
             href={SITE_CONFIG.urls.media.top}
-            className="block w-full px-6 py-3 text-base font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+            className="block w-full rounded-lg bg-blue-50 px-6 py-3 text-base font-medium text-blue-600 transition-colors hover:bg-blue-100"
           >
             メディアサイトへ
           </Link>
@@ -50,5 +50,5 @@ export default function NotFound() {
         </div>
       </div>
     </div>
-  );
+  )
 }

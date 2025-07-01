@@ -80,9 +80,7 @@ describe('ArticleGrid', () => {
   it('shows empty state when no articles', () => {
     render(<ArticleGrid articles={[]} />)
 
-    expect(
-      screen.getByText('記事が見つかりませんでした。')
-    ).toBeInTheDocument()
+    expect(screen.getByText('記事が見つかりませんでした。')).toBeInTheDocument()
   })
 
   it('applies custom className', () => {
@@ -105,10 +103,7 @@ describe('ArticleGrid', () => {
 
   it('applies custom grid columns', () => {
     const { container } = render(
-      <ArticleGrid
-        articles={mockArticles}
-        columns={{ sm: 2, md: 3, lg: 4 }}
-      />
+      <ArticleGrid articles={mockArticles} columns={{ sm: 2, md: 3, lg: 4 }} />
     )
 
     const grid = container.querySelector('.grid')

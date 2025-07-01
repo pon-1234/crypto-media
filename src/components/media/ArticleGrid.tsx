@@ -34,7 +34,7 @@ export const ArticleGrid: React.FC<ArticleGridProps> = ({
 }) => {
   if (articles.length === 0) {
     return (
-      <div className="text-center py-12">
+      <div className="py-12 text-center">
         <p className="text-gray-500 dark:text-gray-400">
           記事が見つかりませんでした。
         </p>

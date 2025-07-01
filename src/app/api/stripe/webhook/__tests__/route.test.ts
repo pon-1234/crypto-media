@@ -9,7 +9,11 @@ import { NextRequest } from 'next/server'
 import { POST } from '../route'
 import { stripe } from '@/lib/stripe'
 import { adminDb } from '@/lib/firebase/admin'
-import { createMockStripeEvent, createMockCheckoutSession, createMockSubscription } from '@/test/factories/stripe'
+import {
+  createMockStripeEvent,
+  createMockCheckoutSession,
+  createMockSubscription,
+} from '@/test/factories/stripe'
 import {
   createMockCollection,
   createMockDocumentSnapshot,
@@ -44,10 +48,13 @@ describe('POST /api/stripe/webhook', () => {
   })
 
   it('returns 400 when stripe-signature header is missing', async () => {
-    const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-      method: 'POST',
-      body: JSON.stringify({}),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/stripe/webhook',
+      {
+        method: 'POST',
+        body: JSON.stringify({}),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -61,13 +68,16 @@ describe('POST /api/stripe/webhook', () => {
       throw new Error('Invalid signature')
     })
 
-    const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-      method: 'POST',
-      headers: {
-        'stripe-signature': 'invalid_signature',
-      },
-      body: JSON.stringify({}),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/stripe/webhook',
+      {
+        method: 'POST',
+        headers: {
+          'stripe-signature': 'invalid_signature',
+        },
+        body: JSON.stringify({}),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -102,41 +112,56 @@ describe('POST /api/stripe/webhook', () => {
 
     // トランザクションのモックを設定（2回呼ばれる: 1回目はイベントの重複チェック、2回目はユーザー更新）
     let transactionCallCount = 0
-    vi.mocked(adminDb.runTransaction).mockImplementation(async (updateFunction) => {
-      transactionCallCount++
-      if (transactionCallCount === 1) {
-        // イベントの重複チェック用トランザクション
-        const mockTransaction = createMockTransaction()
-        const mockGet = mockTransaction.get as unknown as ReturnType<typeof vi.fn<() => Promise<unknown>>>
-        mockGet.mockImplementation(() => Promise.resolve(mockDoc))
-        return await updateFunction(mockTransaction)
-      } else {
-        // ユーザー更新用トランザクション
-        const mockUserDoc = createMockDocumentSnapshot(true, { membership: 'free' })
-        const mockTransaction = createMockTransaction()
-        const mockGet = mockTransaction.get as unknown as ReturnType<typeof vi.fn<() => Promise<unknown>>>
-        mockGet.mockImplementation(() => Promise.resolve(mockUserDoc))
-        return await updateFunction(mockTransaction)
+    vi.mocked(adminDb.runTransaction).mockImplementation(
+      async (updateFunction) => {
+        transactionCallCount++
+        if (transactionCallCount === 1) {
+          // イベントの重複チェック用トランザクション
+          const mockTransaction = createMockTransaction()
+          const mockGet = mockTransaction.get as unknown as ReturnType<
+            typeof vi.fn<() => Promise<unknown>>
+          >
+          mockGet.mockImplementation(() => Promise.resolve(mockDoc))
+          return await updateFunction(mockTransaction)
+        } else {
+          // ユーザー更新用トランザクション
+          const mockUserDoc = createMockDocumentSnapshot(true, {
+            membership: 'free',
+          })
+          const mockTransaction = createMockTransaction()
+          const mockGet = mockTransaction.get as unknown as ReturnType<
+            typeof vi.fn<() => Promise<unknown>>
+          >
+          mockGet.mockImplementation(() => Promise.resolve(mockUserDoc))
+          return await updateFunction(mockTransaction)
+        }
       }
-    })
+    )
 
     vi.mocked(adminDb.collection).mockImplementation((collection: string) => {
       const mockCollection = createMockCollection()
       if (collection === 'webhook_events') {
-        vi.mocked(mockCollection.doc).mockReturnValue(mockEventRef as unknown as ReturnType<typeof mockCollection.doc>)
+        vi.mocked(mockCollection.doc).mockReturnValue(
+          mockEventRef as unknown as ReturnType<typeof mockCollection.doc>
+        )
       } else if (collection === 'users') {
-        vi.mocked(mockCollection.doc).mockReturnValue(mockUserRef as unknown as ReturnType<typeof mockCollection.doc>)
+        vi.mocked(mockCollection.doc).mockReturnValue(
+          mockUserRef as unknown as ReturnType<typeof mockCollection.doc>
+        )
       }
       return mockCollection as unknown as ReturnType<typeof adminDb.collection>
     })
 
-    const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-      method: 'POST',
-      headers: {
-        'stripe-signature': 'valid_signature',
-      },
-      body: JSON.stringify(mockEvent),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/stripe/webhook',
+      {
+        method: 'POST',
+        headers: {
+          'stripe-signature': 'valid_signature',
+        },
+        body: JSON.stringify(mockEvent),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -163,24 +188,35 @@ describe('POST /api/stripe/webhook', () => {
     }
 
     // トランザクションのモックを設定（既に処理済みの場合）
-    vi.mocked(adminDb.runTransaction).mockImplementation(async (updateFunction) => {
-      const mockTransaction = createMockTransaction()
-      const mockGet = mockTransaction.get as unknown as ReturnType<typeof vi.fn<() => Promise<unknown>>>
-      mockGet.mockImplementation(() => Promise.resolve(mockDoc))
-      return await updateFunction(mockTransaction)
-    })
+    vi.mocked(adminDb.runTransaction).mockImplementation(
+      async (updateFunction) => {
+        const mockTransaction = createMockTransaction()
+        const mockGet = mockTransaction.get as unknown as ReturnType<
+          typeof vi.fn<() => Promise<unknown>>
+        >
+        mockGet.mockImplementation(() => Promise.resolve(mockDoc))
+        return await updateFunction(mockTransaction)
+      }
+    )
 
     const mockColl2 = createMockCollection()
-    vi.mocked(mockColl2.doc).mockReturnValue(mockEventRef as unknown as ReturnType<typeof mockColl2.doc>)
-    vi.mocked(adminDb.collection).mockReturnValue(mockColl2 as unknown as ReturnType<typeof adminDb.collection>)
+    vi.mocked(mockColl2.doc).mockReturnValue(
+      mockEventRef as unknown as ReturnType<typeof mockColl2.doc>
+    )
+    vi.mocked(adminDb.collection).mockReturnValue(
+      mockColl2 as unknown as ReturnType<typeof adminDb.collection>
+    )
 
-    const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-      method: 'POST',
-      headers: {
-        'stripe-signature': 'valid_signature',
-      },
-      body: JSON.stringify(mockEvent),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/stripe/webhook',
+      {
+        method: 'POST',
+        headers: {
+          'stripe-signature': 'valid_signature',
+        },
+        body: JSON.stringify(mockEvent),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -217,18 +253,24 @@ describe('POST /api/stripe/webhook', () => {
     }
 
     // トランザクションのモックを設定
-    vi.mocked(adminDb.runTransaction).mockImplementation(async (updateFunction) => {
-      const mockTransaction = createMockTransaction()
-      const mockDocSnapshot = createMockDocumentSnapshot(false)
-      const mockGet = mockTransaction.get as unknown as ReturnType<typeof vi.fn<() => Promise<unknown>>>
-      mockGet.mockImplementation(() => Promise.resolve(mockDocSnapshot))
-      return await updateFunction(mockTransaction)
-    })
+    vi.mocked(adminDb.runTransaction).mockImplementation(
+      async (updateFunction) => {
+        const mockTransaction = createMockTransaction()
+        const mockDocSnapshot = createMockDocumentSnapshot(false)
+        const mockGet = mockTransaction.get as unknown as ReturnType<
+          typeof vi.fn<() => Promise<unknown>>
+        >
+        mockGet.mockImplementation(() => Promise.resolve(mockDocSnapshot))
+        return await updateFunction(mockTransaction)
+      }
+    )
 
     vi.mocked(adminDb.collection).mockImplementation((collection: string) => {
       const mockColl = createMockCollection()
       if (collection === 'webhook_events') {
-        vi.mocked(mockColl.doc).mockReturnValue(mockEventRef as unknown as ReturnType<typeof mockColl.doc>)
+        vi.mocked(mockColl.doc).mockReturnValue(
+          mockEventRef as unknown as ReturnType<typeof mockColl.doc>
+        )
       } else if (collection === 'users') {
         vi.mocked(mockColl.where).mockReturnValue({
           limit: vi.fn(() => ({
@@ -239,13 +281,16 @@ describe('POST /api/stripe/webhook', () => {
       return mockColl as unknown as ReturnType<typeof adminDb.collection>
     })
 
-    const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-      method: 'POST',
-      headers: {
-        'stripe-signature': 'valid_signature',
-      },
-      body: JSON.stringify(mockEvent),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/stripe/webhook',
+      {
+        method: 'POST',
+        headers: {
+          'stripe-signature': 'valid_signature',
+        },
+        body: JSON.stringify(mockEvent),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -278,19 +323,28 @@ describe('POST /api/stripe/webhook', () => {
     }
 
     // トランザクションのモックを設定（イベントチェックでエラーを発生させる）
-    vi.mocked(adminDb.runTransaction).mockRejectedValue(new Error('Database error'))
+    vi.mocked(adminDb.runTransaction).mockRejectedValue(
+      new Error('Database error')
+    )
 
     const mockColl4 = createMockCollection()
-    vi.mocked(mockColl4.doc).mockReturnValue(mockEventRef as unknown as ReturnType<typeof mockColl4.doc>)
-    vi.mocked(adminDb.collection).mockReturnValue(mockColl4 as unknown as ReturnType<typeof adminDb.collection>)
+    vi.mocked(mockColl4.doc).mockReturnValue(
+      mockEventRef as unknown as ReturnType<typeof mockColl4.doc>
+    )
+    vi.mocked(adminDb.collection).mockReturnValue(
+      mockColl4 as unknown as ReturnType<typeof adminDb.collection>
+    )
 
-    const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-      method: 'POST',
-      headers: {
-        'stripe-signature': 'valid_signature',
-      },
-      body: JSON.stringify(mockEvent),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/stripe/webhook',
+      {
+        method: 'POST',
+        headers: {
+          'stripe-signature': 'valid_signature',
+        },
+        body: JSON.stringify(mockEvent),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -304,13 +358,16 @@ describe('POST /api/stripe/webhook', () => {
   it('returns 500 when webhook secret is not configured', async () => {
     delete process.env.STRIPE_WEBHOOK_SECRET
 
-    const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
-      method: 'POST',
-      headers: {
-        'stripe-signature': 'valid_signature',
-      },
-      body: JSON.stringify({}),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/stripe/webhook',
+      {
+        method: 'POST',
+        headers: {
+          'stripe-signature': 'valid_signature',
+        },
+        body: JSON.stringify({}),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()

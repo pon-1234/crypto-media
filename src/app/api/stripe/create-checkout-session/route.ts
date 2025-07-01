@@ -6,7 +6,7 @@ import { adminDb } from '@/lib/firebase/admin'
 
 /**
  * Stripe Checkoutセッション作成APIルート
- * 
+ *
  * @doc DEVELOPMENT_GUIDE.md#Stripe決済フロー
  * @related src/app/register/page.tsx - このAPIを呼び出す登録ページ
  * @related src/lib/stripe/client.ts - Stripe SDKクライアント
@@ -16,12 +16,9 @@ export async function POST() {
   try {
     // 認証チェック
     const session = await getServerSession(authOptions)
-    
+
     if (!session?.user?.email || !session?.user?.id) {
-      return NextResponse.json(
-        { error: '認証が必要です' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
     }
 
     // Price IDのチェック
@@ -36,12 +33,15 @@ export async function POST() {
     // FirestoreからユーザーのStripe顧客IDを取得
     let customerId: string | undefined
     try {
-      const userDoc = await adminDb.collection('users').doc(session.user.id).get()
+      const userDoc = await adminDb
+        .collection('users')
+        .doc(session.user.id)
+        .get()
       const userData = userDoc.data()
-      
+
       if (userData?.stripeCustomerId) {
         customerId = userData.stripeCustomerId
-        
+
         // 既存のアクティブなサブスクリプションがあるか確認
         if (userData.membership === 'paid' && userData.stripeSubscriptionId) {
           return NextResponse.json(
@@ -58,7 +58,7 @@ export async function POST() {
 
         if (customers.data.length > 0) {
           customerId = customers.data[0].id
-          
+
           // FirestoreにcustomerIdをキャッシュ
           await userDoc.ref.update({
             stripeCustomerId: customerId,
@@ -103,12 +103,12 @@ export async function POST() {
     return NextResponse.json({ url: checkoutSession.url })
   } catch (error) {
     console.error('Checkout session creation error:', error)
-    
+
     // Stripeエラーの詳細なハンドリング
     if (error instanceof Error) {
       // Stripeの型エラーを正しく処理
       const stripeError = error as Error & { type?: string }
-      
+
       if (stripeError.type === 'StripeInvalidRequestError') {
         return NextResponse.json(
           { error: 'リクエストが無効です' },
@@ -132,7 +132,7 @@ export async function POST() {
         )
       }
     }
-    
+
     return NextResponse.json(
       { error: 'Checkoutセッションの作成に失敗しました' },
       { status: 500 }

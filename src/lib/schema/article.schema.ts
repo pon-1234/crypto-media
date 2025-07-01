@@ -38,8 +38,12 @@ export type MembershipLevel = z.infer<typeof membershipLevelSchema>
 export const mediaArticleSchema = microCMSBaseSchema.extend({
   title: z.string().min(1).describe('記事タイトル'),
   slug: z.string().min(1).describe('URLスラッグ'),
-  type: articleTypeSchema.describe('記事タイプ - article: 通常記事, survey_report: 調査レポート, media_news: メディアお知らせ'),
-  membershipLevel: membershipLevelSchema.describe('アクセスレベル - public: 全ユーザー, paid: 有料会員のみ'),
+  type: articleTypeSchema.describe(
+    '記事タイプ - article: 通常記事, survey_report: 調査レポート, media_news: メディアお知らせ'
+  ),
+  membershipLevel: membershipLevelSchema.describe(
+    'アクセスレベル - public: 全ユーザー, paid: 有料会員のみ'
+  ),
   content: z.string().min(1).describe('記事本文'),
   heroImage: microCMSImageSchema.describe('メイン画像（OGPにも使用）'),
   category: categorySchema.optional().describe('カテゴリ（単一参照）'),
@@ -47,8 +51,16 @@ export const mediaArticleSchema = microCMSBaseSchema.extend({
   author: expertSchema.optional().describe('主執筆者'),
   supervisor: expertSchema.optional().describe('主監修者'),
   features: z.array(featureSchema).optional().describe('所属する特集'),
-  previewContent: z.string().optional().describe('プレビューコンテンツ（有料記事の非会員向けティザー）'),
-  paywallCTA: z.string().optional().describe('ペイウォールCTAテキスト（カスタムCTA、空の場合はデフォルト使用）'),
+  previewContent: z
+    .string()
+    .optional()
+    .describe('プレビューコンテンツ（有料記事の非会員向けティザー）'),
+  paywallCTA: z
+    .string()
+    .optional()
+    .describe(
+      'ペイウォールCTAテキスト（カスタムCTA、空の場合はデフォルト使用）'
+    ),
 })
 
 /**

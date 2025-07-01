@@ -18,17 +18,20 @@ export const revalidate = 3600
  */
 export const metadata: Metadata = {
   title: '記事一覧 | Crypto Media',
-  description: '暗号資産・ブロックチェーンに関する最新の記事、調査レポート、お知らせをお届けします。',
+  description:
+    '暗号資産・ブロックチェーンに関する最新の記事、調査レポート、お知らせをお届けします。',
   openGraph: {
     title: '記事一覧 | Crypto Media',
-    description: '暗号資産・ブロックチェーンに関する最新の記事、調査レポート、お知らせをお届けします。',
+    description:
+      '暗号資産・ブロックチェーンに関する最新の記事、調査レポート、お知らせをお届けします。',
     type: 'website',
     url: '/media/articles',
   },
   twitter: {
     card: 'summary_large_image',
     title: '記事一覧 | Crypto Media',
-    description: '暗号資産・ブロックチェーンに関する最新の記事、調査レポート、お知らせをお届けします。',
+    description:
+      '暗号資産・ブロックチェーンに関する最新の記事、調査レポート、お知らせをお届けします。',
   },
 }
 
@@ -55,7 +58,7 @@ export default async function MediaArticlesPage() {
       <div className="container mx-auto px-4 py-8">
         {/* ページヘッダー */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">記事一覧</h1>
+          <h1 className="mb-4 text-3xl font-bold text-gray-900">記事一覧</h1>
           <p className="text-gray-600">
             暗号資産・ブロックチェーンに関する最新の記事、調査レポート、お知らせをお届けします。
           </p>
@@ -64,7 +67,7 @@ export default async function MediaArticlesPage() {
         {/* 記事一覧 */}
         {articlesResponse.contents.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {articlesResponse.contents.map((article) => (
                 <ArticleCard key={article.id} article={article} />
               ))}
@@ -74,14 +77,15 @@ export default async function MediaArticlesPage() {
             {articlesResponse.totalCount > articlesResponse.limit && (
               <div className="text-center text-gray-600">
                 <p>
-                  {articlesResponse.totalCount}件中 {articlesResponse.contents.length}件を表示
+                  {articlesResponse.totalCount}件中{' '}
+                  {articlesResponse.contents.length}件を表示
                 </p>
                 {/* TODO: ページネーションコンポーネントの実装 */}
               </div>
             )}
           </>
         ) : (
-          <div className="text-center py-16">
+          <div className="py-16 text-center">
             <p className="text-gray-600">記事がありません。</p>
           </div>
         )}

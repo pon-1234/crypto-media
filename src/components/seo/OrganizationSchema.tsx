@@ -1,4 +1,4 @@
-import { StructuredData } from './StructuredData';
+import { StructuredData } from './StructuredData'
 
 /**
  * Organization構造化データを生成するコンポーネント
@@ -6,8 +6,8 @@ import { StructuredData } from './StructuredData';
  * @related src/app/layout.tsx
  */
 export function OrganizationSchema() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp';
-  
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp'
+
   const organizationData = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -48,9 +48,10 @@ export function OrganizationSchema() {
         name: 'Crypto Media Founder',
       },
     ],
-    description: '仮想通貨・ブロックチェーンの最新情報を提供する日本最大級のメディアプラットフォーム',
+    description:
+      '仮想通貨・ブロックチェーンの最新情報を提供する日本最大級のメディアプラットフォーム',
     slogan: '仮想通貨投資を、もっと身近に。',
-  };
+  }
 
-  return <StructuredData data={organizationData} />;
+  return <StructuredData data={organizationData} />
 }

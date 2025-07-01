@@ -4,7 +4,13 @@ import { useSession, signOut } from 'next-auth/react'
 import CorporateHeader from './CorporateHeader'
 
 vi.mock('next/link', () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => <a href={href}>{children}</a>,
+  default: ({
+    children,
+    href,
+  }: {
+    children: React.ReactNode
+    href: string
+  }) => <a href={href}>{children}</a>,
 }))
 
 vi.mock('next-auth/react', () => ({
@@ -13,15 +19,15 @@ vi.mock('next-auth/react', () => ({
 }))
 
 interface NextImageProps {
-  src: string;
-  alt: string;
-  [key: string]: unknown;
+  src: string
+  alt: string
+  [key: string]: unknown
 }
 
 vi.mock('next/image', () => ({
   default: ({ src, alt, ...props }: NextImageProps) => {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={alt} {...props} />;
+    return <img src={src} alt={alt} {...props} />
   },
 }))
 
@@ -34,7 +40,7 @@ describe('CorporateHeader', () => {
       data: null,
       status: 'unauthenticated',
     } as ReturnType<typeof useSession>)
-    
+
     render(<CorporateHeader />)
     expect(screen.getByText('CORP')).toBeInTheDocument()
   })
@@ -44,9 +50,9 @@ describe('CorporateHeader', () => {
       data: null,
       status: 'unauthenticated',
     } as ReturnType<typeof useSession>)
-    
+
     render(<CorporateHeader />)
-    
+
     expect(screen.getByText('会社概要')).toBeInTheDocument()
     expect(screen.getByText('サービス')).toBeInTheDocument()
     expect(screen.getByText('ニュース')).toBeInTheDocument()
@@ -59,14 +65,29 @@ describe('CorporateHeader', () => {
       data: null,
       status: 'unauthenticated',
     } as ReturnType<typeof useSession>)
-    
+
     render(<CorporateHeader />)
-    
-    expect(screen.getByRole('link', { name: '会社概要' })).toHaveAttribute('href', '/about')
-    expect(screen.getByRole('link', { name: 'サービス' })).toHaveAttribute('href', '/service')
-    expect(screen.getByRole('link', { name: 'ニュース' })).toHaveAttribute('href', '/news')
-    expect(screen.getByRole('link', { name: 'お問い合わせ' })).toHaveAttribute('href', '/contact')
-    expect(screen.getByRole('link', { name: 'メディア' })).toHaveAttribute('href', '/media')
+
+    expect(screen.getByRole('link', { name: '会社概要' })).toHaveAttribute(
+      'href',
+      '/about'
+    )
+    expect(screen.getByRole('link', { name: 'サービス' })).toHaveAttribute(
+      'href',
+      '/service'
+    )
+    expect(screen.getByRole('link', { name: 'ニュース' })).toHaveAttribute(
+      'href',
+      '/news'
+    )
+    expect(screen.getByRole('link', { name: 'お問い合わせ' })).toHaveAttribute(
+      'href',
+      '/contact'
+    )
+    expect(screen.getByRole('link', { name: 'メディア' })).toHaveAttribute(
+      'href',
+      '/media'
+    )
   })
 
   it('should hide mobile menu by default', () => {
@@ -74,9 +95,9 @@ describe('CorporateHeader', () => {
       data: null,
       status: 'unauthenticated',
     } as ReturnType<typeof useSession>)
-    
+
     render(<CorporateHeader />)
-    
+
     const mobileNavItems = screen.queryAllByRole('link', { name: '会社概要' })
     expect(mobileNavItems).toHaveLength(1)
   })
@@ -86,18 +107,18 @@ describe('CorporateHeader', () => {
       data: null,
       status: 'unauthenticated',
     } as ReturnType<typeof useSession>)
-    
+
     render(<CorporateHeader />)
-    
+
     const menuButton = screen.getByRole('button', { name: 'メニューを開く' })
-    
+
     fireEvent.click(menuButton)
-    
+
     const mobileNavItems = screen.getAllByRole('link', { name: '会社概要' })
     expect(mobileNavItems).toHaveLength(2)
-    
+
     fireEvent.click(menuButton)
-    
+
     const updatedNavItems = screen.getAllByRole('link', { name: '会社概要' })
     expect(updatedNavItems).toHaveLength(1)
   })
@@ -110,9 +131,12 @@ describe('CorporateHeader', () => {
       } as ReturnType<typeof useSession>)
 
       render(<CorporateHeader />)
-      
+
       expect(screen.getByText('ログイン')).toBeInTheDocument()
-      expect(screen.getByRole('link', { name: 'ログイン' })).toHaveAttribute('href', '/login')
+      expect(screen.getByRole('link', { name: 'ログイン' })).toHaveAttribute(
+        'href',
+        '/login'
+      )
     })
 
     it('読み込み中はローディング表示が出る', () => {
@@ -122,7 +146,7 @@ describe('CorporateHeader', () => {
       } as ReturnType<typeof useSession>)
 
       render(<CorporateHeader />)
-      
+
       expect(screen.getByTestId('loading-indicator')).toBeInTheDocument()
     })
 
@@ -139,7 +163,7 @@ describe('CorporateHeader', () => {
       } as ReturnType<typeof useSession>)
 
       render(<CorporateHeader />)
-      
+
       const avatar = screen.getByAltText('Test User')
       expect(avatar).toBeInTheDocument()
       expect(avatar).toHaveAttribute('src', 'https://example.com/avatar.jpg')
@@ -157,7 +181,7 @@ describe('CorporateHeader', () => {
       } as ReturnType<typeof useSession>)
 
       render(<CorporateHeader />)
-      
+
       expect(screen.getByText('T')).toBeInTheDocument()
     })
 
@@ -173,23 +197,24 @@ describe('CorporateHeader', () => {
       } as ReturnType<typeof useSession>)
 
       render(<CorporateHeader />)
-      
+
       // メニューは最初は閉じている
       expect(screen.queryByText('マイページ')).not.toBeInTheDocument()
-      
+
       // アバターをクリックしてメニューを開く
-      const avatarButton = screen.getByText('T').parentElement?.parentElement as HTMLElement
+      const avatarButton = screen.getByText('T').parentElement
+        ?.parentElement as HTMLElement
       fireEvent.click(avatarButton)
-      
+
       await waitFor(() => {
         expect(screen.getByText('マイページ')).toBeInTheDocument()
         expect(screen.getByText('ログアウト')).toBeInTheDocument()
         expect(screen.getByText('Test User')).toBeInTheDocument()
       })
-      
+
       // もう一度クリックして閉じる
       fireEvent.click(avatarButton)
-      
+
       await waitFor(() => {
         expect(screen.queryByText('マイページ')).not.toBeInTheDocument()
       })
@@ -207,17 +232,17 @@ describe('CorporateHeader', () => {
       } as ReturnType<typeof useSession>)
 
       render(<CorporateHeader />)
-      
+
       // メニューを開く
-      const avatarButton = screen.getByText('T').parentElement?.parentElement as HTMLElement
+      const avatarButton = screen.getByText('T').parentElement
+        ?.parentElement as HTMLElement
       fireEvent.click(avatarButton)
-      
+
       // ログアウトボタンをクリック
       const logoutButton = await screen.findByText('ログアウト')
       fireEvent.click(logoutButton)
-      
+
       expect(signOut).toHaveBeenCalledWith({ callbackUrl: '/' })
     })
   })
-
 })

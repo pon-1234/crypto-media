@@ -34,7 +34,9 @@ export default function AboutPage() {
                   <th className="bg-gray-50 px-6 py-4 text-left font-medium text-gray-900">
                     会社名
                   </th>
-                  <td className="px-6 py-4 text-gray-700">株式会社クリプトメディア</td>
+                  <td className="px-6 py-4 text-gray-700">
+                    株式会社クリプトメディア
+                  </td>
                 </tr>
                 <tr className="border-b border-gray-200">
                   <th className="bg-gray-50 px-6 py-4 text-left font-medium text-gray-900">
@@ -68,7 +70,9 @@ export default function AboutPage() {
                   <th className="bg-gray-50 px-6 py-4 text-left font-medium text-gray-900">
                     従業員数
                   </th>
-                  <td className="px-6 py-4 text-gray-700">25名（2025年1月現在）</td>
+                  <td className="px-6 py-4 text-gray-700">
+                    25名（2025年1月現在）
+                  </td>
                 </tr>
                 <tr>
                   <th className="bg-gray-50 px-6 py-4 text-left font-medium text-gray-900">
@@ -99,8 +103,12 @@ export default function AboutPage() {
         <section>
           <h2 className="mb-4 text-2xl font-semibold">ビジョン</h2>
           <ul className="list-inside list-disc space-y-2 text-gray-700">
-            <li>正確で信頼できる情報の提供を通じて、暗号資産市場の健全な発展に貢献する</li>
-            <li>初心者から上級者まで、すべての人に価値ある知識とインサイトを届ける</li>
+            <li>
+              正確で信頼できる情報の提供を通じて、暗号資産市場の健全な発展に貢献する
+            </li>
+            <li>
+              初心者から上級者まで、すべての人に価値ある知識とインサイトを届ける
+            </li>
             <li>ブロックチェーン技術が創る新しい未来を、わかりやすく伝える</li>
           </ul>
         </section>

@@ -18,7 +18,11 @@ vi.mock('@/lib/microcms', () => ({
 
 // Mock components
 vi.mock('@/components/ui/Breadcrumbs', () => ({
-  Breadcrumbs: ({ items }: { items: Array<{ label: string; href?: string }> }) => (
+  Breadcrumbs: ({
+    items,
+  }: {
+    items: Array<{ label: string; href?: string }>
+  }) => (
     <nav data-testid="breadcrumbs">
       {items.map((item, index) => (
         <span key={index}>{item.label}</span>
@@ -59,7 +63,11 @@ describe('CategoryPage', () => {
         type: 'article' as const,
         membershipLevel: 'public' as const,
         content: 'Content',
-        heroImage: { url: 'https://example.com/image.jpg', height: 600, width: 800 },
+        heroImage: {
+          url: 'https://example.com/image.jpg',
+          height: 600,
+          width: 800,
+        },
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z',
         publishedAt: '2024-01-01T00:00:00.000Z',
@@ -79,7 +87,9 @@ describe('CategoryPage', () => {
     it('generates correct metadata for existing category', async () => {
       vi.mocked(microCMS.getCategoryBySlug).mockResolvedValue(mockCategory)
 
-      const metadata = await generateMetadata({ params: { slug: 'blockchain' } })
+      const metadata = await generateMetadata({
+        params: { slug: 'blockchain' },
+      })
 
       expect(metadata.title).toBe('ブロックチェーン | Crypto Media')
       expect(metadata.description).toContain('ブロックチェーン')
@@ -90,7 +100,9 @@ describe('CategoryPage', () => {
     it('returns error metadata for non-existent category', async () => {
       vi.mocked(microCMS.getCategoryBySlug).mockResolvedValue(null)
 
-      const metadata = await generateMetadata({ params: { slug: 'non-existent' } })
+      const metadata = await generateMetadata({
+        params: { slug: 'non-existent' },
+      })
 
       expect(metadata.title).toBe('カテゴリが見つかりません')
     })
@@ -112,24 +124,23 @@ describe('CategoryPage', () => {
 
       const params = await generateStaticParams()
 
-      expect(params).toEqual([
-        { slug: 'blockchain' },
-        { slug: 'defi' },
-      ])
+      expect(params).toEqual([{ slug: 'blockchain' }, { slug: 'defi' }])
     })
   })
 
   describe('Page component', () => {
     it('renders category page with articles', async () => {
       vi.mocked(microCMS.getCategoryBySlug).mockResolvedValue(mockCategory)
-      vi.mocked(microCMS.getMediaArticlesByCategory).mockResolvedValue(mockArticles)
+      vi.mocked(microCMS.getMediaArticlesByCategory).mockResolvedValue(
+        mockArticles
+      )
 
       const Component = await CategoryPage({ params: { slug: 'blockchain' } })
       const { getByTestId, getByText } = render(Component)
 
       // Check breadcrumbs
       expect(getByTestId('breadcrumbs')).toBeInTheDocument()
-      
+
       // Check page header
       expect(getByText('ブロックチェーンの記事一覧')).toBeInTheDocument()
       expect(getByText('1件の記事が見つかりました')).toBeInTheDocument()
@@ -140,7 +151,9 @@ describe('CategoryPage', () => {
       expect(getByText('Test Article 1')).toBeInTheDocument()
 
       // Check structured data
-      const scriptTag = document.querySelector('script[type="application/ld+json"]')
+      const scriptTag = document.querySelector(
+        'script[type="application/ld+json"]'
+      )
       expect(scriptTag).toBeInTheDocument()
       if (scriptTag) {
         const jsonLd = JSON.parse(scriptTag.textContent || '{}')
@@ -164,12 +177,16 @@ describe('CategoryPage', () => {
       }
 
       vi.mocked(microCMS.getCategoryBySlug).mockResolvedValue(mockCategory)
-      vi.mocked(microCMS.getMediaArticlesByCategory).mockResolvedValue(manyArticles)
+      vi.mocked(microCMS.getMediaArticlesByCategory).mockResolvedValue(
+        manyArticles
+      )
 
       const Component = await CategoryPage({ params: { slug: 'blockchain' } })
       const { getByText } = render(Component)
 
-      expect(getByText('さらに記事を読み込む機能は準備中です')).toBeInTheDocument()
+      expect(
+        getByText('さらに記事を読み込む機能は準備中です')
+      ).toBeInTheDocument()
     })
   })
 })

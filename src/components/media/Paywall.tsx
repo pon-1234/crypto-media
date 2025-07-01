@@ -1,22 +1,22 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Lock } from 'lucide-react';
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Lock } from 'lucide-react'
 
 interface PaywallProps {
   /** 記事のタイトル */
-  title: string;
+  title: string
   /** プレビューとして表示するコンテンツ（HTMLまたはテキスト） */
-  preview: string;
+  preview: string
   /** プレビューがHTMLかテキストか */
-  isHtml?: boolean;
+  isHtml?: boolean
 }
 
 /**
  * ペイウォールコンポーネント
- * 
+ *
  * @doc 有料記事に対して、非有料会員（ゲスト・無料会員）向けに
  * プレビューコンテンツと有料会員登録への誘導を表示します。
- * 
+ *
  * @related src/app/media/articles/[slug]/page.tsx - 記事詳細ページでの使用
  * @related src/lib/auth/membership.ts - 会員ステータス判定
  */
@@ -31,7 +31,7 @@ export function Paywall({ title, preview, isHtml = true }: PaywallProps) {
       {/* プレビューコンテンツ */}
       <div className="mb-8">
         {isHtml ? (
-          <div 
+          <div
             className="prose prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: preview }}
           />
@@ -45,24 +45,24 @@ export function Paywall({ title, preview, isHtml = true }: PaywallProps) {
         <div className="mb-4 flex justify-center">
           <Lock className="h-12 w-12 text-gray-400" />
         </div>
-        
+
         <h2 className="mb-4 text-2xl font-bold text-gray-900">
           この記事は有料会員限定です
         </h2>
-        
+
         <p className="mb-6 text-gray-600">
           この記事の続きを読むには、有料会員登録が必要です。
           <br />
           月額1,980円で、すべての有料記事をお読みいただけます。
         </p>
-        
+
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
           <Link href="/register" className="inline-block">
             <Button size="lg" className="w-full sm:w-auto">
               有料会員登録する
             </Button>
           </Link>
-          
+
           <Link href="/login" className="inline-block">
             <Button variant="outline" size="lg" className="w-full sm:w-auto">
               ログインする
@@ -100,5 +100,5 @@ export function Paywall({ title, preview, isHtml = true }: PaywallProps) {
         </ul>
       </div>
     </div>
-  );
+  )
 }

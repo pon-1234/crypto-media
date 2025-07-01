@@ -1,4 +1,4 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from 'next'
 
 /**
  * robots.txtを動的に生成
@@ -6,8 +6,8 @@ import { MetadataRoute } from 'next';
  * @related src/app/sitemap.ts
  */
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp';
-  
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp'
+
   return {
     rules: [
       {
@@ -28,50 +28,32 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: 'Googlebot',
         allow: '/',
-        disallow: [
-          '/api/',
-          '/media/mypage/',
-        ],
+        disallow: ['/api/', '/media/mypage/'],
       },
       {
         userAgent: 'bingbot',
         allow: '/',
-        disallow: [
-          '/api/',
-          '/media/mypage/',
-        ],
+        disallow: ['/api/', '/media/mypage/'],
       },
       {
         userAgent: 'Slurp',
         allow: '/',
-        disallow: [
-          '/api/',
-          '/media/mypage/',
-        ],
+        disallow: ['/api/', '/media/mypage/'],
       },
       {
         userAgent: 'DuckDuckBot',
         allow: '/',
-        disallow: [
-          '/api/',
-          '/media/mypage/',
-        ],
+        disallow: ['/api/', '/media/mypage/'],
       },
       {
         userAgent: 'Baiduspider',
         allow: '/',
-        disallow: [
-          '/api/',
-          '/media/mypage/',
-        ],
+        disallow: ['/api/', '/media/mypage/'],
       },
       {
         userAgent: 'YandexBot',
         allow: '/',
-        disallow: [
-          '/api/',
-          '/media/mypage/',
-        ],
+        disallow: ['/api/', '/media/mypage/'],
       },
       // 悪意のあるボットをブロック
       {
@@ -93,5 +75,5 @@ export default function robots(): MetadataRoute.Robots {
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
     host: baseUrl,
-  };
+  }
 }

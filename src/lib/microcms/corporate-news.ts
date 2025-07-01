@@ -1,7 +1,7 @@
-import { 
-  corporateNewsListSchema, 
-  corporateNewsSchema, 
-  type CorporateNews 
+import {
+  corporateNewsListSchema,
+  corporateNewsSchema,
+  type CorporateNews,
 } from '@/lib/schema'
 import type { MicroCMSQueries } from 'microcms-js-sdk'
 import { client } from './client'
@@ -9,12 +9,10 @@ import { handleError } from '@/lib/utils/handleError'
 
 /**
  * コーポレートお知らせ一覧を取得する
- * 
+ *
  * @issue #4 - コーポレートお知らせ一覧・詳細ページの実装
  */
-export async function getCorporateNewsList(
-  queries?: MicroCMSQueries
-): Promise<{
+export async function getCorporateNewsList(queries?: MicroCMSQueries): Promise<{
   contents: CorporateNews[]
   totalCount: number
   offset: number
@@ -23,7 +21,7 @@ export async function getCorporateNewsList(
   try {
     const response = await client.get({
       endpoint: 'corporate_news',
-      queries
+      queries,
     })
 
     return corporateNewsListSchema.parse(response)
@@ -35,7 +33,7 @@ export async function getCorporateNewsList(
 
 /**
  * コーポレートお知らせの詳細を取得する
- * 
+ *
  * @issue #4 - コーポレートお知らせ一覧・詳細ページの実装
  */
 export async function getCorporateNewsDetail(
@@ -46,12 +44,15 @@ export async function getCorporateNewsDetail(
     const response = await client.get({
       endpoint: 'corporate_news',
       contentId,
-      queries
+      queries,
     })
 
     return corporateNewsSchema.parse(response)
   } catch (error) {
-    handleError(error, `Failed to fetch corporate news detail for id: ${contentId}`)
+    handleError(
+      error,
+      `Failed to fetch corporate news detail for id: ${contentId}`
+    )
     throw error
   }
 }
@@ -59,7 +60,7 @@ export async function getCorporateNewsDetail(
 /**
  * すべてのコーポレートお知らせのIDを取得する
  * generateStaticParams用
- * 
+ *
  * @issue #4 - コーポレートお知らせ一覧・詳細ページの実装
  */
 export async function getAllCorporateNewsIds(): Promise<string[]> {
@@ -68,12 +69,12 @@ export async function getAllCorporateNewsIds(): Promise<string[]> {
       endpoint: 'corporate_news',
       queries: {
         fields: 'id',
-        limit: 100 // 必要に応じて調整
-      }
+        limit: 100, // 必要に応じて調整
+      },
     })
 
     const parsed = corporateNewsListSchema.parse(response)
-    return parsed.contents.map(item => item.id)
+    return parsed.contents.map((item) => item.id)
   } catch (error) {
     handleError(error, 'Failed to fetch corporate news IDs')
     throw error

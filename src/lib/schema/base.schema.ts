@@ -34,7 +34,9 @@ export interface MicroCMSListResponse<T> {
 /**
  * リストレスポンスのスキーマを生成するヘルパー関数
  */
-export function createListResponseSchema<T extends z.ZodTypeAny>(itemSchema: T) {
+export function createListResponseSchema<T extends z.ZodTypeAny>(
+  itemSchema: T
+) {
   return z.object({
     contents: z.array(itemSchema),
     totalCount: z.number(),

@@ -6,7 +6,14 @@
  */
 
 import { vi } from 'vitest'
-import type { DocumentReference, DocumentSnapshot, QuerySnapshot, Transaction, WriteBatch, WriteResult } from 'firebase-admin/firestore'
+import type {
+  DocumentReference,
+  DocumentSnapshot,
+  QuerySnapshot,
+  Transaction,
+  WriteBatch,
+  WriteResult,
+} from 'firebase-admin/firestore'
 
 /**
  * Firestore DocumentSnapshotのモックを生成
@@ -25,9 +32,9 @@ export function createMockDocumentSnapshot<T = unknown>(
     data: exists ? () => data as T : () => undefined,
     get: (field: string) => {
       if (data && typeof data === 'object' && field in data) {
-        return (data as Record<string, unknown>)[field];
+        return (data as Record<string, unknown>)[field]
       }
-      return undefined;
+      return undefined
     },
     isEqual: vi.fn(),
     createTime: { toDate: () => new Date(), toMillis: () => Date.now() },
@@ -40,7 +47,9 @@ export function createMockDocumentSnapshot<T = unknown>(
  * Firestore DocumentReferenceのモックを生成
  * @returns DocumentReferenceのモック
  */
-export function createMockDocumentReference<T = unknown>(): DocumentReference<T> {
+export function createMockDocumentReference<
+  T = unknown,
+>(): DocumentReference<T> {
   return {
     id: 'doc_test_123',
     path: 'test/doc_test_123',
@@ -67,8 +76,10 @@ export function createMockDocumentReference<T = unknown>(): DocumentReference<T>
 export function createMockQuerySnapshot<T = unknown>(
   docs: Array<{ exists: boolean; data?: T }>
 ): QuerySnapshot<T> {
-  const mockDocs = docs.map(doc => createMockDocumentSnapshot(doc.exists, doc.data))
-  
+  const mockDocs = docs.map((doc) =>
+    createMockDocumentSnapshot(doc.exists, doc.data)
+  )
+
   return {
     docs: mockDocs,
     empty: mockDocs.length === 0,

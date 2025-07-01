@@ -5,14 +5,16 @@
  * @issue #1 - プロジェクト基盤とCI/CDパイプラインの構築
  */
 
-import { z } from 'zod';
+import { z } from 'zod'
 
 /**
  * 環境変数のスキーマ定義
  */
 const envSchema = z.object({
   // Node環境
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
 
   // Firebase設定（クライアント）
   NEXT_PUBLIC_FIREBASE_API_KEY: z.string().min(1),
@@ -52,19 +54,23 @@ const envSchema = z.object({
   // HubSpot設定（オプション）
   NEXT_PUBLIC_HUBSPOT_PORTAL_ID: z.string().optional(),
   NEXT_PUBLIC_HUBSPOT_FORM_ID: z.string().optional(),
-});
+})
 
 /**
  * 環境変数の型定義
  */
-export type Env = z.infer<typeof envSchema>;
+export type Env = z.infer<typeof envSchema>
 
 /**
  * 環境変数のバリデーションと取得
  */
 function validateEnv(): Env {
   // テスト環境またはCI環境ではモック値を返す
-  if (process.env.NODE_ENV === 'test' || process.env.VITEST || process.env.CI === 'true') {
+  if (
+    process.env.NODE_ENV === 'test' ||
+    process.env.VITEST ||
+    process.env.CI === 'true'
+  ) {
     return {
       NODE_ENV: 'test',
       NEXT_PUBLIC_FIREBASE_API_KEY: 'test-api-key',
@@ -75,7 +81,8 @@ function validateEnv(): Env {
       NEXT_PUBLIC_FIREBASE_APP_ID: 'test-app-id',
       FIREBASE_ADMIN_PROJECT_ID: 'test-project',
       FIREBASE_ADMIN_CLIENT_EMAIL: 'test@test.iam.gserviceaccount.com',
-      FIREBASE_ADMIN_PRIVATE_KEY: '-----BEGIN PRIVATE KEY-----\ntest\n-----END PRIVATE KEY-----',
+      FIREBASE_ADMIN_PRIVATE_KEY:
+        '-----BEGIN PRIVATE KEY-----\ntest\n-----END PRIVATE KEY-----',
       MICROCMS_SERVICE_DOMAIN: 'test-service',
       MICROCMS_API_KEY: 'test-api-key',
       STRIPE_SECRET_KEY: 'sk_test_12345',
@@ -87,7 +94,7 @@ function validateEnv(): Env {
       GOOGLE_CLIENT_SECRET: 'test-client-secret',
       NEXT_PUBLIC_HUBSPOT_PORTAL_ID: 'test-portal-id',
       NEXT_PUBLIC_HUBSPOT_FORM_ID: 'test-form-id',
-    };
+    }
   }
 
   // クライアントサイドでは検証を行わず、公開されている環境変数のみを返す
@@ -95,12 +102,17 @@ function validateEnv(): Env {
     return {
       NODE_ENV: process.env.NODE_ENV as 'development' | 'production' | 'test',
       NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
-      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
-      NEXT_PUBLIC_FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
-      NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
-      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:
+        process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID:
+        process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
+      NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET:
+        process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
+      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID:
+        process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
       NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
-      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+        process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
       // サーバーサイドの環境変数はダミー値を設定
       FIREBASE_ADMIN_PROJECT_ID: '',
       FIREBASE_ADMIN_CLIENT_EMAIL: 'dummy@example.com',
@@ -115,17 +127,21 @@ function validateEnv(): Env {
       GOOGLE_CLIENT_SECRET: '',
       NEXT_PUBLIC_HUBSPOT_PORTAL_ID: process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID,
       NEXT_PUBLIC_HUBSPOT_FORM_ID: process.env.NEXT_PUBLIC_HUBSPOT_FORM_ID,
-    } as Env;
+    } as Env
   }
 
   const parsed = envSchema.safeParse({
     NODE_ENV: process.env.NODE_ENV,
     // Firebase
     NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    NEXT_PUBLIC_FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:
+      process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    NEXT_PUBLIC_FIREBASE_PROJECT_ID:
+      process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET:
+      process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID:
+      process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
     NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     FIREBASE_ADMIN_PROJECT_ID: process.env.FIREBASE_ADMIN_PROJECT_ID,
     FIREBASE_ADMIN_CLIENT_EMAIL: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
@@ -136,7 +152,8 @@ function validateEnv(): Env {
     // Stripe
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
-    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     // NextAuth
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
@@ -150,25 +167,28 @@ function validateEnv(): Env {
     SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
     CONTACT_EMAIL_TO: process.env.CONTACT_EMAIL_TO,
     CONTACT_EMAIL_FROM: process.env.CONTACT_EMAIL_FROM,
-  });
+  })
 
   if (!parsed.success) {
-    console.error('❌ Invalid environment variables:', parsed.error.flatten().fieldErrors);
-    throw new Error('Invalid environment variables');
+    console.error(
+      '❌ Invalid environment variables:',
+      parsed.error.flatten().fieldErrors
+    )
+    throw new Error('Invalid environment variables')
   }
 
-  return parsed.data;
+  return parsed.data
 }
 
 /**
  * 環境変数のインスタンス
  * アプリケーション全体で使用する
  */
-export const env = validateEnv();
+export const env = validateEnv()
 
 /**
  * 環境判定のヘルパー関数
  */
-export const isDevelopment = env.NODE_ENV === 'development';
-export const isProduction = env.NODE_ENV === 'production';
-export const isTest = env.NODE_ENV === 'test';
+export const isDevelopment = env.NODE_ENV === 'development'
+export const isProduction = env.NODE_ENV === 'production'
+export const isTest = env.NODE_ENV === 'test'

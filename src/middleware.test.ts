@@ -17,11 +17,11 @@ vi.mock('next/server', () => {
   const mockHeaders = {
     set: vi.fn(),
   }
-  
+
   const mockRedirect = vi.fn(() => ({
     headers: mockHeaders,
   }))
-  
+
   return {
     NextResponse: {
       next: vi.fn(() => ({
@@ -34,7 +34,9 @@ vi.mock('next/server', () => {
 })
 
 // Import mocked modules to access the mocks
-const { NextResponse: MockedNextResponse } = vi.mocked(await import('next/server'))
+const { NextResponse: MockedNextResponse } = vi.mocked(
+  await import('next/server')
+)
 
 describe('middleware', () => {
   beforeEach(() => {
@@ -77,7 +79,10 @@ describe('middleware', () => {
 
     const response = await middleware(mockRequest)
 
-    expect(response.headers.set).toHaveBeenCalledWith('x-layout-type', 'corporate')
+    expect(response.headers.set).toHaveBeenCalledWith(
+      'x-layout-type',
+      'corporate'
+    )
   })
 
   it('should set x-layout-type header to "corporate" for root path', async () => {
@@ -90,7 +95,10 @@ describe('middleware', () => {
 
     const response = await middleware(mockRequest)
 
-    expect(response.headers.set).toHaveBeenCalledWith('x-layout-type', 'corporate')
+    expect(response.headers.set).toHaveBeenCalledWith(
+      'x-layout-type',
+      'corporate'
+    )
   })
 
   it('should set x-layout-type header to "corporate" for paths containing media but not starting with /media/', async () => {
@@ -103,7 +111,10 @@ describe('middleware', () => {
 
     const response = await middleware(mockRequest)
 
-    expect(response.headers.set).toHaveBeenCalledWith('x-layout-type', 'corporate')
+    expect(response.headers.set).toHaveBeenCalledWith(
+      'x-layout-type',
+      'corporate'
+    )
   })
 
   describe('認証が必要なパスの保護', () => {
@@ -123,9 +134,10 @@ describe('middleware', () => {
         req: mockRequest,
         secret: process.env.NEXTAUTH_SECRET,
       })
-      
+
       expect(MockedNextResponse.redirect).toHaveBeenCalled()
-      const redirectCall = vi.mocked(MockedNextResponse.redirect).mock.calls[0][0]
+      const redirectCall = vi.mocked(MockedNextResponse.redirect).mock
+        .calls[0][0]
       expect(redirectCall.toString()).toContain('/login')
       expect(redirectCall.toString()).toContain('callbackUrl=%2Fmedia%2Fmypage')
     })
@@ -146,7 +158,10 @@ describe('middleware', () => {
       const response = await middleware(mockRequest)
 
       expect(MockedNextResponse.redirect).not.toHaveBeenCalled()
-      expect(response.headers.set).toHaveBeenCalledWith('x-layout-type', 'media')
+      expect(response.headers.set).toHaveBeenCalledWith(
+        'x-layout-type',
+        'media'
+      )
     })
 
     it('保護されていないパスは認証チェックをスキップする', async () => {

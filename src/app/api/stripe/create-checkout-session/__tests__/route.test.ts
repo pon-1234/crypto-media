@@ -71,9 +71,12 @@ describe('POST /api/stripe/create-checkout-session', () => {
   it('returns 401 when user is not authenticated', async () => {
     vi.mocked(getServerSession).mockResolvedValue(null)
 
-    new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
-      method: 'POST',
-    })
+    new NextRequest(
+      'http://localhost:3000/api/stripe/create-checkout-session',
+      {
+        method: 'POST',
+      }
+    )
 
     const response = await POST()
     const data = await response.json()
@@ -84,26 +87,30 @@ describe('POST /api/stripe/create-checkout-session', () => {
 
   it('creates checkout session for new customer', async () => {
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
-    
+
     // Mock Firestore user document
     const mockUserDoc = createMockDocumentSnapshot(true, {})
     const mockDocRef = createMockDocumentReference()
     vi.mocked(mockDocRef.get).mockResolvedValue(mockUserDoc)
     vi.mocked(mockDocRef.update).mockResolvedValue(createMockWriteResult())
-    
+
     const { adminDb } = await import('@/lib/firebase/admin')
     const mockColl = createMockCollection()
     vi.mocked(mockColl.doc).mockReturnValue(mockDocRef)
-    vi.mocked(adminDb.collection).mockReturnValue(mockColl as unknown as ReturnType<typeof adminDb.collection>)
-    
+    vi.mocked(adminDb.collection).mockReturnValue(
+      mockColl as unknown as ReturnType<typeof adminDb.collection>
+    )
+
     vi.mocked(stripe.customers.list).mockResolvedValue(
       createMockStripeResponse(createMockApiList<Stripe.Customer>([]))
     )
     vi.mocked(stripe.checkout.sessions.create).mockResolvedValue(
-      createMockStripeResponse(createMockCheckoutSession({
-        url: 'https://checkout.stripe.com/pay/cs_test_123',
-        id: 'cs_test_123',
-      }))
+      createMockStripeResponse(
+        createMockCheckoutSession({
+          url: 'https://checkout.stripe.com/pay/cs_test_123',
+          id: 'cs_test_123',
+        })
+      )
     )
 
     const response = await POST()
@@ -147,7 +154,7 @@ describe('POST /api/stripe/create-checkout-session', () => {
 
   it('creates checkout session for existing customer', async () => {
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
-    
+
     // Mock Firestore user document with existing Stripe customer ID
     const mockUserDoc = createMockDocumentSnapshot(true, {
       stripeCustomerId: 'cus_existing123',
@@ -156,17 +163,21 @@ describe('POST /api/stripe/create-checkout-session', () => {
     const mockDocRef = createMockDocumentReference()
     vi.mocked(mockDocRef.get).mockResolvedValue(mockUserDoc)
     vi.mocked(mockDocRef.update).mockResolvedValue(createMockWriteResult())
-    
+
     const { adminDb } = await import('@/lib/firebase/admin')
     const mockColl = createMockCollection()
     vi.mocked(mockColl.doc).mockReturnValue(mockDocRef)
-    vi.mocked(adminDb.collection).mockReturnValue(mockColl as unknown as ReturnType<typeof adminDb.collection>)
-    
+    vi.mocked(adminDb.collection).mockReturnValue(
+      mockColl as unknown as ReturnType<typeof adminDb.collection>
+    )
+
     vi.mocked(stripe.checkout.sessions.create).mockResolvedValue(
-      createMockStripeResponse(createMockCheckoutSession({
-        url: 'https://checkout.stripe.com/pay/cs_test_456',
-        id: 'cs_test_456',
-      }))
+      createMockStripeResponse(
+        createMockCheckoutSession({
+          url: 'https://checkout.stripe.com/pay/cs_test_456',
+          id: 'cs_test_456',
+        })
+      )
     )
 
     const response = await POST()
@@ -188,14 +199,17 @@ describe('POST /api/stripe/create-checkout-session', () => {
     vi.mocked(stripe.customers.list).mockResolvedValue(
       createMockStripeResponse(createMockApiList<Stripe.Customer>([]))
     )
-    
+
     const stripeError = new Error('Invalid request') as Error & { type: string }
     stripeError.type = 'StripeInvalidRequestError'
     vi.mocked(stripe.checkout.sessions.create).mockRejectedValue(stripeError)
 
-    new NextRequest('http://localhost:3000/api/stripe/create-checkout-session', {
-      method: 'POST',
-    })
+    new NextRequest(
+      'http://localhost:3000/api/stripe/create-checkout-session',
+      {
+        method: 'POST',
+      }
+    )
 
     const response = await POST()
     const data = await response.json()
@@ -206,21 +220,25 @@ describe('POST /api/stripe/create-checkout-session', () => {
 
   it('handles general errors', async () => {
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
-    
+
     // Mock Firestore error
     const mockDocRef = createMockDocumentReference()
     vi.mocked(mockDocRef.get).mockRejectedValue(new Error('Firestore error'))
-    
+
     const { adminDb } = await import('@/lib/firebase/admin')
     const mockColl = createMockCollection()
     vi.mocked(mockColl.doc).mockReturnValue(mockDocRef)
-    vi.mocked(adminDb.collection).mockReturnValue(mockColl as unknown as ReturnType<typeof adminDb.collection>)
-    
+    vi.mocked(adminDb.collection).mockReturnValue(
+      mockColl as unknown as ReturnType<typeof adminDb.collection>
+    )
+
     vi.mocked(stripe.customers.list).mockResolvedValue(
       createMockStripeResponse(createMockApiList<Stripe.Customer>([]))
     )
-    
-    vi.mocked(stripe.checkout.sessions.create).mockRejectedValue(new Error('Network error'))
+
+    vi.mocked(stripe.checkout.sessions.create).mockRejectedValue(
+      new Error('Network error')
+    )
 
     const response = await POST()
     const data = await response.json()
@@ -233,24 +251,28 @@ describe('POST /api/stripe/create-checkout-session', () => {
     // Since vi.doMock doesn't work well with dynamic imports in tests,
     // we'll test the error handling in a different way
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
-    
+
     // Mock Firestore user document
     const mockUserDoc = createMockDocumentSnapshot(true, {})
     const mockDocRef = createMockDocumentReference()
     vi.mocked(mockDocRef.get).mockResolvedValue(mockUserDoc)
     vi.mocked(mockDocRef.update).mockResolvedValue(createMockWriteResult())
-    
+
     const { adminDb } = await import('@/lib/firebase/admin')
     const mockColl = createMockCollection()
     vi.mocked(mockColl.doc).mockReturnValue(mockDocRef)
-    vi.mocked(adminDb.collection).mockReturnValue(mockColl as unknown as ReturnType<typeof adminDb.collection>)
-    
+    vi.mocked(adminDb.collection).mockReturnValue(
+      mockColl as unknown as ReturnType<typeof adminDb.collection>
+    )
+
     vi.mocked(stripe.customers.list).mockResolvedValue(
       createMockStripeResponse(createMockApiList<Stripe.Customer>([]))
     )
-    
+
     // Mock stripe.checkout.sessions.create to throw a specific error that triggers the 500 response
-    vi.mocked(stripe.checkout.sessions.create).mockRejectedValue(new Error('Configuration error'))
+    vi.mocked(stripe.checkout.sessions.create).mockRejectedValue(
+      new Error('Configuration error')
+    )
 
     const response = await POST()
     const data = await response.json()

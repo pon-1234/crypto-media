@@ -236,7 +236,9 @@ describe('microCMS Example Functions', () => {
         limit: 1,
       }
 
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const consoleWarnSpy = vi
+        .spyOn(console, 'warn')
+        .mockImplementation(() => {})
       vi.mocked(client.get).mockResolvedValueOnce(mockResponse)
 
       const result = await getArticleBySlug('test-article')
@@ -251,7 +253,9 @@ describe('microCMS Example Functions', () => {
     })
 
     it('404エラーの場合はnullを返す', async () => {
-      const error = new Error('Not Found') as Error & { response?: { status: number } }
+      const error = new Error('Not Found') as Error & {
+        response?: { status: number }
+      }
       error.response = { status: 404 }
       vi.mocked(client.get).mockRejectedValueOnce(error)
 
@@ -304,7 +308,9 @@ describe('microCMS Example Functions', () => {
       const error = new Error('Preview Error')
       vi.mocked(client.get).mockRejectedValueOnce(error)
 
-      await expect(getArticlePreview('article-1', 'draft-key')).rejects.toThrow('Preview Error')
+      await expect(getArticlePreview('article-1', 'draft-key')).rejects.toThrow(
+        'Preview Error'
+      )
     })
   })
 
@@ -353,7 +359,9 @@ describe('microCMS Example Functions', () => {
       const error = new Error('Failed to fetch paid articles')
       vi.mocked(client.get).mockRejectedValueOnce(error)
 
-      await expect(getPaidArticles()).rejects.toThrow('Failed to fetch paid articles')
+      await expect(getPaidArticles()).rejects.toThrow(
+        'Failed to fetch paid articles'
+      )
     })
   })
 
@@ -378,7 +386,8 @@ describe('microCMS Example Functions', () => {
       const result = getOptimizedArticleImage(article)
 
       expect(result).toEqual({
-        desktop: 'https://images.microcms-assets.io/hero.jpg?w=1200&fm=webp&q=85',
+        desktop:
+          'https://images.microcms-assets.io/hero.jpg?w=1200&fm=webp&q=85',
         mobile: 'https://images.microcms-assets.io/hero.jpg?w=600&fm=webp&q=85',
         ogp: 'https://images.microcms-assets.io/hero.jpg?w=1200&h=630&fm=jpg&q=90',
       })
@@ -397,7 +406,9 @@ describe('microCMS Example Functions', () => {
         heroImage: undefined,
       }
 
-      const result = getOptimizedArticleImage(article as unknown as Parameters<typeof getOptimizedArticleImage>[0])
+      const result = getOptimizedArticleImage(
+        article as unknown as Parameters<typeof getOptimizedArticleImage>[0]
+      )
 
       expect(result).toBeNull()
     })

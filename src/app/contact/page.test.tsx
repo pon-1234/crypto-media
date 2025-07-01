@@ -8,14 +8,20 @@ import ContactPage from './page'
 
 // HubSpotFormコンポーネントのモック
 vi.mock('@/components/forms/HubSpotForm', () => ({
-  HubSpotForm: ({ portalId, formId, targetId, className, onFormSubmitted }: {
+  HubSpotForm: ({
+    portalId,
+    formId,
+    targetId,
+    className,
+    onFormSubmitted,
+  }: {
     portalId: string
     formId: string
     targetId: string
     className?: string
     onFormSubmitted?: () => void
   }) => (
-    <div 
+    <div
       data-testid="hubspot-form"
       data-portal-id={portalId}
       data-form-id={formId}
@@ -44,9 +50,15 @@ describe('ContactPage', () => {
   it('ページタイトルと説明文を表示する', () => {
     render(<ContactPage />)
 
-    expect(screen.getByRole('heading', { level: 1, name: 'お問い合わせ' })).toBeInTheDocument()
-    expect(screen.getByText(/お問い合わせは下記フォームよりお願いいたします/)).toBeInTheDocument()
-    expect(screen.getByText(/通常、2営業日以内にご返信いたします/)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'お問い合わせ' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/お問い合わせは下記フォームよりお願いいたします/)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/通常、2営業日以内にご返信いたします/)
+    ).toBeInTheDocument()
   })
 
   it('環境変数が設定されている場合、HubSpotフォームを表示する', () => {
@@ -70,8 +82,12 @@ describe('ContactPage', () => {
     render(<ContactPage />)
 
     expect(screen.queryByTestId('hubspot-form')).not.toBeInTheDocument()
-    expect(screen.getByText('お問い合わせフォームの設定が必要です')).toBeInTheDocument()
-    expect(screen.getByText(/環境変数 NEXT_PUBLIC_HUBSPOT_PORTAL_ID/)).toBeInTheDocument()
+    expect(
+      screen.getByText('お問い合わせフォームの設定が必要です')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/環境変数 NEXT_PUBLIC_HUBSPOT_PORTAL_ID/)
+    ).toBeInTheDocument()
   })
 
   it('ポータルIDのみ設定されている場合も警告メッセージを表示する', () => {
@@ -81,7 +97,9 @@ describe('ContactPage', () => {
     render(<ContactPage />)
 
     expect(screen.queryByTestId('hubspot-form')).not.toBeInTheDocument()
-    expect(screen.getByText('お問い合わせフォームの設定が必要です')).toBeInTheDocument()
+    expect(
+      screen.getByText('お問い合わせフォームの設定が必要です')
+    ).toBeInTheDocument()
   })
 
   it('フォームIDのみ設定されている場合も警告メッセージを表示する', () => {
@@ -91,7 +109,9 @@ describe('ContactPage', () => {
     render(<ContactPage />)
 
     expect(screen.queryByTestId('hubspot-form')).not.toBeInTheDocument()
-    expect(screen.getByText('お問い合わせフォームの設定が必要です')).toBeInTheDocument()
+    expect(
+      screen.getByText('お問い合わせフォームの設定が必要です')
+    ).toBeInTheDocument()
   })
 
   it('フォーム送信時にコンソールログを出力する', () => {
@@ -105,7 +125,9 @@ describe('ContactPage', () => {
     const form = screen.getByTestId('hubspot-form')
     form.click() // onFormSubmittedを実行
 
-    expect(consoleSpy).toHaveBeenCalledWith('お問い合わせフォームが送信されました')
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'お問い合わせフォームが送信されました'
+    )
 
     consoleSpy.mockRestore()
   })

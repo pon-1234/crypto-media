@@ -18,18 +18,24 @@ interface ScriptProps {
 
 vi.mock('next/script', () => ({
   __esModule: true,
-  default: function MockScript({ id, src, strategy, onLoad, onError }: ScriptProps) {
+  default: function MockScript({
+    id,
+    src,
+    strategy,
+    onLoad,
+    onError,
+  }: ScriptProps) {
     // スクリプトロードをシミュレート
     React.useEffect(() => {
       if (onLoad) {
         onLoad()
       }
     }, [onLoad])
-    
+
     return (
-      <script 
-        data-testid={id} 
-        data-src={src} 
+      <script
+        data-testid={id}
+        data-src={src}
         data-strategy={strategy}
         data-onload={onLoad ? 'true' : 'false'}
         data-onerror={onError ? 'true' : 'false'}
@@ -61,16 +67,14 @@ describe('HubSpotForm', () => {
   })
 
   it('HubSpotスクリプトとフォームコンテナをレンダリングする', () => {
-    render(
-      <HubSpotForm
-        portalId="123456"
-        formId="form-123"
-      />
-    )
+    render(<HubSpotForm portalId="123456" formId="form-123" />)
 
     // スクリプトタグが存在することを確認
     const script = screen.getByTestId('hubspot-script')
-    expect(script).toHaveAttribute('data-src', '//js.hsforms.net/forms/embed/v2.js')
+    expect(script).toHaveAttribute(
+      'data-src',
+      '//js.hsforms.net/forms/embed/v2.js'
+    )
     expect(script).toHaveAttribute('data-strategy', 'afterInteractive')
 
     // フォームコンテナが存在することを確認
@@ -80,11 +84,7 @@ describe('HubSpotForm', () => {
 
   it('カスタムターゲットIDを使用できる', () => {
     render(
-      <HubSpotForm
-        portalId="123456"
-        formId="form-123"
-        targetId="custom-form"
-      />
+      <HubSpotForm portalId="123456" formId="form-123" targetId="custom-form" />
     )
 
     const formContainer = document.getElementById('custom-form')
@@ -105,12 +105,7 @@ describe('HubSpotForm', () => {
   })
 
   it('HubSpotフォームを作成する', async () => {
-    render(
-      <HubSpotForm
-        portalId="123456"
-        formId="form-123"
-      />
-    )
+    render(<HubSpotForm portalId="123456" formId="form-123" />)
 
     // スクリプトがロードされ、useEffectが実行されるのを待つ
     await waitFor(() => {
@@ -121,7 +116,6 @@ describe('HubSpotForm', () => {
         onFormSubmitted: expect.any(Function),
       })
     })
-
   })
 
   it('フォーム送信時のコールバックを実行する', async () => {
@@ -135,7 +129,7 @@ describe('HubSpotForm', () => {
       target: string
       onFormSubmitted?: () => void
     }
-    
+
     mockHbspt.forms.create.mockImplementation((config: CreateConfig) => {
       capturedCallback = config.onFormSubmitted
     })
@@ -163,12 +157,7 @@ describe('HubSpotForm', () => {
     // window.hbsptを削除
     delete window.hbspt
 
-    render(
-      <HubSpotForm
-        portalId="123456"
-        formId="form-123"
-      />
-    )
+    render(<HubSpotForm portalId="123456" formId="form-123" />)
 
     expect(mockHbspt.forms.create).not.toHaveBeenCalled()
   })
@@ -199,13 +188,8 @@ describe('HubSpotForm', () => {
   it('スクリプト読み込みエラー時にエラーメッセージを表示する', () => {
     // window.hbsptを削除してエラー状態をシミュレート
     delete window.hbspt
-    
-    render(
-      <HubSpotForm
-        portalId="123456"
-        formId="form-123"
-      />
-    )
+
+    render(<HubSpotForm portalId="123456" formId="form-123" />)
 
     // スクリプトのonErrorハンドラーが登録されていることを確認
     const script = screen.getByTestId('hubspot-script')
@@ -218,14 +202,11 @@ describe('HubSpotForm', () => {
       throw new Error('Form creation failed')
     })
 
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const consoleErrorSpy = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {})
 
-    render(
-      <HubSpotForm
-        portalId="123456"
-        formId="form-123"
-      />
-    )
+    render(<HubSpotForm portalId="123456" formId="form-123" />)
 
     // スクリプトがロードされてエラーが発生するまで待つ
     await waitFor(() => {
@@ -236,7 +217,9 @@ describe('HubSpotForm', () => {
     })
 
     // エラーメッセージが表示されていることを確認
-    expect(screen.getByText('フォームの読み込みに失敗しました')).toBeInTheDocument()
+    expect(
+      screen.getByText('フォームの読み込みに失敗しました')
+    ).toBeInTheDocument()
 
     consoleErrorSpy.mockRestore()
   })

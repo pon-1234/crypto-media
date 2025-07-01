@@ -1,6 +1,6 @@
 /**
  * 日付フォーマット用ユーティリティ関数
- * 
+ *
  * @issue #4 - コーポレートお知らせ一覧・詳細ページの実装
  */
 
@@ -11,7 +11,7 @@
  */
 export function formatDate(dateString: string): string {
   const date = new Date(dateString)
-  
+
   if (isNaN(date.getTime())) {
     return ''
   }
@@ -31,7 +31,7 @@ export function formatDate(dateString: string): string {
  */
 export function formatDateTime(dateString: string): string {
   const date = new Date(dateString)
-  
+
   if (isNaN(date.getTime())) {
     return ''
   }

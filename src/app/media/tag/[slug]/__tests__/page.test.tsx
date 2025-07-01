@@ -18,7 +18,11 @@ vi.mock('@/lib/microcms', () => ({
 
 // Mock components
 vi.mock('@/components/ui/Breadcrumbs', () => ({
-  Breadcrumbs: ({ items }: { items: Array<{ label: string; href?: string }> }) => (
+  Breadcrumbs: ({
+    items,
+  }: {
+    items: Array<{ label: string; href?: string }>
+  }) => (
     <nav data-testid="breadcrumbs">
       {items.map((item, index) => (
         <span key={index}>{item.label}</span>
@@ -59,7 +63,11 @@ describe('TagPage', () => {
         type: 'article' as const,
         membershipLevel: 'public' as const,
         content: 'Content',
-        heroImage: { url: 'https://example.com/image.jpg', height: 600, width: 800 },
+        heroImage: {
+          url: 'https://example.com/image.jpg',
+          height: 600,
+          width: 800,
+        },
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z',
         publishedAt: '2024-01-01T00:00:00.000Z',
@@ -90,7 +98,9 @@ describe('TagPage', () => {
     it('returns error metadata for non-existent tag', async () => {
       vi.mocked(microCMS.getTagBySlug).mockResolvedValue(null)
 
-      const metadata = await generateMetadata({ params: { slug: 'non-existent' } })
+      const metadata = await generateMetadata({
+        params: { slug: 'non-existent' },
+      })
 
       expect(metadata.title).toBe('タグが見つかりません')
     })
@@ -112,10 +122,7 @@ describe('TagPage', () => {
 
       const params = await generateStaticParams()
 
-      expect(params).toEqual([
-        { slug: 'bitcoin' },
-        { slug: 'ethereum' },
-      ])
+      expect(params).toEqual([{ slug: 'bitcoin' }, { slug: 'ethereum' }])
     })
   })
 
@@ -129,7 +136,7 @@ describe('TagPage', () => {
 
       // Check breadcrumbs
       expect(getByTestId('breadcrumbs')).toBeInTheDocument()
-      
+
       // Check page header
       expect(getByText('ビットコインの記事一覧')).toBeInTheDocument()
       expect(getByText('1件の記事が見つかりました')).toBeInTheDocument()
@@ -140,7 +147,9 @@ describe('TagPage', () => {
       expect(getByText('Bitcoin Article')).toBeInTheDocument()
 
       // Check structured data
-      const scriptTag = document.querySelector('script[type="application/ld+json"]')
+      const scriptTag = document.querySelector(
+        'script[type="application/ld+json"]'
+      )
       expect(scriptTag).toBeInTheDocument()
       if (scriptTag) {
         const jsonLd = JSON.parse(scriptTag.textContent || '{}')
@@ -169,7 +178,9 @@ describe('TagPage', () => {
       const Component = await TagPage({ params: { slug: 'bitcoin' } })
       const { getByText } = render(Component)
 
-      expect(getByText('さらに記事を読み込む機能は準備中です')).toBeInTheDocument()
+      expect(
+        getByText('さらに記事を読み込む機能は準備中です')
+      ).toBeInTheDocument()
     })
   })
 })

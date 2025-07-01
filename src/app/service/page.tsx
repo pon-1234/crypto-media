@@ -23,7 +23,7 @@ export default function ServicePage() {
 
         <section className="mb-12">
           <h2 className="mb-6 text-2xl font-semibold">提供サービス</h2>
-          
+
           <div className="space-y-8">
             <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
               <h3 className="mb-3 text-xl font-semibold text-blue-600">
@@ -96,25 +96,33 @@ export default function ServicePage() {
           <h2 className="mb-6 text-2xl font-semibold">サービスの特徴</h2>
           <div className="grid gap-6 md:grid-cols-2">
             <div className="rounded-lg bg-blue-50 p-6">
-              <h3 className="mb-2 text-lg font-semibold text-blue-900">信頼性</h3>
+              <h3 className="mb-2 text-lg font-semibold text-blue-900">
+                信頼性
+              </h3>
               <p className="text-gray-700">
                 業界の専門家による監修と、独自の調査に基づいた正確な情報提供
               </p>
             </div>
             <div className="rounded-lg bg-green-50 p-6">
-              <h3 className="mb-2 text-lg font-semibold text-green-900">わかりやすさ</h3>
+              <h3 className="mb-2 text-lg font-semibold text-green-900">
+                わかりやすさ
+              </h3>
               <p className="text-gray-700">
                 初心者にも理解しやすい解説と、視覚的にわかりやすいコンテンツ設計
               </p>
             </div>
             <div className="rounded-lg bg-purple-50 p-6">
-              <h3 className="mb-2 text-lg font-semibold text-purple-900">速報性</h3>
+              <h3 className="mb-2 text-lg font-semibold text-purple-900">
+                速報性
+              </h3>
               <p className="text-gray-700">
                 国内外の最新情報を迅速にキャッチし、いち早く読者にお届け
               </p>
             </div>
             <div className="rounded-lg bg-orange-50 p-6">
-              <h3 className="mb-2 text-lg font-semibold text-orange-900">専門性</h3>
+              <h3 className="mb-2 text-lg font-semibold text-orange-900">
+                専門性
+              </h3>
               <p className="text-gray-700">
                 技術的な深掘りから投資分析まで、専門的な視点での情報提供
               </p>

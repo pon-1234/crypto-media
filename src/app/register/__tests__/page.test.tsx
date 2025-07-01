@@ -30,7 +30,7 @@ describe('RegisterPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useRouter).mockReturnValue({ 
+    vi.mocked(useRouter).mockReturnValue({
       push: mockPush,
       refresh: vi.fn(),
       replace: vi.fn(),
@@ -40,45 +40,53 @@ describe('RegisterPage', () => {
     } as ReturnType<typeof useRouter>)
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ url: 'https://checkout.stripe.com/pay/cs_test_123' }),
+      json: async () => ({
+        url: 'https://checkout.stripe.com/pay/cs_test_123',
+      }),
     } as Response)
   })
 
   it('renders the registration page with plan details', () => {
-    vi.mocked(useSession).mockReturnValue({ 
-      data: null, 
+    vi.mocked(useSession).mockReturnValue({
+      data: null,
       status: 'unauthenticated',
-      update: vi.fn()
+      update: vi.fn(),
     })
 
     render(<RegisterPage />)
 
     expect(screen.getByText('有料会員登録')).toBeInTheDocument()
     expect(screen.getByText('¥1,980')).toBeInTheDocument()
-    expect(screen.getByText('有料限定記事への無制限アクセス')).toBeInTheDocument()
-    expect(screen.getByText('調査レポート・分析記事の全文閲覧')).toBeInTheDocument()
+    expect(
+      screen.getByText('有料限定記事への無制限アクセス')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('調査レポート・分析記事の全文閲覧')
+    ).toBeInTheDocument()
     expect(screen.getByText('新着記事の早期アクセス')).toBeInTheDocument()
     expect(screen.getByText('広告非表示')).toBeInTheDocument()
   })
 
   it('shows login prompt when user is not authenticated', () => {
-    vi.mocked(useSession).mockReturnValue({ 
-      data: null, 
+    vi.mocked(useSession).mockReturnValue({
+      data: null,
       status: 'unauthenticated',
-      update: vi.fn()
+      update: vi.fn(),
     })
 
     render(<RegisterPage />)
 
-    expect(screen.getByText('有料会員登録にはログインが必要です')).toBeInTheDocument()
+    expect(
+      screen.getByText('有料会員登録にはログインが必要です')
+    ).toBeInTheDocument()
     expect(screen.getByText('ログインして続ける')).toBeInTheDocument()
   })
 
   it('shows loading state while checking session', () => {
-    vi.mocked(useSession).mockReturnValue({ 
-      data: null, 
+    vi.mocked(useSession).mockReturnValue({
+      data: null,
       status: 'loading',
-      update: vi.fn()
+      update: vi.fn(),
     })
 
     const { container } = render(<RegisterPage />)
@@ -88,10 +96,10 @@ describe('RegisterPage', () => {
   })
 
   it('redirects to login when clicking checkout without session', async () => {
-    vi.mocked(useSession).mockReturnValue({ 
-      data: null, 
+    vi.mocked(useSession).mockReturnValue({
+      data: null,
       status: 'unauthenticated',
-      update: vi.fn()
+      update: vi.fn(),
     })
 
     render(<RegisterPage />)
@@ -101,10 +109,10 @@ describe('RegisterPage', () => {
   })
 
   it('creates checkout session when authenticated user clicks register', async () => {
-    vi.mocked(useSession).mockReturnValue({ 
-      data: mockSession, 
+    vi.mocked(useSession).mockReturnValue({
+      data: mockSession,
       status: 'authenticated',
-      update: vi.fn()
+      update: vi.fn(),
     })
 
     const mockLocation = { href: '' }
@@ -119,24 +127,29 @@ describe('RegisterPage', () => {
     fireEvent.click(registerButton)
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('/api/stripe/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      expect(global.fetch).toHaveBeenCalledWith(
+        '/api/stripe/create-checkout-session',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
     })
 
     await waitFor(() => {
-      expect(mockLocation.href).toBe('https://checkout.stripe.com/pay/cs_test_123')
+      expect(mockLocation.href).toBe(
+        'https://checkout.stripe.com/pay/cs_test_123'
+      )
     })
   })
 
   it('shows error message when checkout session creation fails', async () => {
-    vi.mocked(useSession).mockReturnValue({ 
-      data: mockSession, 
+    vi.mocked(useSession).mockReturnValue({
+      data: mockSession,
       status: 'authenticated',
-      update: vi.fn()
+      update: vi.fn(),
     })
     vi.mocked(global.fetch).mockResolvedValueOnce({
       ok: false,
@@ -149,15 +162,17 @@ describe('RegisterPage', () => {
     fireEvent.click(registerButton)
 
     await waitFor(() => {
-      expect(screen.getByText('サーバーエラーが発生しました')).toBeInTheDocument()
+      expect(
+        screen.getByText('サーバーエラーが発生しました')
+      ).toBeInTheDocument()
     })
   })
 
   it('shows generic error message on unexpected error', async () => {
-    vi.mocked(useSession).mockReturnValue({ 
-      data: mockSession, 
+    vi.mocked(useSession).mockReturnValue({
+      data: mockSession,
       status: 'authenticated',
-      update: vi.fn()
+      update: vi.fn(),
     })
     vi.mocked(global.fetch).mockRejectedValueOnce(new Error('Network error'))
 
@@ -172,18 +187,27 @@ describe('RegisterPage', () => {
   })
 
   it('disables button while processing', async () => {
-    vi.mocked(useSession).mockReturnValue({ 
-      data: mockSession, 
+    vi.mocked(useSession).mockReturnValue({
+      data: mockSession,
       status: 'authenticated',
-      update: vi.fn()
+      update: vi.fn(),
     })
-    
+
     // Simulate slow response
-    vi.mocked(global.fetch).mockImplementation(() => 
-      new Promise(resolve => setTimeout(() => resolve({
-        ok: true,
-        json: async () => ({ url: 'https://checkout.stripe.com/pay/cs_test_123' }),
-      } as Response), 100))
+    vi.mocked(global.fetch).mockImplementation(
+      () =>
+        new Promise((resolve) =>
+          setTimeout(
+            () =>
+              resolve({
+                ok: true,
+                json: async () => ({
+                  url: 'https://checkout.stripe.com/pay/cs_test_123',
+                }),
+              } as Response),
+            100
+          )
+        )
     )
 
     render(<RegisterPage />)
@@ -196,16 +220,18 @@ describe('RegisterPage', () => {
   })
 
   it('shows links to terms and privacy policy', () => {
-    vi.mocked(useSession).mockReturnValue({ 
-      data: null, 
+    vi.mocked(useSession).mockReturnValue({
+      data: null,
       status: 'unauthenticated',
-      update: vi.fn()
+      update: vi.fn(),
     })
 
     render(<RegisterPage />)
 
     const termsLink = screen.getByRole('link', { name: '利用規約' })
-    const privacyLink = screen.getByRole('link', { name: 'プライバシーポリシー' })
+    const privacyLink = screen.getByRole('link', {
+      name: 'プライバシーポリシー',
+    })
 
     expect(termsLink).toHaveAttribute('href', '/terms')
     expect(privacyLink).toHaveAttribute('href', '/privacy-policy')

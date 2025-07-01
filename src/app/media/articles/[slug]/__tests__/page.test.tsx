@@ -6,7 +6,10 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { notFound } from 'next/navigation'
-import MediaArticleDetailPage, { generateMetadata, generateStaticParams } from '../page'
+import MediaArticleDetailPage, {
+  generateMetadata,
+  generateStaticParams,
+} from '../page'
 import type { MediaArticle } from '@/lib/schema'
 
 // Next.jsのnotFoundをモック
@@ -46,12 +49,18 @@ vi.mock('date-fns/locale', () => ({
 }))
 
 // import後にモックを取得
-import { getMediaArticleBySlug, getAllMediaArticleSlugs, getRelatedArticles } from '@/lib/microcms'
+import {
+  getMediaArticleBySlug,
+  getAllMediaArticleSlugs,
+  getRelatedArticles,
+} from '@/lib/microcms'
 
 /**
  * テスト用の記事データを作成
  */
-const createMockArticle = (overrides?: Partial<MediaArticle>): MediaArticle => ({
+const createMockArticle = (
+  overrides?: Partial<MediaArticle>
+): MediaArticle => ({
   id: 'test-article-1',
   createdAt: '2024-01-15T00:00:00.000Z',
   updatedAt: '2024-01-15T00:00:00.000Z',
@@ -122,11 +131,15 @@ describe('MediaArticleDetailPage', () => {
       vi.mocked(getMediaArticleBySlug).mockResolvedValueOnce(mockArticle)
       vi.mocked(getRelatedArticles).mockResolvedValueOnce(mockRelatedArticles)
 
-      const Page = await MediaArticleDetailPage({ params: { slug: 'test-article' } })
+      const Page = await MediaArticleDetailPage({
+        params: { slug: 'test-article' },
+      })
       render(Page)
 
       // タイトルが表示される
-      expect(screen.getByRole('heading', { name: 'テスト記事タイトル' })).toBeInTheDocument()
+      expect(
+        screen.getByRole('heading', { name: 'テスト記事タイトル' })
+      ).toBeInTheDocument()
 
       // 記事内容が表示される
       expect(screen.getByText('テスト記事の内容')).toBeInTheDocument()
@@ -136,17 +149,23 @@ describe('MediaArticleDetailPage', () => {
       expect(screen.getAllByText('田中太郎')[0]).toBeInTheDocument()
 
       // カテゴリが表示される（サイドバーのカテゴリリンク）
-      expect(screen.getByRole('link', { name: 'ビットコイン' })).toBeInTheDocument()
+      expect(
+        screen.getByRole('link', { name: 'ビットコイン' })
+      ).toBeInTheDocument()
 
       // タグが表示される（詳細ページのタグリンク）
-      expect(screen.getByRole('link', { name: '#暗号資産' })).toBeInTheDocument()
+      expect(
+        screen.getByRole('link', { name: '#暗号資産' })
+      ).toBeInTheDocument()
 
       // 関連記事が表示される
       expect(screen.getByText('関連記事1')).toBeInTheDocument()
       expect(screen.getByText('関連記事2')).toBeInTheDocument()
 
       // 構造化データが含まれる
-      const scripts = document.querySelectorAll('script[type="application/ld+json"]')
+      const scripts = document.querySelectorAll(
+        'script[type="application/ld+json"]'
+      )
       expect(scripts).toHaveLength(1)
     })
 
@@ -158,7 +177,9 @@ describe('MediaArticleDetailPage', () => {
       vi.mocked(getMediaArticleBySlug).mockResolvedValueOnce(mockArticle)
       vi.mocked(getRelatedArticles).mockResolvedValueOnce([])
 
-      const Page = await MediaArticleDetailPage({ params: { slug: 'test-article' } })
+      const Page = await MediaArticleDetailPage({
+        params: { slug: 'test-article' },
+      })
       render(Page)
 
       expect(screen.getByText('有料会員限定')).toBeInTheDocument()
@@ -180,8 +201,9 @@ describe('MediaArticleDetailPage', () => {
       const mockError = new Error('API Error')
       vi.mocked(getMediaArticleBySlug).mockRejectedValueOnce(mockError)
 
-      await expect(MediaArticleDetailPage({ params: { slug: 'test-article' } }))
-        .rejects.toThrow('API Error')
+      await expect(
+        MediaArticleDetailPage({ params: { slug: 'test-article' } })
+      ).rejects.toThrow('API Error')
     })
   })
 
@@ -190,11 +212,15 @@ describe('MediaArticleDetailPage', () => {
       const mockArticle = createMockArticle()
       vi.mocked(getMediaArticleBySlug).mockResolvedValueOnce(mockArticle)
 
-      const metadata = await generateMetadata({ params: { slug: 'test-article' } })
+      const metadata = await generateMetadata({
+        params: { slug: 'test-article' },
+      })
 
       expect(metadata.title).toBe('テスト記事タイトル | Crypto Media')
       expect(metadata.description).toBe('テスト記事の内容')
-      expect(metadata.openGraph?.title).toBe('テスト記事タイトル | Crypto Media')
+      expect(metadata.openGraph?.title).toBe(
+        'テスト記事タイトル | Crypto Media'
+      )
       const images = metadata.openGraph?.images
       expect(images && Array.isArray(images) && images[0]).toEqual({
         url: 'https://example.com/image.jpg',

@@ -1,7 +1,7 @@
-import { ImageResponse } from '@vercel/og';
-import { NextRequest } from 'next/server';
+import { ImageResponse } from '@vercel/og'
+import { NextRequest } from 'next/server'
 
-export const runtime = 'edge';
+export const runtime = 'edge'
 
 /**
  * 動的OGP画像を生成するAPIエンドポイント
@@ -10,32 +10,32 @@ export const runtime = 'edge';
  */
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    
+    const { searchParams } = new URL(request.url)
+
     // URLパラメータから画像に表示する情報を取得
-    const title = searchParams.get('title') || 'Crypto Media';
-    const description = searchParams.get('description') || '';
-    const type = searchParams.get('type') || 'default'; // article, corporate, media
-    const category = searchParams.get('category') || '';
-    
+    const title = searchParams.get('title') || 'Crypto Media'
+    const description = searchParams.get('description') || ''
+    const type = searchParams.get('type') || 'default' // article, corporate, media
+    const category = searchParams.get('category') || ''
+
     // 画像サイズ (OGP標準: 1200x630)
-    const width = 1200;
-    const height = 630;
-    
+    const width = 1200
+    const height = 630
+
     // タイプ別の背景色設定
     const getBackgroundColor = (type: string) => {
       switch (type) {
         case 'article':
-          return 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+          return 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
         case 'corporate':
-          return 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)';
+          return 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)'
         case 'media':
-          return 'linear-gradient(135deg, #059669 0%, #10b981 100%)';
+          return 'linear-gradient(135deg, #059669 0%, #10b981 100%)'
         default:
-          return 'linear-gradient(135deg, #374151 0%, #6b7280 100%)';
+          return 'linear-gradient(135deg, #374151 0%, #6b7280 100%)'
       }
-    };
-    
+    }
+
     return new ImageResponse(
       (
         <div
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
               Crypto Media
             </div>
           </div>
-          
+
           {/* カテゴリ（ある場合） */}
           {category && (
             <div
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
               {category}
             </div>
           )}
-          
+
           {/* タイトル */}
           <div
             style={{
@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
           >
             {title}
           </div>
-          
+
           {/* 説明文（ある場合） */}
           {description && (
             <div
@@ -125,7 +125,7 @@ export async function GET(request: NextRequest) {
               {description}
             </div>
           )}
-          
+
           {/* フッター */}
           <div
             style={{
@@ -151,11 +151,13 @@ export async function GET(request: NextRequest) {
         width,
         height,
       }
-    );
+    )
   } catch (e) {
-    console.error(`Failed to generate OG image: ${e instanceof Error ? e.message : 'Unknown error'}`);
+    console.error(
+      `Failed to generate OG image: ${e instanceof Error ? e.message : 'Unknown error'}`
+    )
     return new Response(`Failed to generate the image`, {
       status: 500,
-    });
+    })
   }
 }

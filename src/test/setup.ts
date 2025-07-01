@@ -3,11 +3,16 @@
  * @issue #1 - プロジェクト基盤とCI/CDパイプラインの構築
  */
 
-import { vi } from 'vitest';
-import '@testing-library/jest-dom';
+import { vi } from 'vitest'
+import '@testing-library/jest-dom'
+
+// CI環境変数を設定
+if (process.env.CI === 'true') {
+  process.env.NODE_ENV = 'test'
+}
 
 // グローバルなfetch APIをモック
-global.fetch = vi.fn();
+global.fetch = vi.fn()
 
 // window.location.originを設定
 Object.defineProperty(window, 'location', {
@@ -17,22 +22,22 @@ Object.defineProperty(window, 'location', {
     pathname: '/',
   },
   writable: true,
-});
+})
 
 // NEXTAUTH_URLを設定
-process.env.NEXTAUTH_URL = 'http://localhost:3000';
+process.env.NEXTAUTH_URL = 'http://localhost:3000'
 
 // Firebase環境変数のモック（テスト環境用）
-process.env.FIREBASE_ADMIN_PROJECT_ID = 'test-project';
-process.env.FIREBASE_ADMIN_CLIENT_EMAIL = 'test@test.iam.gserviceaccount.com';
-process.env.FIREBASE_ADMIN_PRIVATE_KEY = 'test-key';
+process.env.FIREBASE_ADMIN_PROJECT_ID = 'test-project'
+process.env.FIREBASE_ADMIN_CLIENT_EMAIL = 'test@test.iam.gserviceaccount.com'
+process.env.FIREBASE_ADMIN_PRIVATE_KEY = 'test-key'
 
 // Firebase adminのモック
 vi.mock('firebase-admin/app', () => ({
   initializeApp: vi.fn().mockReturnValue({}),
   getApps: vi.fn().mockReturnValue([]),
   cert: vi.fn((config) => config),
-}));
+}))
 
 vi.mock('firebase-admin/firestore', () => ({
   getFirestore: vi.fn().mockReturnValue({
@@ -51,7 +56,7 @@ vi.mock('firebase-admin/firestore', () => ({
     })),
     runTransaction: vi.fn(),
   }),
-}));
+}))
 
 // authOptionsのモック
 vi.mock('@/lib/auth/authOptions', () => ({
@@ -61,4 +66,4 @@ vi.mock('@/lib/auth/authOptions', () => ({
     pages: {},
     adapter: {},
   },
-}));
+}))

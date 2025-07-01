@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { getCorporateNewsList, getCorporateNewsDetail, getAllCorporateNewsIds } from './corporate-news'
+import {
+  getCorporateNewsList,
+  getCorporateNewsDetail,
+  getAllCorporateNewsIds,
+} from './corporate-news'
 import { client } from './client'
 
 /**
@@ -9,8 +13,8 @@ import { client } from './client'
 // clientをモック
 vi.mock('./client', () => ({
   client: {
-    get: vi.fn()
-  }
+    get: vi.fn(),
+  },
 }))
 
 describe('corporate-news', () => {
@@ -29,7 +33,7 @@ describe('corporate-news', () => {
             createdAt: '2025-01-01T00:00:00.000Z',
             updatedAt: '2025-01-01T00:00:00.000Z',
             publishedAt: '2025-01-01T00:00:00.000Z',
-            revisedAt: '2025-01-01T00:00:00.000Z'
+            revisedAt: '2025-01-01T00:00:00.000Z',
           },
           {
             id: 'news-2',
@@ -38,12 +42,12 @@ describe('corporate-news', () => {
             createdAt: '2025-01-02T00:00:00.000Z',
             updatedAt: '2025-01-02T00:00:00.000Z',
             publishedAt: '2025-01-02T00:00:00.000Z',
-            revisedAt: '2025-01-02T00:00:00.000Z'
-          }
+            revisedAt: '2025-01-02T00:00:00.000Z',
+          },
         ],
         totalCount: 2,
         offset: 0,
-        limit: 10
+        limit: 10,
       }
 
       vi.mocked(client.get).mockResolvedValueOnce(mockResponse)
@@ -52,7 +56,7 @@ describe('corporate-news', () => {
 
       expect(client.get).toHaveBeenCalledWith({
         endpoint: 'corporate_news',
-        queries: undefined
+        queries: undefined,
       })
       expect(result).toEqual(mockResponse)
     })
@@ -62,7 +66,7 @@ describe('corporate-news', () => {
         contents: [],
         totalCount: 0,
         offset: 0,
-        limit: 5
+        limit: 5,
       }
 
       vi.mocked(client.get).mockResolvedValueOnce(mockResponse)
@@ -72,7 +76,7 @@ describe('corporate-news', () => {
 
       expect(client.get).toHaveBeenCalledWith({
         endpoint: 'corporate_news',
-        queries
+        queries,
       })
     })
 
@@ -93,7 +97,7 @@ describe('corporate-news', () => {
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z',
         publishedAt: '2025-01-01T00:00:00.000Z',
-        revisedAt: '2025-01-01T00:00:00.000Z'
+        revisedAt: '2025-01-01T00:00:00.000Z',
       }
 
       vi.mocked(client.get).mockResolvedValueOnce(mockResponse)
@@ -103,7 +107,7 @@ describe('corporate-news', () => {
       expect(client.get).toHaveBeenCalledWith({
         endpoint: 'corporate_news',
         contentId: 'news-1',
-        queries: undefined
+        queries: undefined,
       })
       expect(result).toEqual(mockResponse)
     })
@@ -116,7 +120,7 @@ describe('corporate-news', () => {
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z',
         publishedAt: '2025-01-01T00:00:00.000Z',
-        revisedAt: '2025-01-01T00:00:00.000Z'
+        revisedAt: '2025-01-01T00:00:00.000Z',
       }
 
       vi.mocked(client.get).mockResolvedValueOnce(mockResponse)
@@ -127,7 +131,7 @@ describe('corporate-news', () => {
       expect(client.get).toHaveBeenCalledWith({
         endpoint: 'corporate_news',
         contentId: 'news-1',
-        queries
+        queries,
       })
     })
 
@@ -135,7 +139,9 @@ describe('corporate-news', () => {
       const mockError = new Error('API Error')
       vi.mocked(client.get).mockRejectedValueOnce(mockError)
 
-      await expect(getCorporateNewsDetail('news-1')).rejects.toThrow('API Error')
+      await expect(getCorporateNewsDetail('news-1')).rejects.toThrow(
+        'API Error'
+      )
     })
   })
 
@@ -143,37 +149,37 @@ describe('corporate-news', () => {
     it('すべてのコーポレートお知らせのIDを取得できる', async () => {
       const mockResponse = {
         contents: [
-          { 
+          {
             id: 'news-1',
             title: 'お知らせ1',
             content: '<p>内容1</p>',
             createdAt: '2025-01-01T00:00:00.000Z',
             updatedAt: '2025-01-01T00:00:00.000Z',
             publishedAt: '2025-01-01T00:00:00.000Z',
-            revisedAt: '2025-01-01T00:00:00.000Z'
+            revisedAt: '2025-01-01T00:00:00.000Z',
           },
-          { 
+          {
             id: 'news-2',
             title: 'お知らせ2',
             content: '<p>内容2</p>',
             createdAt: '2025-01-02T00:00:00.000Z',
             updatedAt: '2025-01-02T00:00:00.000Z',
             publishedAt: '2025-01-02T00:00:00.000Z',
-            revisedAt: '2025-01-02T00:00:00.000Z'
+            revisedAt: '2025-01-02T00:00:00.000Z',
           },
-          { 
+          {
             id: 'news-3',
             title: 'お知らせ3',
             content: '<p>内容3</p>',
             createdAt: '2025-01-03T00:00:00.000Z',
             updatedAt: '2025-01-03T00:00:00.000Z',
             publishedAt: '2025-01-03T00:00:00.000Z',
-            revisedAt: '2025-01-03T00:00:00.000Z'
-          }
+            revisedAt: '2025-01-03T00:00:00.000Z',
+          },
         ],
         totalCount: 3,
         offset: 0,
-        limit: 100
+        limit: 100,
       }
 
       vi.mocked(client.get).mockResolvedValueOnce(mockResponse)
@@ -184,8 +190,8 @@ describe('corporate-news', () => {
         endpoint: 'corporate_news',
         queries: {
           fields: 'id',
-          limit: 100
-        }
+          limit: 100,
+        },
       })
       expect(result).toEqual(['news-1', 'news-2', 'news-3'])
     })
@@ -195,7 +201,7 @@ describe('corporate-news', () => {
         contents: [],
         totalCount: 0,
         offset: 0,
-        limit: 100
+        limit: 100,
       }
 
       vi.mocked(client.get).mockResolvedValueOnce(mockResponse)

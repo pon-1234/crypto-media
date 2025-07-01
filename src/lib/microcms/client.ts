@@ -24,10 +24,10 @@ export const client = createClient({
 
 /**
  * プレビューモードでの記事取得について
- * 
+ *
  * プレビューモードでは通常のクライアントを使用し、
  * APIメソッド呼び出し時にdraftKeyをクエリパラメータとして渡します。
- * 
+ *
  * 例:
  * ```typescript
  * const preview = await client.get({
@@ -66,11 +66,11 @@ export const getOptimizedImageUrl = (
   } = {}
 ): string => {
   const params = new URLSearchParams()
-  
+
   if (options.width) params.append('w', options.width.toString())
   if (options.height) params.append('h', options.height.toString())
   if (options.format) params.append('fm', options.format)
   if (options.quality) params.append('q', options.quality.toString())
-  
+
   return `${url}?${params.toString()}`
 }

@@ -1,28 +1,28 @@
-import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/authOptions';
-import { getUserMembership } from '@/lib/auth/membership';
-import { format } from 'date-fns';
-import { ja } from 'date-fns/locale';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { 
-  User, 
-  CreditCard, 
-  Settings, 
+import { Metadata } from 'next'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth/authOptions'
+import { getUserMembership } from '@/lib/auth/membership'
+import { format } from 'date-fns'
+import { ja } from 'date-fns/locale'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import {
+  User,
+  CreditCard,
+  Settings,
   HelpCircle,
   ChevronRight,
-  Crown
-} from 'lucide-react';
+  Crown,
+} from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'マイページ | Crypto Media',
   description: 'アカウント情報と会員ステータスを確認できます',
-};
+}
 
 /**
  * 会員マイページ
- * 
+ *
  * @doc ユーザーの基本情報と会員ステータスを表示するページ
  * @related src/lib/auth/membership.ts - 会員情報取得
  * @related src/app/media/mypage/membership/page.tsx - 会員管理ページ
@@ -30,15 +30,15 @@ export const metadata: Metadata = {
  */
 export default async function MyPage() {
   // セッション情報を取得
-  const session = await getServerSession(authOptions);
-  
+  const session = await getServerSession(authOptions)
+
   if (!session?.user) {
     // middlewareで保護されているため、ここには到達しないはず
-    return null;
+    return null
   }
 
   // 会員情報を取得
-  const membership = await getUserMembership();
+  const membership = await getUserMembership()
 
   // 会員ステータスに応じた表示内容
   const membershipDisplay = {
@@ -54,10 +54,11 @@ export default async function MyPage() {
       icon: User,
       description: '無料記事のみお読みいただけます',
     },
-  };
+  }
 
-  const currentMembership = membership?.membership || 'free';
-  const membershipInfo = membershipDisplay[currentMembership as keyof typeof membershipDisplay];
+  const currentMembership = membership?.membership || 'free'
+  const membershipInfo =
+    membershipDisplay[currentMembership as keyof typeof membershipDisplay]
 
   // メニュー項目
   const menuItems = [
@@ -82,7 +83,7 @@ export default async function MyPage() {
       href: '/media/mypage/support',
       highlight: false,
     },
-  ];
+  ]
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -97,7 +98,7 @@ export default async function MyPage() {
               <h2 className="mb-4 text-lg font-semibold text-gray-900">
                 アカウント情報
               </h2>
-              
+
               <div className="space-y-3">
                 <div>
                   <p className="text-sm text-gray-500">お名前</p>
@@ -105,18 +106,20 @@ export default async function MyPage() {
                     {session.user.name || '未設定'}
                   </p>
                 </div>
-                
+
                 <div>
                   <p className="text-sm text-gray-500">メールアドレス</p>
                   <p className="font-medium text-gray-900">
                     {session.user.email}
                   </p>
                 </div>
-                
+
                 <div>
                   <p className="text-sm text-gray-500">会員ステータス</p>
                   <div className="mt-1 flex items-center gap-3">
-                    <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-medium ${membershipInfo.color}`}>
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-medium ${membershipInfo.color}`}
+                    >
                       <membershipInfo.icon className="h-4 w-4" />
                       {membershipInfo.label}
                     </span>
@@ -153,7 +156,7 @@ export default async function MyPage() {
         {/* メニューリスト */}
         <div className="space-y-4">
           {menuItems.map((item) => {
-            const Icon = item.icon;
+            const Icon = item.icon
             return (
               <Link
                 key={item.href}
@@ -179,7 +182,7 @@ export default async function MyPage() {
                   <ChevronRight className="h-5 w-5 text-gray-400" />
                 </div>
               </Link>
-            );
+            )
           })}
         </div>
 
@@ -194,5 +197,5 @@ export default async function MyPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

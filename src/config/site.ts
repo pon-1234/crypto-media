@@ -12,7 +12,8 @@ export const SITE_CONFIG = {
     siteName: 'Crypto Media',
     corporateName: 'Example Corporation',
     domain: 'example.co.jp',
-    defaultDescription: '暗号資産・ブロックチェーンの最新情報をお届けするメディアサイト',
+    defaultDescription:
+      '暗号資産・ブロックチェーンの最新情報をお届けするメディアサイト',
     defaultOgImage: '/images/og-default.png',
   },
 
@@ -106,6 +107,6 @@ export const SITE_CONFIG = {
     defaultLimit: 20,
     maxLimit: 100,
   },
-} as const;
+} as const
 
-export type SiteConfig = typeof SITE_CONFIG;
+export type SiteConfig = typeof SITE_CONFIG
