@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render } from '@testing-library/react'
 import { notFound } from 'next/navigation'
 import TagPage, { generateMetadata, generateStaticParams } from '../page'
@@ -15,6 +15,9 @@ vi.mock('@/lib/microcms', () => ({
   getTagBySlug: vi.fn(),
   getMediaArticlesByTag: vi.fn(),
 }))
+
+// Store original CI env
+const originalCI = process.env.CI
 
 // Mock components
 vi.mock('@/components/ui/Breadcrumbs', () => ({
@@ -81,6 +84,13 @@ describe('TagPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    // Disable CI mode for tests
+    process.env.CI = undefined
+  })
+
+  afterEach(() => {
+    // Restore original CI env
+    process.env.CI = originalCI
   })
 
   describe('generateMetadata', () => {
