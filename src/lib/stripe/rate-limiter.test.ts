@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { MemoryRateLimiter, RedisRateLimiter, getRateLimiter } from './rate-limiter'
+import { MemoryRateLimiter, RedisRateLimiter } from './rate-limiter'
 
 // Mock Redis instance
 const mockRedisInstance = {
@@ -86,101 +86,103 @@ describe('MemoryRateLimiter', () => {
 })
 
 describe('RedisRateLimiter', () => {
-  const originalEnv = process.env
-  const originalConsoleWarn = console.warn
-  const originalConsoleError = console.error
-
   beforeEach(() => {
     vi.resetModules()
     vi.clearAllMocks()
-    process.env = { ...originalEnv }
-    console.warn = vi.fn()
-    console.error = vi.fn()
   })
 
   afterEach(() => {
-    process.env = originalEnv
-    console.warn = originalConsoleWarn
-    console.error = originalConsoleError
-    vi.resetAllMocks()
+    vi.unstubAllEnvs()
+    vi.restoreAllMocks()
   })
 
   it('Redisが設定されていない場合は警告を出して許可する', async () => {
-    // Redis環境変数を削除
-    delete process.env.UPSTASH_REDIS_REST_URL
-    delete process.env.UPSTASH_REDIS_REST_TOKEN
-    
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    // Redis環境変数を設定しない
+
     const limiter = new RedisRateLimiter(3, 60)
     const result = await limiter.checkLimit('test-key')
-    
+
     expect(result).toBe(true)
-    expect(console.warn).toHaveBeenCalledWith('Redis not configured, skipping rate limit')
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      'Redis not configured, skipping rate limit',
+    )
   })
 
-
   it('カスタムパラメータで初期化できる', async () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const limiter = new RedisRateLimiter(5, 120)
-    
+
     // カスタムパラメータが正しく設定されていることを確認
     // Redisが設定されていないので、警告を出してtrueを返す
     const result = await limiter.checkLimit('test-key')
-    
+
     expect(result).toBe(true)
-    expect(console.warn).toHaveBeenCalledWith('Redis not configured, skipping rate limit')
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      'Redis not configured, skipping rate limit',
+    )
   })
 })
 
 describe('getRateLimiter', () => {
-  const originalEnv = process.env
-
   beforeEach(() => {
     vi.resetModules()
-    process.env = { ...originalEnv }
   })
 
   afterEach(() => {
-    process.env = originalEnv
+    vi.unstubAllEnvs()
   })
 
   it('本番環境でRedisが設定されている場合はRedisRateLimiterを返す', async () => {
-    process.env.NODE_ENV = 'production'
-    process.env.UPSTASH_REDIS_REST_URL = 'https://test.upstash.io'
-    process.env.UPSTASH_REDIS_REST_TOKEN = 'test-token'
-    
-    const { getRateLimiter: reloadedGetRateLimiter, RedisRateLimiter: ReloadedRedisRateLimiter } = await import('./rate-limiter')
+    vi.stubEnv('NODE_ENV', 'production')
+    vi.stubEnv('UPSTASH_REDIS_REST_URL', 'https://test.upstash.io')
+    vi.stubEnv('UPSTASH_REDIS_REST_TOKEN', 'test-token')
+
+    const {
+      getRateLimiter: reloadedGetRateLimiter,
+      RedisRateLimiter: ReloadedRedisRateLimiter,
+    } = await import('./rate-limiter')
     const limiter = reloadedGetRateLimiter()
-    
+
     expect(limiter).toBeInstanceOf(ReloadedRedisRateLimiter)
   })
 
   it('本番環境でもRedisが設定されていない場合はMemoryRateLimiterを返す', async () => {
-    process.env.NODE_ENV = 'production'
-    delete process.env.UPSTASH_REDIS_REST_URL
-    delete process.env.UPSTASH_REDIS_REST_TOKEN
-    
-    const { getRateLimiter: reloadedGetRateLimiter, MemoryRateLimiter: ReloadedMemoryRateLimiter } = await import('./rate-limiter')
+    vi.stubEnv('NODE_ENV', 'production')
+    // Redis環境変数は設定しない
+
+    const {
+      getRateLimiter: reloadedGetRateLimiter,
+      MemoryRateLimiter: ReloadedMemoryRateLimiter,
+    } = await import('./rate-limiter')
     const limiter = reloadedGetRateLimiter()
-    
+
     expect(limiter).toBeInstanceOf(ReloadedMemoryRateLimiter)
   })
 
   it('開発環境ではMemoryRateLimiterを返す', async () => {
-    process.env.NODE_ENV = 'development'
-    process.env.UPSTASH_REDIS_REST_URL = 'https://test.upstash.io'
-    process.env.UPSTASH_REDIS_REST_TOKEN = 'test-token'
-    
-    const { getRateLimiter: reloadedGetRateLimiter, MemoryRateLimiter: ReloadedMemoryRateLimiter } = await import('./rate-limiter')
+    vi.stubEnv('NODE_ENV', 'development')
+    vi.stubEnv('UPSTASH_REDIS_REST_URL', 'https://test.upstash.io')
+    vi.stubEnv('UPSTASH_REDIS_REST_TOKEN', 'test-token')
+
+    const {
+      getRateLimiter: reloadedGetRateLimiter,
+      MemoryRateLimiter: ReloadedMemoryRateLimiter,
+    } = await import('./rate-limiter')
     const limiter = reloadedGetRateLimiter()
-    
+
     expect(limiter).toBeInstanceOf(ReloadedMemoryRateLimiter)
   })
 
   it('テスト環境ではMemoryRateLimiterを返す', async () => {
-    process.env.NODE_ENV = 'test'
-    
-    const { getRateLimiter: reloadedGetRateLimiter, MemoryRateLimiter: ReloadedMemoryRateLimiter } = await import('./rate-limiter')
+    vi.stubEnv('NODE_ENV', 'test')
+
+    const {
+      getRateLimiter: reloadedGetRateLimiter,
+      MemoryRateLimiter: ReloadedMemoryRateLimiter,
+    } = await import('./rate-limiter')
     const limiter = reloadedGetRateLimiter()
-    
+
     expect(limiter).toBeInstanceOf(ReloadedMemoryRateLimiter)
   })
 })
