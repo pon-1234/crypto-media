@@ -28,8 +28,10 @@ export const authOptions: NextAuthOptions = {
       from: process.env.EMAIL_FROM,
     }),
   ],
-  // CI環境ではFirestoreAdapterを使用しない
-  ...(process.env.CI !== 'true' && {
+  // CI環境または開発環境でFirebase未設定の場合はFirestoreAdapterを使用しない
+  ...(process.env.CI !== 'true' && 
+      process.env.FIREBASE_ADMIN_PRIVATE_KEY && 
+      process.env.FIREBASE_ADMIN_PRIVATE_KEY !== 'test-private-key' && {
     adapter: FirestoreAdapter({
       credential: cert({
         projectId: process.env.FIREBASE_ADMIN_PROJECT_ID!,

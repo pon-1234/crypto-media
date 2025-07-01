@@ -73,8 +73,8 @@ export async function getAllCorporateNewsIds(): Promise<string[]> {
       },
     })
 
-    const parsed = corporateNewsListSchema.parse(response)
-    return parsed.contents.map((item) => item.id)
+    // fields: 'id'を指定した場合は、idのみが返るためスキーマ検証をスキップ
+    return response.contents.map((item: { id: string }) => item.id)
   } catch (error) {
     handleError(error, 'Failed to fetch corporate news IDs')
     throw error
