@@ -57,11 +57,11 @@ describe('Firebase Admin', () => {
     // 環境変数をバックアップ
     const originalCI = process.env.CI
     const originalProjectId = process.env.FIREBASE_ADMIN_PROJECT_ID
-    
+
     // CI環境を無効化して環境変数を削除
     process.env.CI = 'false'
     delete process.env.FIREBASE_ADMIN_PROJECT_ID
-    
+
     // モジュールのキャッシュをクリア
     vi.resetModules()
 

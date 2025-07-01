@@ -27,7 +27,7 @@ test.describe('レスポンシブデザイン', () => {
         if (device === 'mobile') {
           const hamburger = header.locator('button[aria-expanded]')
           await expect(hamburger).toBeVisible()
-          
+
           // デスクトップメニューは非表示
           const desktopMenu = header.locator('.hidden.md\\:flex')
           await expect(desktopMenu).not.toBeVisible()
@@ -40,7 +40,7 @@ test.describe('レスポンシブデザイン', () => {
         // ヒーローセクションのテキストサイズ確認
         const heroTitle = page.locator('h1')
         await expect(heroTitle).toBeVisible()
-        
+
         // 特徴セクションのグリッドレイアウト確認
         const featureGrid = page.locator('.grid').first()
         await expect(featureGrid).toBeVisible()
@@ -90,8 +90,8 @@ test.describe('レスポンシブデザイン', () => {
 
         // モバイルでのタップターゲットサイズ確認
         if (device === 'mobile') {
-          const buttonHeight = await googleButton.evaluate(el => 
-            window.getComputedStyle(el).minHeight
+          const buttonHeight = await googleButton.evaluate(
+            (el) => window.getComputedStyle(el).minHeight
           )
           expect(parseInt(buttonHeight)).toBeGreaterThanOrEqual(48)
         }
@@ -106,22 +106,22 @@ test.describe('レスポンシブデザイン', () => {
 
       const header = page.locator('header')
       const hamburgerButton = header.locator('button[aria-expanded]')
-      
+
       // 初期状態ではメニューは閉じている
       await expect(hamburgerButton).toHaveAttribute('aria-expanded', 'false')
-      
+
       // ハンバーガーメニューをクリック
       await hamburgerButton.click()
-      
+
       // メニューが開く
       await expect(hamburgerButton).toHaveAttribute('aria-expanded', 'true')
       const mobileMenu = page.locator('.md\\:hidden').last()
       await expect(mobileMenu).toBeVisible()
-      
+
       // メニュー項目が表示される
       const menuItems = mobileMenu.locator('a')
       await expect(menuItems).toHaveCount(5) // ナビゲーション項目数を確認
-      
+
       // メニューを閉じる
       await hamburgerButton.click()
       await expect(hamburgerButton).toHaveAttribute('aria-expanded', 'false')
@@ -134,11 +134,16 @@ test.describe('レスポンシブデザイン', () => {
       await page.setViewportSize(viewports.mobile)
       // 実際の記事がない場合は、404ページになる可能性があるため、
       // ここではレイアウトの基本的な確認のみ行う
-      await page.goto('/media/articles/test-article', { waitUntil: 'domcontentloaded' })
-      
+      await page.goto('/media/articles/test-article', {
+        waitUntil: 'domcontentloaded',
+      })
+
       // 404でない場合のみテストを実行
-      const isNotFound = await page.locator('text=404').isVisible().catch(() => false)
-      
+      const isNotFound = await page
+        .locator('text=404')
+        .isVisible()
+        .catch(() => false)
+
       if (!isNotFound) {
         // ヒーロー画像のアスペクト比確認
         const heroImage = page.locator('.relative > img').first()
@@ -152,7 +157,7 @@ test.describe('レスポンシブデザイン', () => {
           const mainContent = page.locator('.lg\\:col-span-2')
           const sidebarBox = await sidebar.boundingBox()
           const mainBox = await mainContent.boundingBox()
-          
+
           if (sidebarBox && mainBox) {
             // サイドバーがメインコンテンツの下にあることを確認
             expect(sidebarBox.y).toBeGreaterThan(mainBox.y)

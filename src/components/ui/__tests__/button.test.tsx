@@ -18,10 +18,10 @@ describe('Button', () => {
     it('クリックイベントが正しく動作する', async () => {
       const handleClick = vi.fn()
       const user = userEvent.setup()
-      
+
       render(<Button onClick={handleClick}>Click me</Button>)
       const button = screen.getByRole('button', { name: 'Click me' })
-      
+
       await user.click(button)
       expect(handleClick).toHaveBeenCalledTimes(1)
     })
@@ -29,10 +29,14 @@ describe('Button', () => {
     it('disabled状態で操作できない', async () => {
       const handleClick = vi.fn()
       const user = userEvent.setup()
-      
-      render(<Button onClick={handleClick} disabled>Click me</Button>)
+
+      render(
+        <Button onClick={handleClick} disabled>
+          Click me
+        </Button>
+      )
       const button = screen.getByRole('button', { name: 'Click me' })
-      
+
       expect(button).toBeDisabled()
       await user.click(button)
       expect(handleClick).not.toHaveBeenCalled()

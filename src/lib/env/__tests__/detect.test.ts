@@ -10,14 +10,14 @@ import {
 
 describe('detect', () => {
   const originalEnv = { ...process.env }
-  
+
   // TypeScriptの型エラーを回避するためのヘルパー
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const env = process.env as any
 
   beforeEach(() => {
     // 環境変数をクリア
-    Object.keys(process.env).forEach(key => {
+    Object.keys(process.env).forEach((key) => {
       delete env[key]
     })
     // 元の環境変数を復元
@@ -28,7 +28,7 @@ describe('detect', () => {
 
   afterEach(() => {
     // 環境変数をクリア
-    Object.keys(process.env).forEach(key => {
+    Object.keys(process.env).forEach((key) => {
       delete env[key]
     })
     // 元の環境変数を復元
@@ -131,7 +131,7 @@ describe('detect', () => {
       env.VITEST = 'true'
 
       const info = getEnvironmentInfo()
-      
+
       expect(info.isCI).toBe(true)
       expect(info.isTest).toBe(true)
       expect(info.isDevelopment).toBe(true)
@@ -142,9 +142,9 @@ describe('detect', () => {
 
     it('NODE_ENVが未設定の場合、developmentを返す', () => {
       delete env.NODE_ENV
-      
+
       const info = getEnvironmentInfo()
-      
+
       expect(info.nodeEnv).toBe('development')
     })
   })

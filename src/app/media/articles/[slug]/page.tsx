@@ -240,7 +240,10 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
                   </span>
                 )}
                 {article.publishedAt && (
-                  <time dateTime={article.publishedAt} className="text-xs sm:text-sm">
+                  <time
+                    dateTime={article.publishedAt}
+                    className="text-xs sm:text-sm"
+                  >
                     {publishedDate}
                   </time>
                 )}
@@ -276,8 +279,12 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
                         />
                       )}
                       <div>
-                        <p className="text-xs text-gray-600 sm:text-sm">執筆者</p>
-                        <p className="text-sm font-medium sm:text-base">{article.author.name}</p>
+                        <p className="text-xs text-gray-600 sm:text-sm">
+                          執筆者
+                        </p>
+                        <p className="text-sm font-medium sm:text-base">
+                          {article.author.name}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -300,8 +307,12 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
                         />
                       )}
                       <div>
-                        <p className="text-xs text-gray-600 sm:text-sm">監修者</p>
-                        <p className="text-sm font-medium sm:text-base">{article.supervisor.name}</p>
+                        <p className="text-xs text-gray-600 sm:text-sm">
+                          監修者
+                        </p>
+                        <p className="text-sm font-medium sm:text-base">
+                          {article.supervisor.name}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -312,7 +323,7 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
               <div className="article-body">
                 {userHasAccess ? (
                   <div
-                    className="prose prose-sm mb-8 max-w-none sm:prose-base lg:prose-lg"
+                    className="prose prose-sm sm:prose-base lg:prose-lg mb-8 max-w-none"
                     dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                   />
                 ) : (
@@ -332,7 +343,9 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
               {/* タグ */}
               {article.tags && article.tags.length > 0 && (
                 <div className="mb-8">
-                  <h3 className="mb-4 text-base font-bold sm:text-lg">関連タグ</h3>
+                  <h3 className="mb-4 text-base font-bold sm:text-lg">
+                    関連タグ
+                  </h3>
                   <div className="flex flex-wrap gap-2">
                     {article.tags.map((tag) => (
                       <Link
@@ -353,7 +366,9 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
               {/* カテゴリ */}
               {article.category && (
                 <div className="mb-6 sm:mb-8">
-                  <h3 className="mb-3 text-base font-bold sm:mb-4 sm:text-lg">カテゴリ</h3>
+                  <h3 className="mb-3 text-base font-bold sm:mb-4 sm:text-lg">
+                    カテゴリ
+                  </h3>
                   <Link
                     href={`/media/category/${article.category.slug}`}
                     className="inline-block rounded bg-blue-100 px-3 py-1.5 text-sm text-blue-700 transition-colors hover:bg-blue-200 sm:px-4 sm:py-2 sm:text-base"
@@ -366,7 +381,9 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
               {/* 特集 */}
               {article.features && article.features.length > 0 && (
                 <div className="mb-6 sm:mb-8">
-                  <h3 className="mb-3 text-base font-bold sm:mb-4 sm:text-lg">関連特集</h3>
+                  <h3 className="mb-3 text-base font-bold sm:mb-4 sm:text-lg">
+                    関連特集
+                  </h3>
                   <ul className="space-y-2">
                     {article.features.map((feature) => (
                       <li key={feature.id}>
@@ -385,7 +402,9 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
               {/* 関連記事 */}
               {relatedArticles.length > 0 && (
                 <div>
-                  <h3 className="mb-3 text-base font-bold sm:mb-4 sm:text-lg">関連記事</h3>
+                  <h3 className="mb-3 text-base font-bold sm:mb-4 sm:text-lg">
+                    関連記事
+                  </h3>
                   <div className="space-y-4">
                     {relatedArticles.map((relatedArticle) => (
                       <ArticleCard

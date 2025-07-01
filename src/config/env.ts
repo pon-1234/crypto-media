@@ -104,7 +104,8 @@ function validateEnv(): Env {
   if (isClient()) {
     return {
       NODE_ENV: process.env.NODE_ENV as 'development' | 'production' | 'test',
-      NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'dummy-api-key',
+      NEXT_PUBLIC_FIREBASE_API_KEY:
+        process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'dummy-api-key',
       NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:
         process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'dummy.firebaseapp.com',
       NEXT_PUBLIC_FIREBASE_PROJECT_ID:
@@ -113,7 +114,8 @@ function validateEnv(): Env {
         process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || 'dummy.appspot.com',
       NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID:
         process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '123456789',
-      NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || 'dummy-app-id',
+      NEXT_PUBLIC_FIREBASE_APP_ID:
+        process.env.NEXT_PUBLIC_FIREBASE_APP_ID || 'dummy-app-id',
       NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
         process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy',
       // サーバーサイドの環境変数はダミー値を設定

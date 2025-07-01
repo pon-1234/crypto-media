@@ -137,7 +137,9 @@ describe('MediaArticlesPage', () => {
     const Page = await MediaArticlesPage()
     render(Page)
 
-    expect(screen.getByText('全50件中 20件を表示しています')).toBeInTheDocument()
+    expect(
+      screen.getByText('全50件中 20件を表示しています')
+    ).toBeInTheDocument()
   })
 
   it('APIエラーの場合はエラーをスローする', async () => {
