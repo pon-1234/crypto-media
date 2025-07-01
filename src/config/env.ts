@@ -2,10 +2,12 @@
  * 環境変数のバリデーションと型定義
  * @doc https://example.co.jp/docs/env-config
  * @related site.ts - サイト全体の定数設定
+ * @related src/lib/env/detect.ts - 環境検出ユーティリティ
  * @issue #1 - プロジェクト基盤とCI/CDパイプラインの構築
  */
 
 import { z } from 'zod'
+import { isTestOrCI, isClient } from '@/lib/env/detect'
 
 /**
  * 環境変数のスキーマ定義
@@ -66,16 +68,12 @@ export type Env = z.infer<typeof envSchema>
  */
 function validateEnv(): Env {
   // 開発環境でのデバッグ情報
-  if (process.env.NODE_ENV === 'development' && typeof window === 'undefined') {
+  if (process.env.NODE_ENV === 'development' && !isClient()) {
     console.log('🔍 環境変数の検証を開始します...')
   }
 
   // テスト環境またはCI環境ではモック値を返す
-  if (
-    process.env.NODE_ENV === 'test' ||
-    process.env.VITEST ||
-    process.env.CI === 'true'
-  ) {
+  if (isTestOrCI()) {
     return {
       NODE_ENV: 'test',
       NEXT_PUBLIC_FIREBASE_API_KEY: 'test-api-key',
@@ -103,7 +101,7 @@ function validateEnv(): Env {
   }
 
   // クライアントサイドでは検証を行わず、公開されている環境変数のみを返す
-  if (typeof window !== 'undefined') {
+  if (isClient()) {
     return {
       NODE_ENV: process.env.NODE_ENV as 'development' | 'production' | 'test',
       NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'dummy-api-key',

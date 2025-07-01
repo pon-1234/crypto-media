@@ -3,6 +3,14 @@ import GoogleProvider from 'next-auth/providers/google'
 import EmailProvider from 'next-auth/providers/email'
 import { FirestoreAdapter } from '@next-auth/firebase-adapter'
 import { cert } from 'firebase-admin/app'
+import { isTestOrCI } from '@/lib/env/detect'
+
+/**
+ * Firebase設定が有効かどうかを判定
+ */
+const hasValidFirebaseConfig = 
+  process.env.FIREBASE_ADMIN_PRIVATE_KEY && 
+  process.env.FIREBASE_ADMIN_PRIVATE_KEY !== 'test-private-key'
 
 /**
  * NextAuth.js設定
@@ -28,10 +36,8 @@ export const authOptions: NextAuthOptions = {
       from: process.env.EMAIL_FROM,
     }),
   ],
-  // CI環境または開発環境でFirebase未設定の場合はFirestoreAdapterを使用しない
-  ...(process.env.CI !== 'true' && 
-      process.env.FIREBASE_ADMIN_PRIVATE_KEY && 
-      process.env.FIREBASE_ADMIN_PRIVATE_KEY !== 'test-private-key' && {
+  // テスト環境またはFirebase未設定の場合はFirestoreAdapterを使用しない
+  ...(!isTestOrCI() && hasValidFirebaseConfig && {
     adapter: FirestoreAdapter({
       credential: cert({
         projectId: process.env.FIREBASE_ADMIN_PROJECT_ID!,

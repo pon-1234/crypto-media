@@ -41,18 +41,67 @@ jobs:
         env:
           CI: true
           NODE_ENV: test
+          # テスト用の環境変数（モック値で問題ない）
+          NEXT_PUBLIC_FIREBASE_API_KEY: test-api-key
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: test-auth-domain
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: test-project-id
+          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: test-storage-bucket
+          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: test-sender-id
+          NEXT_PUBLIC_FIREBASE_APP_ID: test-app-id
+          FIREBASE_ADMIN_PROJECT_ID: test-admin-project-id
+          FIREBASE_ADMIN_CLIENT_EMAIL: test@example.com
+          FIREBASE_ADMIN_PRIVATE_KEY: test-private-key
+          MICROCMS_SERVICE_DOMAIN: test-service
+          MICROCMS_API_KEY: test-api-key
+          STRIPE_SECRET_KEY: test-stripe-key
+          STRIPE_WEBHOOK_SECRET: test-webhook-secret
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: test-publishable-key
+          NEXTAUTH_URL: http://localhost:3000
+          NEXTAUTH_SECRET: test-secret
+          GOOGLE_CLIENT_ID: test-google-client-id
+          GOOGLE_CLIENT_SECRET: test-google-client-secret
 
       - name: Check test coverage
         run: |
-          # Extract coverage percentages
-          COVERAGE_OUTPUT=$(pnpm test:run --coverage 2>&1)
-          echo "$COVERAGE_OUTPUT"
-
-          # Check if all coverage metrics are 100%
-          if echo "$COVERAGE_OUTPUT" | grep -q "Statements.*100%.*Branches.*100%.*Functions.*100%.*Lines.*100%"; then
-            echo "✅ Coverage check passed - 100% coverage achieved!"
+          # カバレッジ結果を確認（前のステップで既に実行済み）
+          if [ -f coverage/coverage-summary.json ]; then
+            # jqを使用して安全にJSONを解析
+            COVERAGE_DATA=$(cat coverage/coverage-summary.json)
+            
+            # パーセンテージ値を抽出
+            STATEMENTS_PCT=$(echo "$COVERAGE_DATA" | jq -r '.total.statements.pct // 0')
+            BRANCHES_PCT=$(echo "$COVERAGE_DATA" | jq -r '.total.branches.pct // 0')
+            FUNCTIONS_PCT=$(echo "$COVERAGE_DATA" | jq -r '.total.functions.pct // 0')
+            LINES_PCT=$(echo "$COVERAGE_DATA" | jq -r '.total.lines.pct // 0')
+            
+            # カバー数と総数を抽出
+            STATEMENTS_COVERED=$(echo "$COVERAGE_DATA" | jq -r '.total.statements.covered // 0')
+            STATEMENTS_TOTAL=$(echo "$COVERAGE_DATA" | jq -r '.total.statements.total // 0')
+            BRANCHES_COVERED=$(echo "$COVERAGE_DATA" | jq -r '.total.branches.covered // 0')
+            BRANCHES_TOTAL=$(echo "$COVERAGE_DATA" | jq -r '.total.branches.total // 0')
+            FUNCTIONS_COVERED=$(echo "$COVERAGE_DATA" | jq -r '.total.functions.covered // 0')
+            FUNCTIONS_TOTAL=$(echo "$COVERAGE_DATA" | jq -r '.total.functions.total // 0')
+            LINES_COVERED=$(echo "$COVERAGE_DATA" | jq -r '.total.lines.covered // 0')
+            LINES_TOTAL=$(echo "$COVERAGE_DATA" | jq -r '.total.lines.total // 0')
+            
+            echo "Coverage Report:"
+            echo "- Statements: $STATEMENTS_COVERED/$STATEMENTS_TOTAL ($STATEMENTS_PCT%)"
+            echo "- Branches: $BRANCHES_COVERED/$BRANCHES_TOTAL ($BRANCHES_PCT%)"
+            echo "- Functions: $FUNCTIONS_COVERED/$FUNCTIONS_TOTAL ($FUNCTIONS_PCT%)"
+            echo "- Lines: $LINES_COVERED/$LINES_TOTAL ($LINES_PCT%)"
+            
+            # 100%カバレッジのチェック（浮動小数点を考慮）
+            if [ "$(echo "$STATEMENTS_PCT >= 100" | bc)" -eq 1 ] && \
+               [ "$(echo "$BRANCHES_PCT >= 100" | bc)" -eq 1 ] && \
+               [ "$(echo "$FUNCTIONS_PCT >= 100" | bc)" -eq 1 ] && \
+               [ "$(echo "$LINES_PCT >= 100" | bc)" -eq 1 ]; then
+              echo "✅ Coverage check passed - 100% coverage achieved!"
+            else
+              echo "❌ Coverage check failed - 100% coverage required!"
+              exit 1
+            fi
           else
-            echo "❌ Coverage check failed - 100% coverage required!"
+            echo "❌ Coverage file not found!"
             exit 1
           fi
 
@@ -91,6 +140,8 @@ jobs:
       - name: Build application
         run: pnpm build
         env:
+          CI: true
+          NODE_ENV: production
           # テスト用の環境変数
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
           NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
@@ -188,6 +239,8 @@ jobs:
       - name: Build application
         run: pnpm build
         env:
+          CI: true
+          NODE_ENV: production
           # ビルド用の環境変数（シークレットから取得）
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
           NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
