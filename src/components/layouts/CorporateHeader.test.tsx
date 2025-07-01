@@ -19,7 +19,10 @@ interface NextImageProps {
 }
 
 vi.mock('next/image', () => ({
-  default: ({ src, alt, ...props }: NextImageProps) => <img src={src} alt={alt} {...props} />,
+  default: ({ src, alt, ...props }: NextImageProps) => {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={src} alt={alt} {...props} />;
+  },
 }))
 
 describe('CorporateHeader', () => {

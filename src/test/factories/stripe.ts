@@ -152,7 +152,7 @@ export function createMockCheckoutSession(
  * @param data イベントデータ
  * @returns Stripe.Eventのモック
  */
-export function createMockStripeEvent<T = any>(
+export function createMockStripeEvent<T = unknown>(
   type: Stripe.Event['type'],
   data: T
 ): Stripe.Event {

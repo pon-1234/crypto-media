@@ -42,7 +42,10 @@ interface NextImageProps {
 }
 
 vi.mock('next/image', () => ({
-  default: vi.fn(({ src, alt }: NextImageProps) => <img src={src} alt={alt} />),
+  default: vi.fn(({ src, alt }: NextImageProps) => {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={src} alt={alt} />;
+  }),
 }));
 
 import { getMediaArticleBySlug, getRelatedArticles } from '@/lib/microcms';

@@ -13,7 +13,7 @@ import type { DocumentReference, DocumentSnapshot, QuerySnapshot, Transaction, W
  * @param data ドキュメントデータ
  * @returns DocumentSnapshotのモック
  */
-export function createMockDocumentSnapshot<T = any>(
+export function createMockDocumentSnapshot<T = unknown>(
   exists: boolean,
   data?: T
 ): DocumentSnapshot<T> {
@@ -22,7 +22,12 @@ export function createMockDocumentSnapshot<T = any>(
     id: 'doc_test_123',
     ref: createMockDocumentReference<T>(),
     data: exists ? () => data as T : () => undefined,
-    get: (field: string) => data?.[field],
+    get: (field: string) => {
+      if (data && typeof data === 'object' && field in data) {
+        return (data as Record<string, unknown>)[field];
+      }
+      return undefined;
+    },
     isEqual: vi.fn(),
     createTime: { toDate: () => new Date(), toMillis: () => Date.now() },
     updateTime: { toDate: () => new Date(), toMillis: () => Date.now() },
@@ -34,7 +39,7 @@ export function createMockDocumentSnapshot<T = any>(
  * Firestore DocumentReferenceのモックを生成
  * @returns DocumentReferenceのモック
  */
-export function createMockDocumentReference<T = any>(): DocumentReference<T> {
+export function createMockDocumentReference<T = unknown>(): DocumentReference<T> {
   return {
     id: 'doc_test_123',
     path: 'test/doc_test_123',
@@ -58,7 +63,7 @@ export function createMockDocumentReference<T = any>(): DocumentReference<T> {
  * @param docs ドキュメントの配列
  * @returns QuerySnapshotのモック
  */
-export function createMockQuerySnapshot<T = any>(
+export function createMockQuerySnapshot<T = unknown>(
   docs: Array<{ exists: boolean; data?: T }>
 ): QuerySnapshot<T> {
   const mockDocs = docs.map(doc => createMockDocumentSnapshot(doc.exists, doc.data))
@@ -147,14 +152,14 @@ export function createMockCollection() {
  * @param overrides カスタマイズするプロパティ
  * @returns NextAuthセッションのモック
  */
-export function createMockSession(overrides?: Partial<any>) {
+export function createMockSession(overrides?: Record<string, unknown>) {
   return {
     user: {
       id: 'user_test_123',
       email: 'test@example.com',
       name: 'Test User',
       image: null,
-      ...overrides?.user,
+      ...(overrides as { user?: Record<string, unknown> })?.user,
     },
     expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
     ...overrides,
@@ -166,7 +171,7 @@ export function createMockSession(overrides?: Partial<any>) {
  * @param overrides カスタマイズするプロパティ
  * @returns ユーザーデータのモック
  */
-export function createMockUserData(overrides?: Partial<any>) {
+export function createMockUserData(overrides?: Record<string, unknown>) {
   return {
     id: 'user_test_123',
     email: 'test@example.com',

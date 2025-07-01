@@ -56,8 +56,8 @@ describe('Stripe Client', () => {
     process.env.STRIPE_MONTHLY_PRICE_ID = 'price_123';
 
     // In test environment, validation is skipped, so it won't throw
-    const module = await import('./client');
-    expect(module.stripe).toBeDefined();
+    const stripeModule = await import('./client');
+    expect(stripeModule.stripe).toBeDefined();
   });
 
   it('should handle missing STRIPE_MONTHLY_PRICE_ID in test environment', async () => {
@@ -65,7 +65,7 @@ describe('Stripe Client', () => {
     delete process.env.STRIPE_MONTHLY_PRICE_ID;
 
     // In test environment, validation is skipped, but MONTHLY_PRICE_ID will be undefined
-    const module = await import('./client');
-    expect(module.MONTHLY_PRICE_ID).toBeUndefined();
+    const stripeModule = await import('./client');
+    expect(stripeModule.MONTHLY_PRICE_ID).toBeUndefined();
   });
 });

@@ -13,10 +13,7 @@ import type Stripe from 'stripe'
 import {
   createMockApiList,
   createMockStripeResponse,
-  createMockCustomer,
-  createMockCheckoutSession,
 } from '@/test/factories/stripe'
-import { createMockDocumentSnapshot } from '@/test/factories/firebase'
 
 // Mock next-auth
 vi.mock('next-auth', () => ({

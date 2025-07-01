@@ -9,7 +9,6 @@ import { NextRequest } from 'next/server'
 import { POST } from '../route'
 import { stripe } from '@/lib/stripe'
 import { adminDb } from '@/lib/firebase/admin'
-import Stripe from 'stripe'
 import { createMockStripeEvent, createMockCheckoutSession, createMockSubscription } from '@/test/factories/stripe'
 
 // Mock Stripe
@@ -42,7 +41,6 @@ vi.mock('@/lib/firebase/admin', () => ({
 }))
 
 describe('POST /api/stripe/webhook', () => {
-  const mockEventId = 'evt_test_123'
   const mockUserId = 'user123'
   const mockCustomerId = 'cus_test_123'
   const mockSubscriptionId = 'sub_test_123'
