@@ -7,8 +7,9 @@ import { vi } from 'vitest'
 import '@testing-library/jest-dom'
 
 // CI環境変数を設定
-if (process.env.CI === 'true') {
-  process.env.NODE_ENV = 'test'
+// NODE_ENVは読み取り専用のため、既に設定されていることを前提とする
+if (process.env.CI === 'true' && process.env.NODE_ENV !== 'test') {
+  console.warn('NODE_ENV should be set to "test" in CI environment')
 }
 
 // グローバルなfetch APIをモック
