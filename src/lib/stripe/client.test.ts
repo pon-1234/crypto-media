@@ -24,14 +24,18 @@ vi.mock('stripe', () => {
  */
 describe('Stripe Client', () => {
   const originalEnv = process.env;
+  const originalNodeEnv = process.env.NODE_ENV;
+  const originalConsoleError = console.error;
 
   beforeEach(() => {
     vi.resetModules();
     process.env = { ...originalEnv };
+    console.error = vi.fn();
   });
 
   afterEach(() => {
     process.env = originalEnv;
+    console.error = originalConsoleError;
   });
 
   it('should initialize Stripe client with correct configuration', () => {
@@ -67,5 +71,91 @@ describe('Stripe Client', () => {
     // In test environment, validation is skipped, but MONTHLY_PRICE_ID will be undefined
     const stripeModule = await import('./client');
     expect(stripeModule.MONTHLY_PRICE_ID).toBeUndefined();
+  });
+
+  describe('validateStripeConfig', () => {
+    it('should throw error in production for missing environment variables', async () => {
+      process.env.NODE_ENV = 'production';
+      delete process.env.STRIPE_SECRET_KEY;
+      delete process.env.STRIPE_MONTHLY_PRICE_ID;
+      delete process.env.STRIPE_WEBHOOK_SECRET;
+      delete process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+      
+      await expect(import('./client')).rejects.toThrow('Stripe configuration errors:');
+    });
+
+    it('should console.error in development for missing environment variables', async () => {
+      process.env.NODE_ENV = 'development';
+      delete process.env.STRIPE_SECRET_KEY;
+      delete process.env.STRIPE_MONTHLY_PRICE_ID;
+      delete process.env.STRIPE_WEBHOOK_SECRET;
+      delete process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+      
+      await import('./client');
+      
+      expect(console.error).toHaveBeenCalledWith(
+        expect.stringContaining('Stripe configuration errors:')
+      );
+    });
+
+    it('should throw error for invalid STRIPE_SECRET_KEY format', async () => {
+      process.env.NODE_ENV = 'development';
+      process.env.STRIPE_SECRET_KEY = 'invalid_key';
+      process.env.STRIPE_MONTHLY_PRICE_ID = 'price_123';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_123';
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = 'pk_test_123';
+      
+      await expect(import('./client')).rejects.toThrow('STRIPE_SECRET_KEY must start with "sk_"');
+    });
+
+    it('should throw error for invalid NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY format', async () => {
+      process.env.NODE_ENV = 'development';
+      process.env.STRIPE_SECRET_KEY = 'sk_test_123';
+      process.env.STRIPE_MONTHLY_PRICE_ID = 'price_123';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_123';
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = 'invalid_key';
+      
+      await expect(import('./client')).rejects.toThrow('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY must start with "pk_"');
+    });
+
+    it('should pass validation with all valid environment variables', async () => {
+      process.env.NODE_ENV = 'development';
+      process.env.STRIPE_SECRET_KEY = 'sk_test_123';
+      process.env.STRIPE_MONTHLY_PRICE_ID = 'price_123';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_123';
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = 'pk_test_123';
+      
+      const stripeModule = await import('./client');
+      expect(stripeModule.stripe).toBeDefined();
+      expect(console.error).not.toHaveBeenCalled();
+    });
+
+    it('should skip validation entirely in test environment', async () => {
+      process.env.NODE_ENV = 'test';
+      // No environment variables set
+      
+      const stripeModule = await import('./client');
+      expect(stripeModule.stripe).toBeDefined();
+      expect(console.error).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('stripeConfig', () => {
+    it('should export stripeConfig with correct values', async () => {
+      process.env.STRIPE_SECRET_KEY = 'sk_test_123';
+      process.env.STRIPE_MONTHLY_PRICE_ID = 'price_123';
+      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_123';
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = 'pk_test_123';
+      
+      const { stripeConfig } = await import('./client');
+      
+      expect(stripeConfig).toEqual({
+        publishableKey: 'pk_test_123',
+        monthlyPriceId: 'price_123',
+        webhookSecret: 'whsec_123',
+        currency: 'jpy',
+        locale: 'ja',
+      });
+    });
   });
 });

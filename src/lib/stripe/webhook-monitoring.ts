@@ -126,11 +126,16 @@ export async function sendAlert(message: string, severity: 'info' | 'warning' | 
   // - メール通知
   // - PagerDutyへのアラート
   
-  // アラートをFirestoreに記録
-  await adminDb.collection('webhook_alerts').add({
-    message,
-    severity,
-    createdAt: new Date().toISOString(),
-    resolved: false,
-  })
+  try {
+    // アラートをFirestoreに記録
+    await adminDb.collection('webhook_alerts').add({
+      message,
+      severity,
+      createdAt: new Date().toISOString(),
+      resolved: false,
+    })
+  } catch (error) {
+    console.error('Failed to save alert to Firestore:', error)
+    // エラーをスローしない（アラート送信の失敗でアプリケーションを停止させない）
+  }
 }

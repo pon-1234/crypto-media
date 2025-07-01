@@ -20,8 +20,7 @@ describe('env validation', () => {
     vi.unstubAllEnvs();
   });
 
-  // TODO: 環境変数のモック方法を再検討する必要があるため、一時的にスキップ
-  it.skip('必須の環境変数が全て設定されている場合、正常に読み込まれる', async () => {
+  it('validateEnv関数が正しく動作する', async () => {
     // 必須の環境変数を設定
     vi.stubEnv('NODE_ENV', 'production');
     vi.stubEnv('VITEST', undefined);
