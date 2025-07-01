@@ -60,6 +60,8 @@ jobs:
           file: ./coverage/coverage-final.json
           flags: unittests
           name: codecov-umbrella
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
 
   lighthouse:
     name: Lighthouse CI
