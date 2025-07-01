@@ -17,6 +17,11 @@ vi.mock('stripe', () => {
   return { default: MockStripe }
 })
 
+// Mock environment detection
+vi.mock('@/lib/env/detect', () => ({
+  isTestOrCI: vi.fn(() => true), // デフォルトはテスト環境
+}))
+
 /**
  * Stripeクライアントの初期化と設定のテスト
  * - 環境変数の検証
@@ -69,6 +74,10 @@ describe('Stripe Client', () => {
 
   describe('validateStripeConfig', () => {
     it('should throw error in production for missing environment variables', async () => {
+      // isTestOrCIをfalseにして本番環境をシミュレート
+      const { isTestOrCI } = await import('@/lib/env/detect')
+      vi.mocked(isTestOrCI).mockReturnValue(false)
+      
       vi.stubEnv('NODE_ENV', 'production')
 
       await expect(import('./client')).rejects.toThrow(
@@ -77,7 +86,14 @@ describe('Stripe Client', () => {
     })
 
     it('should console.error in development for missing environment variables', async () => {
+      // isTestOrCIをfalseにして開発環境をシミュレート
+      const { isTestOrCI } = await import('@/lib/env/detect')
+      vi.mocked(isTestOrCI).mockReturnValue(false)
+      
       vi.stubEnv('NODE_ENV', 'development')
+      // 有効な形式のダミーキーを設定して形式チェックエラーを回避
+      vi.stubEnv('STRIPE_SECRET_KEY', 'sk_test_dummy')
+      vi.stubEnv('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY', 'pk_test_dummy')
 
       await import('./client')
 
@@ -87,6 +103,10 @@ describe('Stripe Client', () => {
     })
 
     it('should throw error for invalid STRIPE_SECRET_KEY format', async () => {
+      // isTestOrCIをfalseにして形式チェックを有効化
+      const { isTestOrCI } = await import('@/lib/env/detect')
+      vi.mocked(isTestOrCI).mockReturnValue(false)
+      
       vi.stubEnv('NODE_ENV', 'development')
       vi.stubEnv('STRIPE_SECRET_KEY', 'invalid_key')
       vi.stubEnv('STRIPE_MONTHLY_PRICE_ID', 'price_123')
@@ -99,6 +119,10 @@ describe('Stripe Client', () => {
     })
 
     it('should throw error for invalid NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY format', async () => {
+      // isTestOrCIをfalseにして形式チェックを有効化
+      const { isTestOrCI } = await import('@/lib/env/detect')
+      vi.mocked(isTestOrCI).mockReturnValue(false)
+      
       vi.stubEnv('NODE_ENV', 'development')
       vi.stubEnv('STRIPE_SECRET_KEY', 'sk_test_123')
       vi.stubEnv('STRIPE_MONTHLY_PRICE_ID', 'price_123')
@@ -111,6 +135,10 @@ describe('Stripe Client', () => {
     })
 
     it('should pass validation with all valid environment variables', async () => {
+      // isTestOrCIをfalseにしてバリデーションを実行
+      const { isTestOrCI } = await import('@/lib/env/detect')
+      vi.mocked(isTestOrCI).mockReturnValue(false)
+      
       vi.stubEnv('NODE_ENV', 'development')
       vi.stubEnv('STRIPE_SECRET_KEY', 'sk_test_123')
       vi.stubEnv('STRIPE_MONTHLY_PRICE_ID', 'price_123')
@@ -123,6 +151,10 @@ describe('Stripe Client', () => {
     })
 
     it('should skip validation entirely in test environment', async () => {
+      // isTestOrCIをtrueにしてテスト環境をシミュレート
+      const { isTestOrCI } = await import('@/lib/env/detect')
+      vi.mocked(isTestOrCI).mockReturnValue(true)
+      
       vi.stubEnv('NODE_ENV', 'test')
       // No environment variables set
 

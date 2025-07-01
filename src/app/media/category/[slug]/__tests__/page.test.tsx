@@ -44,6 +44,8 @@ vi.mock('@/components/media/ArticleGrid', () => ({
 }))
 
 describe('CategoryPage', () => {
+  const originalEnv = process.env
+  
   const mockCategory = {
     id: 'cat1',
     name: 'ブロックチェーン',
@@ -81,6 +83,12 @@ describe('CategoryPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    // CI環境フラグをfalseに設定してテスト実行
+    process.env = { ...originalEnv, CI: 'false' }
+  })
+  
+  afterEach(() => {
+    process.env = originalEnv
   })
 
   describe('generateMetadata', () => {

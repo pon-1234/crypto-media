@@ -4,7 +4,7 @@
  * @issue #5 - メディア記事一覧・詳細ページの実装
  */
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { notFound } from 'next/navigation'
 import MediaArticleDetailPage, {
   generateMetadata,
@@ -116,8 +116,16 @@ const createMockArticle = (
 })
 
 describe('MediaArticleDetailPage', () => {
+  const originalEnv = process.env
+
   beforeEach(() => {
     vi.clearAllMocks()
+    // CI環境フラグをfalseに設定してテスト実行
+    process.env = { ...originalEnv, CI: 'false' }
+  })
+  
+  afterEach(() => {
+    process.env = originalEnv
   })
 
   describe('ページコンポーネント', () => {

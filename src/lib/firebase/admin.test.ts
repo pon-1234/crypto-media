@@ -15,6 +15,11 @@ vi.mock('firebase-admin/firestore', () => ({
   }),
 }))
 
+// Mock environment detection
+vi.mock('@/lib/env/detect', () => ({
+  isTestOrCI: vi.fn(() => false),
+}))
+
 describe('Firebase Admin', () => {
   const originalEnv = process.env
 
@@ -54,27 +59,33 @@ describe('Firebase Admin', () => {
   })
 
   it('should throw error when environment variables are missing', async () => {
-    // 環境変数をバックアップ
-    const originalCI = process.env.CI
-    const originalProjectId = process.env.FIREBASE_ADMIN_PROJECT_ID
-
-    // CI環境を無効化して環境変数を削除
-    process.env.CI = 'false'
+    // 環境変数を削除
     delete process.env.FIREBASE_ADMIN_PROJECT_ID
+    delete process.env.FIREBASE_ADMIN_CLIENT_EMAIL
+    delete process.env.FIREBASE_ADMIN_PRIVATE_KEY
 
     // モジュールのキャッシュをクリア
     vi.resetModules()
 
-    try {
-      await expect(() => import('./admin')).rejects.toThrow(
-        'Firebase Admin environment variables are not configured'
-      )
-    } finally {
-      // 環境変数を復元
-      process.env.CI = originalCI
-      if (originalProjectId) {
-        process.env.FIREBASE_ADMIN_PROJECT_ID = originalProjectId
-      }
-    }
+    await expect(() => import('./admin')).rejects.toThrow(
+      'Firebase Admin environment variables are not configured'
+    )
+  })
+
+  it('should return mock instance in test/CI environment', async () => {
+    // isTestOrCIがtrueを返すようにモック
+    const { isTestOrCI } = await import('@/lib/env/detect')
+    vi.mocked(isTestOrCI).mockReturnValue(true)
+
+    vi.resetModules()
+    const { adminDb } = await import('./admin')
+
+    // モックインスタンスが返されることを確認
+    expect(adminDb).toBeDefined()
+    expect(adminDb.collection).toBeDefined()
+    
+    // collectionを呼び出してモックのメソッドが動作することを確認
+    const collection = adminDb.collection('test')
+    expect(collection.doc).toBeDefined()
   })
 })

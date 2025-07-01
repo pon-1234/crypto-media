@@ -1,4 +1,5 @@
 import Stripe from 'stripe'
+import { isTestOrCI } from '@/lib/env/detect'
 
 /**
  * Stripe SDK client for server-side operations
@@ -54,8 +55,8 @@ const validateStripeConfig = () => {
   }
 }
 
-// 初期化時に検証を実行（テスト環境ではスキップ）
-if (process.env.NODE_ENV !== 'test') {
+// 初期化時に検証を実行（テスト環境またはCI環境ではスキップ）
+if (!isTestOrCI()) {
   validateStripeConfig()
 }
 

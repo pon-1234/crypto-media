@@ -1,5 +1,6 @@
 import { initializeApp, getApps, cert } from 'firebase-admin/app'
 import { getFirestore, Firestore } from 'firebase-admin/firestore'
+import { isTestOrCI } from '@/lib/env/detect'
 
 /**
  * Firebase Admin SDK initialization
@@ -7,8 +8,8 @@ import { getFirestore, Firestore } from 'firebase-admin/firestore'
  * @related src/app/api/stripe/webhook/route.ts - Uses this to update user membership status
  */
 const initializeFirebaseAdmin = () => {
-  // CI環境ではモックアプリを返す
-  if (process.env.CI === 'true') {
+  // CI環境またはテスト環境ではモックアプリを返す
+  if (isTestOrCI()) {
     return null
   }
 
@@ -37,22 +38,21 @@ const initializeFirebaseAdmin = () => {
 const app = initializeFirebaseAdmin()
 
 // Export Firestore instance
-export const adminDb =
-  process.env.CI === 'true'
-    ? // CI環境ではモックインスタンスを返す
-      ({
-        collection: () => ({
-          doc: () => ({
-            set: async () => ({}),
-            get: async () => ({ exists: false, data: () => ({}) }),
-            update: async () => ({}),
-            delete: async () => ({}),
-          }),
-          add: async () => ({ id: 'mock-id' }),
-          where: () => ({
-            get: async () => ({ empty: true, docs: [] }),
-          }),
+export const adminDb = isTestOrCI()
+  ? // CI環境またはテスト環境ではモックインスタンスを返す
+    ({
+      collection: () => ({
+        doc: () => ({
+          set: async () => ({}),
+          get: async () => ({ exists: false, data: () => ({}) }),
+          update: async () => ({}),
+          delete: async () => ({}),
+        }),
+        add: async () => ({ id: 'mock-id' }),
+        where: () => ({
           get: async () => ({ empty: true, docs: [] }),
         }),
-      } as unknown as Firestore)
-    : getFirestore(app!)
+        get: async () => ({ empty: true, docs: [] }),
+      }),
+    } as unknown as Firestore)
+  : getFirestore(app!)
