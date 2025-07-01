@@ -4,7 +4,7 @@
  */
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
-import { vi } from 'vitest'
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { HubSpotForm } from './HubSpotForm'
 
 // Next.js Scriptコンポーネントのモック
@@ -38,21 +38,7 @@ vi.mock('next/script', () => ({
   },
 }))
 
-// HubSpotグローバルオブジェクトの型定義
-declare global {
-  interface Window {
-    hbspt?: {
-      forms: {
-        create: (config: {
-          portalId: string
-          formId: string
-          target: string
-          onFormSubmitted?: () => void
-        }) => void
-      }
-    }
-  }
-}
+// HubSpotグローバルオブジェクトの型定義は src/types/hubspot.d.ts で定義
 
 describe('HubSpotForm', () => {
   const mockHbspt = {

@@ -10,21 +10,7 @@ import Script from 'next/script'
  * @issue #13 - HubSpotフォーム統合
  */
 
-// HubSpotグローバルオブジェクトの型定義
-declare global {
-  interface Window {
-    hbspt?: {
-      forms: {
-        create: (config: {
-          portalId: string
-          formId: string
-          target: string
-          onFormSubmitted?: () => void
-        }) => void
-      }
-    }
-  }
-}
+// HubSpotグローバルオブジェクトの型定義は src/types/hubspot.d.ts で定義
 interface HubSpotFormProps {
   /** HubSpotポータルID */
   portalId: string

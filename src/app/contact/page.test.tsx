@@ -3,7 +3,7 @@
  * @issue #13 - HubSpotフォーム統合
  */
 import { render, screen } from '@testing-library/react'
-import { vi } from 'vitest'
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest'
 import ContactPage from './page'
 
 // HubSpotFormコンポーネントのモック
