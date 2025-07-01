@@ -54,10 +54,27 @@ describe('Firebase Admin', () => {
   })
 
   it('should throw error when environment variables are missing', async () => {
+    // 環境変数をバックアップ
+    const originalCI = process.env.CI
+    const originalProjectId = process.env.FIREBASE_ADMIN_PROJECT_ID
+    
+    // CI環境を無効化して環境変数を削除
+    process.env.CI = 'false'
     delete process.env.FIREBASE_ADMIN_PROJECT_ID
+    
+    // モジュールのキャッシュをクリア
+    vi.resetModules()
 
-    await expect(() => import('./admin')).rejects.toThrow(
-      'Firebase Admin environment variables are not configured'
-    )
+    try {
+      await expect(() => import('./admin')).rejects.toThrow(
+        'Firebase Admin environment variables are not configured'
+      )
+    } finally {
+      // 環境変数を復元
+      process.env.CI = originalCI
+      if (originalProjectId) {
+        process.env.FIREBASE_ADMIN_PROJECT_ID = originalProjectId
+      }
+    }
   })
 })

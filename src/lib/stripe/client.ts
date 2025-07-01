@@ -59,13 +59,15 @@ if (process.env.NODE_ENV !== 'test') {
   validateStripeConfig()
 }
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-02-24.acacia',
-  typescript: true,
-  // 本番環境でのベストプラクティス設定
-  maxNetworkRetries: 2,
-  timeout: 30000, // 30秒のタイムアウト
-})
+export const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-02-24.acacia',
+      typescript: true,
+      // 本番環境でのベストプラクティス設定
+      maxNetworkRetries: 2,
+      timeout: 30000, // 30秒のタイムアウト
+    })
+  : ({} as Stripe) // テスト環境用のダミーオブジェクト
 
 /**
  * Stripe Price ID for the monthly subscription plan (¥1,980/month)

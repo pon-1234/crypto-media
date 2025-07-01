@@ -116,8 +116,8 @@ export async function generateMetadata({
  * @returns 記事詳細ページのJSX要素
  */
 export default async function MediaArticleDetailPage({ params }: PageProps) {
-  // CI環境ではダミーページを返す
-  if (process.env.CI === 'true') {
+  // CI環境かつテスト実行中でない場合のみダミーページを返す
+  if (process.env.CI === 'true' && process.env.NODE_ENV !== 'test') {
     return (
       <article className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8">
