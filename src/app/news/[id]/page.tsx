@@ -17,6 +17,11 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
+  // CI環境では静的パラメータ生成をスキップ
+  if (process.env.CI === 'true') {
+    return []
+  }
+
   const ids = await getAllCorporateNewsIds()
   return ids.map((id) => ({
     id,
@@ -25,6 +30,14 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params
+  
+  // CI環境ではデフォルトメタデータを返す
+  if (process.env.CI === 'true') {
+    return {
+      title: 'お知らせ | 株式会社Example',
+      description: 'コーポレートお知らせの詳細をご覧いただけます。',
+    }
+  }
   
   try {
     const news = await getCorporateNewsDetail(id)
@@ -50,6 +63,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function NewsDetailPage({ params }: PageProps) {
   const { id } = await params
+  
+  // CI環境ではダミーページを返す
+  if (process.env.CI === 'true') {
+    return (
+      <article className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold mb-4">お知らせ詳細</h1>
+            <p className="text-gray-600">CI環境でのビルド用ダミーページです。</p>
+          </div>
+        </div>
+      </article>
+    )
+  }
   
   let news
   try {

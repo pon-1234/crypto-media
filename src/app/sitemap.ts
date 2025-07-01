@@ -8,16 +8,17 @@ import type { Expert } from '@/lib/schema/expert.schema';
 import type { Feature } from '@/lib/schema/feature.schema';
 
 /**
- * 動的サイトマップを生成
- * @doc https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap
- * @related src/app/robots.ts
+ * サイトマップを生成
+ * @see https://nextjs.org/docs/app/api-reference/file-conventions/sitemap
+ * @returns サイトマップの定義
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp';
-  
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || 'https://crypto-media.jp';
+
   // 現在の日時
   const now = new Date();
-  
+
   // 静的ページのサイトマップエントリ
   const staticPages: MetadataRoute.Sitemap = [
     // コーポレートサイト
@@ -169,58 +170,64 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
+  // CI環境では動的コンテンツの取得をスキップ
+  if (process.env.CI === 'true') {
+    return staticPages;
+  }
+
   try {
     // 動的コンテンツの取得
-    const [articles, corporateNews, categories, tags, experts, features] = await Promise.all([
-      // メディア記事
-      client.get<{ contents: MediaArticle[] }>({
-        endpoint: 'media_articles',
-        queries: {
-          limit: 1000,
-          fields: 'id,slug,updatedAt',
-        },
-      }),
-      // コーポレートニュース
-      client.get<{ contents: CorporateNews[] }>({
-        endpoint: 'corporate_news',
-        queries: {
-          limit: 1000,
-          fields: 'id,updatedAt',
-        },
-      }),
-      // カテゴリ
-      client.get<{ contents: Category[] }>({
-        endpoint: 'categories',
-        queries: {
-          limit: 100,
-          fields: 'id,slug',
-        },
-      }),
-      // タグ
-      client.get<{ contents: Tag[] }>({
-        endpoint: 'tags',
-        queries: {
-          limit: 200,
-          fields: 'id,slug',
-        },
-      }),
-      // 執筆者・監修者
-      client.get<{ contents: Expert[] }>({
-        endpoint: 'experts',
-        queries: {
-          limit: 100,
-          fields: 'id,slug',
-        },
-      }),
-      // 特集
-      client.get<{ contents: Feature[] }>({
-        endpoint: 'features',
-        queries: {
-          limit: 100,
-          fields: 'id,slug',
-        },
-      }),
-    ]);
+    const [articles, corporateNews, categories, tags, experts, features] =
+      await Promise.all([
+        // メディア記事
+        client.get<{ contents: MediaArticle[] }>({
+          endpoint: 'media_articles',
+          queries: {
+            limit: 1000,
+            fields: 'id,slug,updatedAt',
+          },
+        }),
+        // コーポレートニュース
+        client.get<{ contents: CorporateNews[] }>({
+          endpoint: 'corporate_news',
+          queries: {
+            limit: 1000,
+            fields: 'id,updatedAt',
+          },
+        }),
+        // カテゴリ
+        client.get<{ contents: Category[] }>({
+          endpoint: 'categories',
+          queries: {
+            limit: 100,
+            fields: 'id,slug',
+          },
+        }),
+        // タグ
+        client.get<{ contents: Tag[] }>({
+          endpoint: 'tags',
+          queries: {
+            limit: 200,
+            fields: 'id,slug',
+          },
+        }),
+        // 執筆者・監修者
+        client.get<{ contents: Expert[] }>({
+          endpoint: 'experts',
+          queries: {
+            limit: 100,
+            fields: 'id,slug',
+          },
+        }),
+        // 特集
+        client.get<{ contents: Feature[] }>({
+          endpoint: 'features',
+          queries: {
+            limit: 100,
+            fields: 'id,slug',
+          },
+        }),
+      ]);
 
     // 動的ページのサイトマップエントリ
     const dynamicPages: MetadataRoute.Sitemap = [

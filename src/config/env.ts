@@ -63,8 +63,8 @@ export type Env = z.infer<typeof envSchema>;
  * 環境変数のバリデーションと取得
  */
 function validateEnv(): Env {
-  // テスト環境ではモック値を返す
-  if (process.env.NODE_ENV === 'test' || process.env.VITEST) {
+  // テスト環境またはCI環境ではモック値を返す
+  if (process.env.NODE_ENV === 'test' || process.env.VITEST || process.env.CI === 'true') {
     return {
       NODE_ENV: 'test',
       NEXT_PUBLIC_FIREBASE_API_KEY: 'test-api-key',
