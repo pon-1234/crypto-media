@@ -10,6 +10,12 @@ import { POST } from '../route'
 import { stripe } from '@/lib/stripe'
 import { adminDb } from '@/lib/firebase/admin'
 import { createMockStripeEvent, createMockCheckoutSession, createMockSubscription } from '@/test/factories/stripe'
+import {
+  createMockCollection,
+  createMockDocumentSnapshot,
+  createMockDocumentReference,
+  createMockTransaction,
+} from '@/test/factories/firebase'
 
 // Mock Stripe
 vi.mock('@/lib/stripe', () => ({
@@ -23,19 +29,7 @@ vi.mock('@/lib/stripe', () => ({
 // Mock Firebase Admin
 vi.mock('@/lib/firebase/admin', () => ({
   adminDb: {
-    collection: vi.fn(() => ({
-      doc: vi.fn(() => ({
-        get: vi.fn(),
-        set: vi.fn(),
-        update: vi.fn(),
-        delete: vi.fn(),
-      })),
-      where: vi.fn(() => ({
-        limit: vi.fn(() => ({
-          get: vi.fn(),
-        })),
-      })),
-    })),
+    collection: vi.fn(),
     runTransaction: vi.fn(),
   },
 }))
@@ -97,10 +91,7 @@ describe('POST /api/stripe/webhook', () => {
 
     vi.mocked(stripe.webhooks.constructEvent).mockReturnValue(mockEvent)
 
-    const mockDoc = {
-      exists: false,
-      ref: { update: vi.fn() },
-    }
+    const mockDoc = createMockDocumentSnapshot(false)
     const mockEventRef = {
       get: vi.fn().mockResolvedValue(mockDoc),
       set: vi.fn().mockResolvedValue(null),
@@ -116,39 +107,28 @@ describe('POST /api/stripe/webhook', () => {
       transactionCallCount++
       if (transactionCallCount === 1) {
         // イベントの重複チェック用トランザクション
-        const mockTransaction = {
-          get: vi.fn().mockResolvedValue(mockDoc),
-          set: vi.fn(),
-          update: vi.fn(),
-        }
+        const mockTransaction = createMockTransaction()
+        const mockGet = mockTransaction.get as unknown as ReturnType<typeof vi.fn<() => Promise<unknown>>>
+        mockGet.mockImplementation(() => Promise.resolve(mockDoc))
         return await updateFunction(mockTransaction)
       } else {
         // ユーザー更新用トランザクション
-        const mockUserDoc = {
-          exists: true,
-          data: () => ({ membership: 'free' }),
-        }
-        const mockTransaction = {
-          get: vi.fn().mockResolvedValue(mockUserDoc),
-          set: vi.fn(),
-          update: vi.fn(),
-        }
+        const mockUserDoc = createMockDocumentSnapshot(true, { membership: 'free' })
+        const mockTransaction = createMockTransaction()
+        const mockGet = mockTransaction.get as unknown as ReturnType<typeof vi.fn<() => Promise<unknown>>>
+        mockGet.mockImplementation(() => Promise.resolve(mockUserDoc))
         return await updateFunction(mockTransaction)
       }
     })
 
     vi.mocked(adminDb.collection).mockImplementation((collection: string) => {
+      const mockCollection = createMockCollection()
       if (collection === 'webhook_events') {
-        return {
-          doc: vi.fn(() => mockEventRef),
-        } as ReturnType<typeof adminDb.collection>
+        vi.mocked(mockCollection.doc).mockReturnValue(mockEventRef as unknown as ReturnType<typeof mockCollection.doc>)
+      } else if (collection === 'users') {
+        vi.mocked(mockCollection.doc).mockReturnValue(mockUserRef as unknown as ReturnType<typeof mockCollection.doc>)
       }
-      if (collection === 'users') {
-        return {
-          doc: vi.fn(() => mockUserRef),
-        } as ReturnType<typeof adminDb.collection>
-      }
-      return {} as ReturnType<typeof adminDb.collection>
+      return mockCollection as unknown as ReturnType<typeof adminDb.collection>
     })
 
     const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
@@ -177,9 +157,7 @@ describe('POST /api/stripe/webhook', () => {
 
     vi.mocked(stripe.webhooks.constructEvent).mockReturnValue(mockEvent)
 
-    const mockDoc = {
-      exists: true, // Event already processed
-    }
+    const mockDoc = createMockDocumentSnapshot(true) // Event already processed
     const mockEventRef = {
       get: vi.fn().mockResolvedValue(mockDoc),
       set: vi.fn(),
@@ -187,17 +165,15 @@ describe('POST /api/stripe/webhook', () => {
 
     // トランザクションのモックを設定（既に処理済みの場合）
     vi.mocked(adminDb.runTransaction).mockImplementation(async (updateFunction) => {
-      const mockTransaction = {
-        get: vi.fn().mockResolvedValue(mockDoc),
-        set: vi.fn(),
-        update: vi.fn(),
-      }
+      const mockTransaction = createMockTransaction()
+      const mockGet = mockTransaction.get as unknown as ReturnType<typeof vi.fn<() => Promise<unknown>>>
+      mockGet.mockImplementation(() => Promise.resolve(mockDoc))
       return await updateFunction(mockTransaction)
     })
 
-    vi.mocked(adminDb.collection).mockImplementation(() => ({
-      doc: vi.fn(() => mockEventRef),
-    }) as ReturnType<typeof adminDb.collection>)
+    const mockColl2 = createMockCollection()
+    vi.mocked(mockColl2.doc).mockReturnValue(mockEventRef as unknown as ReturnType<typeof mockColl2.doc>)
+    vi.mocked(adminDb.collection).mockReturnValue(mockColl2 as unknown as ReturnType<typeof adminDb.collection>)
 
     const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
       method: 'POST',
@@ -243,30 +219,25 @@ describe('POST /api/stripe/webhook', () => {
 
     // トランザクションのモックを設定
     vi.mocked(adminDb.runTransaction).mockImplementation(async (updateFunction) => {
-      const mockTransaction = {
-        get: vi.fn().mockResolvedValue({ exists: false }),
-        set: vi.fn(),
-        update: vi.fn(),
-      }
+      const mockTransaction = createMockTransaction()
+      const mockDocSnapshot = createMockDocumentSnapshot(false)
+      const mockGet = mockTransaction.get as unknown as ReturnType<typeof vi.fn<() => Promise<unknown>>>
+      mockGet.mockImplementation(() => Promise.resolve(mockDocSnapshot))
       return await updateFunction(mockTransaction)
     })
 
     vi.mocked(adminDb.collection).mockImplementation((collection: string) => {
+      const mockColl = createMockCollection()
       if (collection === 'webhook_events') {
-        return {
-          doc: vi.fn(() => mockEventRef),
-        } as ReturnType<typeof adminDb.collection>
-      }
-      if (collection === 'users') {
-        return {
-          where: vi.fn(() => ({
-            limit: vi.fn(() => ({
-              get: vi.fn().mockResolvedValue(mockSnapshot),
-            })),
+        vi.mocked(mockColl.doc).mockReturnValue(mockEventRef as unknown as ReturnType<typeof mockColl.doc>)
+      } else if (collection === 'users') {
+        vi.mocked(mockColl.where).mockReturnValue({
+          limit: vi.fn(() => ({
+            get: vi.fn().mockResolvedValue(mockSnapshot),
           })),
-        } as ReturnType<typeof adminDb.collection>
+        } as unknown as ReturnType<typeof mockColl.where>)
       }
-      return {} as ReturnType<typeof adminDb.collection>
+      return mockColl as unknown as ReturnType<typeof adminDb.collection>
     })
 
     const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
@@ -310,9 +281,9 @@ describe('POST /api/stripe/webhook', () => {
     // トランザクションのモックを設定（イベントチェックでエラーを発生させる）
     vi.mocked(adminDb.runTransaction).mockRejectedValue(new Error('Database error'))
 
-    vi.mocked(adminDb.collection).mockImplementation(() => ({
-      doc: vi.fn(() => mockEventRef),
-    }) as ReturnType<typeof adminDb.collection>)
+    const mockColl4 = createMockCollection()
+    vi.mocked(mockColl4.doc).mockReturnValue(mockEventRef as unknown as ReturnType<typeof mockColl4.doc>)
+    vi.mocked(adminDb.collection).mockReturnValue(mockColl4 as unknown as ReturnType<typeof adminDb.collection>)
 
     const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
       method: 'POST',

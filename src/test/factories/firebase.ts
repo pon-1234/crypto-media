@@ -5,7 +5,8 @@
  * @issue #7 - NextAuth.js + Firebase認証の実装
  */
 
-import type { DocumentReference, DocumentSnapshot, QuerySnapshot, Transaction, WriteBatch } from 'firebase-admin/firestore'
+import { vi } from 'vitest'
+import type { DocumentReference, DocumentSnapshot, QuerySnapshot, Transaction, WriteBatch, WriteResult } from 'firebase-admin/firestore'
 
 /**
  * Firestore DocumentSnapshotのモックを生成
@@ -90,6 +91,7 @@ export function createMockQuerySnapshot<T = unknown>(
 export function createMockTransaction(): Transaction {
   return {
     get: vi.fn(),
+    getAll: vi.fn(),
     set: vi.fn(),
     update: vi.fn(),
     delete: vi.fn(),
@@ -145,6 +147,16 @@ export function createMockCollection() {
     isEqual: vi.fn(),
     withConverter: vi.fn(),
   }
+}
+
+/**
+ * Firestore WriteResultのモックを生成
+ * @returns WriteResultのモック
+ */
+export function createMockWriteResult(): WriteResult {
+  return {
+    writeTime: { toDate: () => new Date(), toMillis: () => Date.now() },
+  } as unknown as WriteResult
 }
 
 /**

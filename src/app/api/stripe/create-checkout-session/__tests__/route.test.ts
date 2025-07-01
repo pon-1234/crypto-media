@@ -13,7 +13,14 @@ import type Stripe from 'stripe'
 import {
   createMockApiList,
   createMockStripeResponse,
+  createMockCheckoutSession,
 } from '@/test/factories/stripe'
+import {
+  createMockCollection,
+  createMockDocumentSnapshot,
+  createMockDocumentReference,
+  createMockWriteResult,
+} from '@/test/factories/firebase'
 
 // Mock next-auth
 vi.mock('next-auth', () => ({
@@ -43,12 +50,7 @@ vi.mock('@/lib/stripe', () => ({
 // Mock Firebase admin
 vi.mock('@/lib/firebase/admin', () => ({
   adminDb: {
-    collection: vi.fn(() => ({
-      doc: vi.fn(() => ({
-        get: vi.fn(),
-        update: vi.fn(),
-      })),
-    })),
+    collection: vi.fn(),
   },
 }))
 
@@ -84,17 +86,15 @@ describe('POST /api/stripe/create-checkout-session', () => {
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
     
     // Mock Firestore user document
-    const mockUserDoc = {
-      data: () => ({}),
-      ref: {
-        update: vi.fn(),
-      },
-    }
-    const mockGet = vi.fn().mockResolvedValue(mockUserDoc)
-    const mockDoc = vi.fn(() => ({ get: mockGet, update: vi.fn() }))
-    const mockCollection = vi.fn(() => ({ doc: mockDoc }))
+    const mockUserDoc = createMockDocumentSnapshot(true, {})
+    const mockDocRef = createMockDocumentReference()
+    vi.mocked(mockDocRef.get).mockResolvedValue(mockUserDoc)
+    vi.mocked(mockDocRef.update).mockResolvedValue(createMockWriteResult())
+    
     const { adminDb } = await import('@/lib/firebase/admin')
-    vi.mocked(adminDb.collection).mockImplementation(mockCollection)
+    const mockColl = createMockCollection()
+    vi.mocked(mockColl.doc).mockReturnValue(mockDocRef)
+    vi.mocked(adminDb.collection).mockReturnValue(mockColl as unknown as ReturnType<typeof adminDb.collection>)
     
     vi.mocked(stripe.customers.list).mockResolvedValue(
       createMockStripeResponse(createMockApiList<Stripe.Customer>([]))
@@ -149,20 +149,18 @@ describe('POST /api/stripe/create-checkout-session', () => {
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
     
     // Mock Firestore user document with existing Stripe customer ID
-    const mockUserDoc = {
-      data: () => ({
-        stripeCustomerId: 'cus_existing123',
-        membership: 'free',
-      }),
-      ref: {
-        update: vi.fn(),
-      },
-    }
-    const mockGet = vi.fn().mockResolvedValue(mockUserDoc)
-    const mockDoc = vi.fn(() => ({ get: mockGet, update: vi.fn() }))
-    const mockCollection = vi.fn(() => ({ doc: mockDoc }))
+    const mockUserDoc = createMockDocumentSnapshot(true, {
+      stripeCustomerId: 'cus_existing123',
+      membership: 'free',
+    })
+    const mockDocRef = createMockDocumentReference()
+    vi.mocked(mockDocRef.get).mockResolvedValue(mockUserDoc)
+    vi.mocked(mockDocRef.update).mockResolvedValue(createMockWriteResult())
+    
     const { adminDb } = await import('@/lib/firebase/admin')
-    vi.mocked(adminDb.collection).mockImplementation(mockCollection)
+    const mockColl = createMockCollection()
+    vi.mocked(mockColl.doc).mockReturnValue(mockDocRef)
+    vi.mocked(adminDb.collection).mockReturnValue(mockColl as unknown as ReturnType<typeof adminDb.collection>)
     
     vi.mocked(stripe.checkout.sessions.create).mockResolvedValue(
       createMockStripeResponse(createMockCheckoutSession({
@@ -210,11 +208,13 @@ describe('POST /api/stripe/create-checkout-session', () => {
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
     
     // Mock Firestore error
-    const mockGet = vi.fn().mockRejectedValue(new Error('Firestore error'))
-    const mockDoc = vi.fn(() => ({ get: mockGet }))
-    const mockCollection = vi.fn(() => ({ doc: mockDoc }))
+    const mockDocRef = createMockDocumentReference()
+    vi.mocked(mockDocRef.get).mockRejectedValue(new Error('Firestore error'))
+    
     const { adminDb } = await import('@/lib/firebase/admin')
-    vi.mocked(adminDb.collection).mockImplementation(mockCollection)
+    const mockColl = createMockCollection()
+    vi.mocked(mockColl.doc).mockReturnValue(mockDocRef)
+    vi.mocked(adminDb.collection).mockReturnValue(mockColl as unknown as ReturnType<typeof adminDb.collection>)
     
     vi.mocked(stripe.customers.list).mockResolvedValue(
       createMockStripeResponse(createMockApiList<Stripe.Customer>([]))
@@ -235,17 +235,15 @@ describe('POST /api/stripe/create-checkout-session', () => {
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
     
     // Mock Firestore user document
-    const mockUserDoc = {
-      data: () => ({}),
-      ref: {
-        update: vi.fn(),
-      },
-    }
-    const mockGet = vi.fn().mockResolvedValue(mockUserDoc)
-    const mockDoc = vi.fn(() => ({ get: mockGet, update: vi.fn() }))
-    const mockCollection = vi.fn(() => ({ doc: mockDoc }))
+    const mockUserDoc = createMockDocumentSnapshot(true, {})
+    const mockDocRef = createMockDocumentReference()
+    vi.mocked(mockDocRef.get).mockResolvedValue(mockUserDoc)
+    vi.mocked(mockDocRef.update).mockResolvedValue(createMockWriteResult())
+    
     const { adminDb } = await import('@/lib/firebase/admin')
-    vi.mocked(adminDb.collection).mockImplementation(mockCollection)
+    const mockColl = createMockCollection()
+    vi.mocked(mockColl.doc).mockReturnValue(mockDocRef)
+    vi.mocked(adminDb.collection).mockReturnValue(mockColl as unknown as ReturnType<typeof adminDb.collection>)
     
     vi.mocked(stripe.customers.list).mockResolvedValue(
       createMockStripeResponse(createMockApiList<Stripe.Customer>([]))

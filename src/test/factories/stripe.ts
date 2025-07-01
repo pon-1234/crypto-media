@@ -163,7 +163,7 @@ export function createMockStripeEvent<T = unknown>(
     created: Date.now() / 1000,
     data: {
       object: data,
-      previous_attributes: null,
+      previous_attributes: undefined,
     },
     livemode: false,
     pending_webhooks: 1,
@@ -172,7 +172,7 @@ export function createMockStripeEvent<T = unknown>(
       idempotency_key: null,
     },
     type,
-  } as Stripe.Event
+  } as unknown as Stripe.Event
 }
 
 /**
@@ -255,11 +255,12 @@ export function createMockPortalSession(
     configuration: 'bpc_test_123',
     created: Date.now() / 1000,
     customer: 'cus_test_123',
+    flow: null,
     livemode: false,
     locale: 'ja',
     on_behalf_of: null,
     return_url: 'https://example.com/media/mypage/membership',
     url: 'https://billing.stripe.com/p/session/test_123',
     ...overrides,
-  }
+  } as Stripe.BillingPortal.Session
 }
