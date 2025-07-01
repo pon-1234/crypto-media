@@ -65,6 +65,12 @@ jobs:
         run: |
           # カバレッジ結果を確認（前のステップで既に実行済み）
           if [ -f coverage/coverage-summary.json ]; then
+            echo "Coverage summary file found."
+            echo "File size: $(ls -lh coverage/coverage-summary.json | awk '{print $5}')"
+            echo "First 500 characters of coverage-summary.json:"
+            head -c 500 coverage/coverage-summary.json
+            echo ""
+            
             # jqを使用して安全にJSONを解析
             COVERAGE_DATA=$(cat coverage/coverage-summary.json)
             
@@ -90,11 +96,30 @@ jobs:
             echo "- Functions: $FUNCTIONS_COVERED/$FUNCTIONS_TOTAL ($FUNCTIONS_PCT%)"
             echo "- Lines: $LINES_COVERED/$LINES_TOTAL ($LINES_PCT%)"
             
-            # 100%カバレッジのチェック（浮動小数点を考慮）
-            if [ "$(echo "$STATEMENTS_PCT >= 100" | bc)" -eq 1 ] && \
-               [ "$(echo "$BRANCHES_PCT >= 100" | bc)" -eq 1 ] && \
-               [ "$(echo "$FUNCTIONS_PCT >= 100" | bc)" -eq 1 ] && \
-               [ "$(echo "$LINES_PCT >= 100" | bc)" -eq 1 ]; then
+            # 100%カバレッジのチェック（awkを使用して浮動小数点比較）
+            CHECK_PASSED=true
+            
+            if ! awk -v pct="$STATEMENTS_PCT" 'BEGIN { exit !(pct >= 100) }'; then
+              CHECK_PASSED=false
+              echo "Statements coverage is below 100%: $STATEMENTS_PCT%"
+            fi
+            
+            if ! awk -v pct="$BRANCHES_PCT" 'BEGIN { exit !(pct >= 100) }'; then
+              CHECK_PASSED=false
+              echo "Branches coverage is below 100%: $BRANCHES_PCT%"
+            fi
+            
+            if ! awk -v pct="$FUNCTIONS_PCT" 'BEGIN { exit !(pct >= 100) }'; then
+              CHECK_PASSED=false
+              echo "Functions coverage is below 100%: $FUNCTIONS_PCT%"
+            fi
+            
+            if ! awk -v pct="$LINES_PCT" 'BEGIN { exit !(pct >= 100) }'; then
+              CHECK_PASSED=false
+              echo "Lines coverage is below 100%: $LINES_PCT%"
+            fi
+            
+            if [ "$CHECK_PASSED" = true ]; then
               echo "✅ Coverage check passed - 100% coverage achieved!"
             else
               echo "❌ Coverage check failed - 100% coverage required!"
