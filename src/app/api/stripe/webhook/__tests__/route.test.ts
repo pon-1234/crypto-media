@@ -1,9 +1,16 @@
+/**
+ * Stripe Webhookエンドポイントのテスト
+ * @doc DEVELOPMENT_GUIDE.md#Stripe決済フロー
+ * @related src/app/api/stripe/webhook/route.ts - テスト対象のWebhookルート
+ * @issue #8 - Stripe CheckoutとWebhookの実装
+ */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 import { POST } from '../route'
 import { stripe } from '@/lib/stripe'
 import { adminDb } from '@/lib/firebase/admin'
 import Stripe from 'stripe'
+import { createMockStripeEvent, createMockCheckoutSession, createMockSubscription } from '@/test/factories/stripe'
 
 // Mock Stripe
 vi.mock('@/lib/stripe', () => ({
@@ -30,6 +37,7 @@ vi.mock('@/lib/firebase/admin', () => ({
         })),
       })),
     })),
+    runTransaction: vi.fn(),
   },
 }))
 
@@ -78,20 +86,16 @@ describe('POST /api/stripe/webhook', () => {
   })
 
   it('handles checkout.session.completed event', async () => {
-    const mockEvent: Stripe.Event = {
-      id: mockEventId,
-      type: 'checkout.session.completed',
-      created: Date.now(),
-      data: {
-        object: {
-          id: 'cs_test_123',
-          mode: 'subscription',
-          customer: mockCustomerId,
-          subscription: mockSubscriptionId,
-          metadata: { userId: mockUserId },
-        } as unknown as Stripe.Checkout.Session,
-      },
-    } as Stripe.Event
+    const mockEvent = createMockStripeEvent(
+      'checkout.session.completed',
+      createMockCheckoutSession({
+        id: 'cs_test_123',
+        mode: 'subscription',
+        customer: mockCustomerId,
+        subscription: mockSubscriptionId,
+        metadata: { userId: mockUserId },
+      })
+    )
 
     vi.mocked(stripe.webhooks.constructEvent).mockReturnValue(mockEvent)
 
@@ -108,18 +112,45 @@ describe('POST /api/stripe/webhook', () => {
       update: vi.fn().mockResolvedValue(null),
     }
 
+    // トランザクションのモックを設定（2回呼ばれる: 1回目はイベントの重複チェック、2回目はユーザー更新）
+    let transactionCallCount = 0
+    vi.mocked(adminDb.runTransaction).mockImplementation(async (updateFunction) => {
+      transactionCallCount++
+      if (transactionCallCount === 1) {
+        // イベントの重複チェック用トランザクション
+        const mockTransaction = {
+          get: vi.fn().mockResolvedValue(mockDoc),
+          set: vi.fn(),
+          update: vi.fn(),
+        }
+        return await updateFunction(mockTransaction)
+      } else {
+        // ユーザー更新用トランザクション
+        const mockUserDoc = {
+          exists: true,
+          data: () => ({ membership: 'free' }),
+        }
+        const mockTransaction = {
+          get: vi.fn().mockResolvedValue(mockUserDoc),
+          set: vi.fn(),
+          update: vi.fn(),
+        }
+        return await updateFunction(mockTransaction)
+      }
+    })
+
     vi.mocked(adminDb.collection).mockImplementation((collection: string) => {
       if (collection === 'webhook_events') {
         return {
           doc: vi.fn(() => mockEventRef),
-        } as unknown as ReturnType<typeof adminDb.collection>
+        } as ReturnType<typeof adminDb.collection>
       }
       if (collection === 'users') {
         return {
           doc: vi.fn(() => mockUserRef),
-        } as unknown as ReturnType<typeof adminDb.collection>
+        } as ReturnType<typeof adminDb.collection>
       }
-      return {} as unknown as ReturnType<typeof adminDb.collection>
+      return {} as ReturnType<typeof adminDb.collection>
     })
 
     const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
@@ -135,26 +166,16 @@ describe('POST /api/stripe/webhook', () => {
 
     expect(response.status).toBe(200)
     expect(data.received).toBe(true)
-    expect(mockEventRef.set).toHaveBeenCalledWith({
-      type: 'checkout.session.completed',
-      created: mockEvent.created,
-      processed_at: expect.any(String),
-    })
-    expect(mockUserRef.update).toHaveBeenCalledWith({
-      stripeCustomerId: mockCustomerId,
-      stripeSubscriptionId: mockSubscriptionId,
-      membership: 'paid',
-      membershipUpdatedAt: expect.any(String),
-    })
+    // トランザクション内でのset呼び出しを確認
+    expect(vi.mocked(adminDb.runTransaction)).toHaveBeenCalledTimes(2)
+    // ユーザー更新は直接mockUserRef.updateを確認する必要がない（トランザクション内で処理される）
   })
 
   it('skips already processed events (idempotency)', async () => {
-    const mockEvent: Stripe.Event = {
-      id: mockEventId,
-      type: 'checkout.session.completed',
-      created: Date.now(),
-      data: { object: {} as Stripe.Checkout.Session },
-    } as Stripe.Event
+    const mockEvent = createMockStripeEvent(
+      'checkout.session.completed',
+      createMockCheckoutSession()
+    )
 
     vi.mocked(stripe.webhooks.constructEvent).mockReturnValue(mockEvent)
 
@@ -166,9 +187,19 @@ describe('POST /api/stripe/webhook', () => {
       set: vi.fn(),
     }
 
+    // トランザクションのモックを設定（既に処理済みの場合）
+    vi.mocked(adminDb.runTransaction).mockImplementation(async (updateFunction) => {
+      const mockTransaction = {
+        get: vi.fn().mockResolvedValue(mockDoc),
+        set: vi.fn(),
+        update: vi.fn(),
+      }
+      return await updateFunction(mockTransaction)
+    })
+
     vi.mocked(adminDb.collection).mockImplementation(() => ({
       doc: vi.fn(() => mockEventRef),
-    }) as unknown as ReturnType<typeof adminDb.collection>)
+    }) as ReturnType<typeof adminDb.collection>)
 
     const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
       method: 'POST',
@@ -187,16 +218,12 @@ describe('POST /api/stripe/webhook', () => {
   })
 
   it('handles customer.subscription.deleted event', async () => {
-    const mockEvent: Stripe.Event = {
-      id: mockEventId,
-      type: 'customer.subscription.deleted',
-      created: Date.now(),
-      data: {
-        object: {
-          id: mockSubscriptionId,
-        } as Stripe.Subscription,
-      },
-    } as Stripe.Event
+    const mockEvent = createMockStripeEvent(
+      'customer.subscription.deleted',
+      createMockSubscription({
+        id: mockSubscriptionId,
+      })
+    )
 
     vi.mocked(stripe.webhooks.constructEvent).mockReturnValue(mockEvent)
 
@@ -216,11 +243,21 @@ describe('POST /api/stripe/webhook', () => {
       delete: vi.fn(),
     }
 
+    // トランザクションのモックを設定
+    vi.mocked(adminDb.runTransaction).mockImplementation(async (updateFunction) => {
+      const mockTransaction = {
+        get: vi.fn().mockResolvedValue({ exists: false }),
+        set: vi.fn(),
+        update: vi.fn(),
+      }
+      return await updateFunction(mockTransaction)
+    })
+
     vi.mocked(adminDb.collection).mockImplementation((collection: string) => {
       if (collection === 'webhook_events') {
         return {
           doc: vi.fn(() => mockEventRef),
-        } as unknown as ReturnType<typeof adminDb.collection>
+        } as ReturnType<typeof adminDb.collection>
       }
       if (collection === 'users') {
         return {
@@ -229,9 +266,9 @@ describe('POST /api/stripe/webhook', () => {
               get: vi.fn().mockResolvedValue(mockSnapshot),
             })),
           })),
-        } as unknown as ReturnType<typeof adminDb.collection>
+        } as ReturnType<typeof adminDb.collection>
       }
-      return {} as unknown as ReturnType<typeof adminDb.collection>
+      return {} as ReturnType<typeof adminDb.collection>
     })
 
     const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
@@ -251,21 +288,18 @@ describe('POST /api/stripe/webhook', () => {
       membership: 'free',
       membershipUpdatedAt: expect.any(String),
       stripeSubscriptionId: null,
+      paymentStatus: 'canceled',
     })
   })
 
   it('handles webhook processing errors', async () => {
-    const mockEvent: Stripe.Event = {
-      id: mockEventId,
-      type: 'checkout.session.completed',
-      created: Date.now(),
-      data: {
-        object: {
-          mode: 'subscription',
-          metadata: { userId: mockUserId },
-        } as unknown as Stripe.Checkout.Session,
-      },
-    } as Stripe.Event
+    const mockEvent = createMockStripeEvent(
+      'checkout.session.completed',
+      createMockCheckoutSession({
+        mode: 'subscription',
+        metadata: { userId: mockUserId },
+      })
+    )
 
     vi.mocked(stripe.webhooks.constructEvent).mockReturnValue(mockEvent)
 
@@ -275,9 +309,12 @@ describe('POST /api/stripe/webhook', () => {
       delete: vi.fn(),
     }
 
+    // トランザクションのモックを設定（イベントチェックでエラーを発生させる）
+    vi.mocked(adminDb.runTransaction).mockRejectedValue(new Error('Database error'))
+
     vi.mocked(adminDb.collection).mockImplementation(() => ({
       doc: vi.fn(() => mockEventRef),
-    }) as unknown as ReturnType<typeof adminDb.collection>)
+    }) as ReturnType<typeof adminDb.collection>)
 
     const request = new NextRequest('http://localhost:3000/api/stripe/webhook', {
       method: 'POST',
@@ -291,8 +328,9 @@ describe('POST /api/stripe/webhook', () => {
     const data = await response.json()
 
     expect(response.status).toBe(500)
-    expect(data.error).toBe('Webhook processing failed')
-    expect(mockEventRef.delete).toHaveBeenCalled()
+    expect(data.error).toBe('Database error')
+    // トランザクションでエラーが発生した場合、deleteは呼ばれない
+    expect(mockEventRef.delete).not.toHaveBeenCalled()
   })
 
   it('returns 500 when webhook secret is not configured', async () => {

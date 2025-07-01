@@ -3,6 +3,19 @@ import { authOptions } from '@/lib/auth/authOptions';
 import { adminDb } from '@/lib/firebase/admin';
 
 /**
+ * 会員情報の型定義
+ */
+export interface Membership {
+  userId: string;
+  email: string;
+  membership: 'free' | 'paid';
+  membershipUpdatedAt?: string;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  paymentStatus?: string;
+}
+
+/**
  * ユーザーの会員ステータスを取得するヘルパー関数
  * 
  * @doc この関数は、現在のセッションからユーザーIDを取得し、
@@ -13,7 +26,7 @@ import { adminDb } from '@/lib/firebase/admin';
  * @related src/lib/auth/authOptions.ts - NextAuth設定
  * @related src/app/api/stripe/webhook/route.ts - 会員ステータス更新ロジック
  */
-export async function getUserMembership() {
+export async function getUserMembership(): Promise<Membership | null> {
   try {
     // 現在のセッションを取得
     const session = await getServerSession(authOptions);

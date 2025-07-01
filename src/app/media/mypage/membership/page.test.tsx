@@ -21,6 +21,7 @@ vi.mock('next/link', () => ({
 
 import { getServerSession } from 'next-auth';
 import { getUserMembership } from '@/lib/auth/membership';
+import type { Membership } from '@/lib/auth/membership';
 
 describe('MembershipPage', () => {
   beforeEach(() => {

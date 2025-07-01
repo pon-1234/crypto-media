@@ -1,3 +1,9 @@
+/**
+ * 会員管理機能のテスト
+ * @doc DEVELOPMENT_GUIDE.md#会員管理
+ * @related src/lib/auth/membership.ts - テスト対象の会員管理モジュール
+ * @issue #7 - NextAuth.js + Firebase認証の実装
+ */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getUserMembership, isPaidMember, hasAccess } from './membership';
 import type { Session } from 'next-auth';
@@ -24,6 +30,12 @@ vi.mock('@/lib/firebase/admin', () => ({
 import { getServerSession } from 'next-auth';
 import { adminDb } from '@/lib/firebase/admin';
 
+/**
+ * 会員管理機能のテストスイート
+ * - getUserMembership: Firestoreから会員情報を取得
+ * - isPaidMember: 有料会員かどうかを判定
+ * - hasAccess: コンテンツへのアクセス権限を判定
+ */
 describe('membership.ts', () => {
   beforeEach(() => {
     vi.clearAllMocks();

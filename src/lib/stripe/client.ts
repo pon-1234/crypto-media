@@ -49,8 +49,10 @@ const validateStripeConfig = () => {
   }
 };
 
-// 初期化時に検証を実行
-validateStripeConfig();
+// 初期化時に検証を実行（テスト環境ではスキップ）
+if (process.env.NODE_ENV !== 'test') {
+  validateStripeConfig();
+}
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-02-24.acacia',

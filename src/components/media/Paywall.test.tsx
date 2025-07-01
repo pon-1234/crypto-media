@@ -1,7 +1,19 @@
+/**
+ * ペイウォールコンポーネントのテスト
+ * @doc DEVELOPMENT_GUIDE.md#ペイウォール
+ * @related src/components/media/Paywall.tsx - テスト対象のペイウォールコンポーネント
+ * @issue #6 - 有料記事のペイウォール実装
+ */
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Paywall } from './Paywall';
 
+/**
+ * ペイウォールコンポーネントの表示と機能のテスト
+ * - 記事タイトルとプレビューの表示
+ * - 有料会員登録へのCTA
+ * - HTMLとテキストプレビューの切り替え
+ */
 describe('Paywall', () => {
   const defaultProps = {
     title: 'テスト記事のタイトル',

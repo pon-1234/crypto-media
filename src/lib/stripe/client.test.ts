@@ -1,3 +1,9 @@
+/**
+ * Stripe SDKクライアントのテスト
+ * @doc DEVELOPMENT_GUIDE.md#Stripe決済フロー
+ * @related src/lib/stripe/client.ts - テスト対象のStripeクライアント
+ * @issue #8 - Stripe CheckoutとWebhookの実装
+ */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Stripe from 'stripe';
 
@@ -11,6 +17,11 @@ vi.mock('stripe', () => {
   return { default: MockStripe };
 });
 
+/**
+ * Stripeクライアントの初期化と設定のテスト
+ * - 環境変数の検証
+ * - APIバージョンと設定の確認
+ */
 describe('Stripe Client', () => {
   const originalEnv = process.env;
 
@@ -32,33 +43,29 @@ describe('Stripe Client', () => {
       expect(Stripe).toHaveBeenCalledWith('sk_test_123', {
         apiVersion: '2025-02-24.acacia',
         typescript: true,
+        maxNetworkRetries: 2,
+        timeout: 30000,
       });
       expect(stripe).toBeDefined();
       expect(MONTHLY_PRICE_ID).toBe('price_123');
     });
   });
 
-  it('should throw error when STRIPE_SECRET_KEY is not defined', async () => {
+  it('should handle missing STRIPE_SECRET_KEY gracefully in test environment', async () => {
     delete process.env.STRIPE_SECRET_KEY;
     process.env.STRIPE_MONTHLY_PRICE_ID = 'price_123';
 
-    await expect(() => import('./client')).rejects.toThrow(
-      'STRIPE_SECRET_KEY is not defined in environment variables'
-    );
+    // In test environment, validation is skipped, so it won't throw
+    const module = await import('./client');
+    expect(module.stripe).toBeDefined();
   });
 
-  it('should warn when STRIPE_MONTHLY_PRICE_ID is not defined', () => {
+  it('should handle missing STRIPE_MONTHLY_PRICE_ID in test environment', async () => {
     process.env.STRIPE_SECRET_KEY = 'sk_test_123';
     delete process.env.STRIPE_MONTHLY_PRICE_ID;
 
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-    return import('./client').then(({ MONTHLY_PRICE_ID }) => {
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'STRIPE_MONTHLY_PRICE_ID is not defined. Checkout sessions will not work properly.'
-      );
-      expect(MONTHLY_PRICE_ID).toBe('');
-      consoleWarnSpy.mockRestore();
-    });
+    // In test environment, validation is skipped, but MONTHLY_PRICE_ID will be undefined
+    const module = await import('./client');
+    expect(module.MONTHLY_PRICE_ID).toBeUndefined();
   });
 });

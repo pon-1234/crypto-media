@@ -1,3 +1,9 @@
+/**
+ * Next.js ミドルウェアのテスト
+ * @doc DEVELOPMENT_GUIDE.md#認証フロー
+ * @related src/middleware.ts - テスト対象のミドルウェア
+ * @issue #7 - NextAuth.js + Firebase認証の実装
+ */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
