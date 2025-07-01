@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { getCorporateNewsDetail, getAllCorporateNewsIds } from '@/lib/microcms'
 import { RichTextRenderer } from '@/components/ui/RichTextRenderer'
 import { formatDate } from '@/lib/utils/date'
-import { handleError } from '@/lib/utils/handleError'
 
 /**
  * コーポレートお知らせ詳細ページ
@@ -56,7 +55,7 @@ export async function generateMetadata({
       },
     }
   } catch (error) {
-    handleError(error, `Failed to generate metadata for news: ${id}`)
+    console.error(`Failed to generate metadata for news: ${id}`, error)
     return {
       title: 'お知らせ | 株式会社Example',
     }

@@ -193,6 +193,71 @@ describe('MediaArticleDetailPage', () => {
       expect(screen.getByText('有料会員限定')).toBeInTheDocument()
     })
 
+    it('特集がある記事の場合、関連特集を表示する', async () => {
+      const mockArticle = createMockArticle({
+        features: [
+          {
+            id: 'feature-1',
+            createdAt: '2024-01-01T00:00:00.000Z',
+            updatedAt: '2024-01-01T00:00:00.000Z',
+            publishedAt: '2024-01-01T00:00:00.000Z',
+            revisedAt: '2024-01-01T00:00:00.000Z',
+            name: '2024年の暗号資産トレンド',
+            slug: '2024-crypto-trends',
+            description: '2024年の暗号資産市場の動向を解説',
+            heroImage: {
+              url: 'https://example.com/feature.jpg',
+              height: 720,
+              width: 1280,
+            },
+          },
+        ],
+      })
+
+      vi.mocked(getMediaArticleBySlug).mockResolvedValueOnce(mockArticle)
+      vi.mocked(getRelatedArticles).mockResolvedValueOnce([])
+
+      const Page = await MediaArticleDetailPage({
+        params: { slug: 'test-article' },
+      })
+      render(Page)
+
+      expect(screen.getByText('関連特集')).toBeInTheDocument()
+      expect(screen.getByText('2024年の暗号資産トレンド')).toBeInTheDocument()
+    })
+
+    it('調査レポートタイプの記事を正しく表示する', async () => {
+      const mockArticle = createMockArticle({
+        type: 'survey_report',
+      })
+
+      vi.mocked(getMediaArticleBySlug).mockResolvedValueOnce(mockArticle)
+      vi.mocked(getRelatedArticles).mockResolvedValueOnce([])
+
+      const Page = await MediaArticleDetailPage({
+        params: { slug: 'test-article' },
+      })
+      render(Page)
+
+      expect(screen.getByText('調査レポート')).toBeInTheDocument()
+    })
+
+    it('メディアお知らせタイプの記事を正しく表示する', async () => {
+      const mockArticle = createMockArticle({
+        type: 'media_news',
+      })
+
+      vi.mocked(getMediaArticleBySlug).mockResolvedValueOnce(mockArticle)
+      vi.mocked(getRelatedArticles).mockResolvedValueOnce([])
+
+      const Page = await MediaArticleDetailPage({
+        params: { slug: 'test-article' },
+      })
+      render(Page)
+
+      expect(screen.getByText('お知らせ')).toBeInTheDocument()
+    })
+
     it('記事が見つからない場合はnotFoundを呼ぶ', async () => {
       vi.mocked(getMediaArticleBySlug).mockResolvedValueOnce(null)
 

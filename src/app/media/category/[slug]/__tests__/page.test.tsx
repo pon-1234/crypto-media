@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render } from '@testing-library/react'
 import { notFound } from 'next/navigation'
 import CategoryPage, { generateMetadata, generateStaticParams } from '../page'
@@ -15,6 +15,9 @@ vi.mock('@/lib/microcms', () => ({
   getCategoryBySlug: vi.fn(),
   getMediaArticlesByCategory: vi.fn(),
 }))
+
+// Store original CI env
+const originalCI = process.env.CI
 
 // Mock components
 vi.mock('@/components/ui/Breadcrumbs', () => ({
@@ -83,12 +86,13 @@ describe('CategoryPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    // CI環境フラグをfalseに設定してテスト実行
-    process.env = { ...originalEnv, CI: 'false' }
+    // Disable CI mode for tests
+    process.env.CI = undefined
   })
   
   afterEach(() => {
-    process.env = originalEnv
+    // Restore original CI env
+    process.env.CI = originalCI
   })
 
   describe('generateMetadata', () => {
