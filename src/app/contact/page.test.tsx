@@ -8,7 +8,13 @@ import ContactPage from './page'
 
 // HubSpotFormコンポーネントのモック
 vi.mock('@/components/forms/HubSpotForm', () => ({
-  HubSpotForm: ({ portalId, formId, targetId, className, onFormSubmitted }: any) => (
+  HubSpotForm: ({ portalId, formId, targetId, className, onFormSubmitted }: {
+    portalId: string
+    formId: string
+    targetId: string
+    className?: string
+    onFormSubmitted?: () => void
+  }) => (
     <div 
       data-testid="hubspot-form"
       data-portal-id={portalId}

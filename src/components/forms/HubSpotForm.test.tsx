@@ -18,13 +18,13 @@ interface ScriptProps {
 
 vi.mock('next/script', () => ({
   __esModule: true,
-  default: ({ id, src, strategy, onLoad, onError }: ScriptProps) => {
+  default: function MockScript({ id, src, strategy, onLoad, onError }: ScriptProps) {
     // スクリプトロードをシミュレート
     React.useEffect(() => {
       if (onLoad) {
         onLoad()
       }
-    }, [])
+    }, [onLoad])
     
     return (
       <script 
@@ -191,8 +191,8 @@ describe('HubSpotForm', () => {
     // windowを一時的に未定義にする
     const originalWindow = global.window
     const originalDocument = global.document
-    delete (global as any).window
-    delete (global as any).document
+    delete (global as unknown as { window?: Window }).window
+    delete (global as unknown as { document?: Document }).document
 
     // renderが呼ばれる前にwindowとdocumentが必要なので、
     // コンポーネント自体の実行をテストする
