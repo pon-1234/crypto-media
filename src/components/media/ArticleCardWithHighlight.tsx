@@ -20,7 +20,7 @@ export function ArticleCardWithHighlight({ article, query = '' }: ArticleCardWit
   const renderHighlightedText = (text: string) => {
     const parts = query ? highlightSearchQuery(text, query) : [text]
     
-    return parts.map((part, index) => {
+    return parts.map((part) => {
       if (typeof part === 'string') {
         return part
       }
