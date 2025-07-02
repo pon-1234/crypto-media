@@ -1,9 +1,12 @@
 import { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import EmailProvider from 'next-auth/providers/email'
+import CredentialsProvider from 'next-auth/providers/credentials'
 import { FirestoreAdapter } from '@next-auth/firebase-adapter'
 import { cert } from 'firebase-admin/app'
 import { isTestOrCI } from '@/lib/env/detect'
+import { adminDb } from '@/lib/firebase/admin'
+import { verifyPassword } from '@/lib/auth/password'
 
 /**
  * Firebase設定が有効かどうかを判定
@@ -17,6 +20,7 @@ const hasValidFirebaseConfig =
  * @doc https://next-auth.js.org/configuration/options
  * @related src/app/api/auth/[...nextauth]/route.ts - NextAuth APIルート
  * @issue #1 - 初期セットアップ：NextAuth.jsによる認証実装
+ * @issue #26 - 認証機能の拡張：メール/パスワード認証の追加
  */
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -34,6 +38,60 @@ export const authOptions: NextAuthOptions = {
         },
       },
       from: process.env.EMAIL_FROM,
+    }),
+    CredentialsProvider({
+      name: 'credentials',
+      credentials: {
+        email: { label: 'メールアドレス', type: 'email' },
+        password: { label: 'パスワード', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null
+        }
+
+        try {
+          // Firestoreからユーザー情報を取得
+          const usersSnapshot = await adminDb
+            .collection('users')
+            .where('email', '==', credentials.email)
+            .limit(1)
+            .get()
+
+          if (usersSnapshot.empty) {
+            return null
+          }
+
+          const userDoc = usersSnapshot.docs[0]
+          const userData = userDoc.data()
+
+          // パスワードハッシュが存在しない場合（GoogleログインのみのユーザーなどE）
+          if (!userData.passwordHash) {
+            return null
+          }
+
+          // パスワードを検証
+          const isValid = await verifyPassword(
+            credentials.password,
+            userData.passwordHash
+          )
+
+          if (!isValid) {
+            return null
+          }
+
+          // 認証成功
+          return {
+            id: userDoc.id,
+            email: userData.email,
+            name: userData.name,
+            image: userData.image,
+          }
+        } catch (error) {
+          console.error('Authentication error:', error)
+          return null
+        }
+      },
     }),
   ],
   // テスト環境またはFirebase未設定の場合はFirestoreAdapterを使用しない

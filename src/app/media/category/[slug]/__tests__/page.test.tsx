@@ -225,7 +225,9 @@ describe('CategoryPage', () => {
       const Component = await CategoryPage({ params: { slug: 'any-slug' } })
       const { getByText } = render(Component)
 
-      expect(getByText('CI環境でのビルド用ダミーページです。')).toBeInTheDocument()
+      expect(
+        getByText('CI環境でのビルド用ダミーページです。')
+      ).toBeInTheDocument()
     })
   })
 })

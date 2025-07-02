@@ -17,8 +17,10 @@
   "dependencies": {
     "@next-auth/firebase-adapter": "^2.0.1",
     "@stripe/stripe-js": "^4.9.0",
+    "@types/bcryptjs": "^3.0.0",
     "@upstash/redis": "^1.35.0",
     "@vercel/og": "^0.6.8",
+    "bcryptjs": "^3.0.2",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "firebase": "^10.14.0",

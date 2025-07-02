@@ -5,11 +5,7 @@
  */
 
 // クライアント
-export {
-  defaultQueries,
-  MAX_LIMIT,
-  getOptimizedImageUrl,
-} from './client'
+export { defaultQueries, MAX_LIMIT, getOptimizedImageUrl } from './client'
 
 // スキーマとバリデーション
 export {
