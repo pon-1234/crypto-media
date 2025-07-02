@@ -5,6 +5,10 @@ import { draftMode } from 'next/headers'
 import { getCorporateNewsDetail, getAllCorporateNewsIds } from '@/lib/microcms'
 import { RichTextRenderer } from '@/components/ui/RichTextRenderer'
 import { formatDate } from '@/lib/utils/date'
+import { generatePageMetadata } from '@/lib/metadata/generateMetadata'
+import { isMicroCMS404Error } from '@/lib/microcms/errors'
+
+export const dynamicParams = false
 
 /**
  * コーポレートお知らせ詳細ページ
@@ -104,9 +108,12 @@ export default async function NewsDetailPage({
       id,
       isDraftMode && draftKey ? { draftKey } : undefined
     )
-  } catch {
-    // エラー処理はhandleError内で完了しているためエラー自体は使用しない
-    notFound()
+  } catch (error) {
+    if (isMicroCMS404Error(error)) {
+      notFound()
+    }
+    // 404以外のエラーはビルドを失敗させるために再スローする
+    throw new Error(`Failed to build page for news ID: ${id}`, { cause: error })
   }
 
   return (

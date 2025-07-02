@@ -8,6 +8,8 @@ import {
   getMediaArticlesByCategory,
 } from '@/lib/microcms'
 
+export const dynamicParams = false
+
 interface CategoryPageProps {
   params: {
     slug: string

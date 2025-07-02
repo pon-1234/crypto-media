@@ -21,6 +21,11 @@ import {
 import { ArticleCard } from '@/components/media/ArticleCard'
 import { Paywall } from '@/components/media/Paywall'
 import { hasAccess } from '@/lib/auth/membership'
+import Breadcrumbs from '@/components/ui/Breadcrumbs'
+import RichTextRenderer from '@/components/ui/RichTextRenderer'
+import { generateMetadata } from '@/lib/metadata/generateMetadata'
+
+export const dynamicParams = false
 
 /**
  * ISR（Incremental Static Regeneration）設定

@@ -4,6 +4,8 @@ import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 import { ArticleGrid } from '@/components/media/ArticleGrid'
 import { getTags, getTagBySlug, getMediaArticlesByTag } from '@/lib/microcms'
 
+export const dynamicParams = false
+
 interface TagPageProps {
   params: {
     slug: string
