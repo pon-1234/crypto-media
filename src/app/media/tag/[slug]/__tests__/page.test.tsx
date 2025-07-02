@@ -46,6 +46,14 @@ vi.mock('@/components/media/ArticleGrid', () => ({
   ),
 }))
 
+vi.mock('@/components/ui/Pagination', () => ({
+  Pagination: ({ currentPage, totalPages }: { currentPage: number; totalPages: number }) => (
+    <div data-testid="pagination">
+      Page {currentPage} of {totalPages}
+    </div>
+  ),
+}))
+
 describe('TagPage', () => {
   const mockTag = {
     id: 'tag1',
@@ -97,7 +105,10 @@ describe('TagPage', () => {
     it('generates correct metadata for existing tag', async () => {
       vi.mocked(microCMS.getTagBySlug).mockResolvedValue(mockTag)
 
-      const metadata = await generateMetadata({ params: { slug: 'bitcoin' } })
+      const metadata = await generateMetadata({ 
+        params: { slug: 'bitcoin' },
+        searchParams: {}
+      })
 
       expect(metadata.title).toBe('ビットコイン | Crypto Media')
       expect(metadata.description).toContain('ビットコイン')
@@ -110,6 +121,7 @@ describe('TagPage', () => {
 
       const metadata = await generateMetadata({
         params: { slug: 'non-existent' },
+        searchParams: {}
       })
 
       expect(metadata.title).toBe('タグが見つかりません')
@@ -118,7 +130,10 @@ describe('TagPage', () => {
     it('returns default metadata in CI environment', async () => {
       process.env.CI = 'true'
 
-      const metadata = await generateMetadata({ params: { slug: 'any-slug' } })
+      const metadata = await generateMetadata({ 
+        params: { slug: 'any-slug' },
+        searchParams: {}
+      })
 
       expect(metadata.title).toBe('Tag | Crypto Media')
       expect(microCMS.getTagBySlug).not.toHaveBeenCalled()
@@ -159,7 +174,10 @@ describe('TagPage', () => {
       vi.mocked(microCMS.getTagBySlug).mockResolvedValue(mockTag)
       vi.mocked(microCMS.getMediaArticlesByTag).mockResolvedValue(mockArticles)
 
-      const Component = await TagPage({ params: { slug: 'bitcoin' } })
+      const Component = await TagPage({ 
+        params: { slug: 'bitcoin' },
+        searchParams: {}
+      })
       const { getByTestId, getByText } = render(Component)
 
       // Check breadcrumbs
@@ -189,12 +207,15 @@ describe('TagPage', () => {
     it('calls notFound for non-existent tag', async () => {
       vi.mocked(microCMS.getTagBySlug).mockResolvedValue(null)
 
-      await TagPage({ params: { slug: 'non-existent' } })
+      await TagPage({ 
+        params: { slug: 'non-existent' },
+        searchParams: {}
+      })
 
       expect(notFound).toHaveBeenCalled()
     })
 
-    it('shows pagination hint when more articles exist', async () => {
+    it('shows pagination when more than 12 articles exist', async () => {
       const manyArticles = {
         ...mockArticles,
         totalCount: 25,
@@ -203,18 +224,53 @@ describe('TagPage', () => {
       vi.mocked(microCMS.getTagBySlug).mockResolvedValue(mockTag)
       vi.mocked(microCMS.getMediaArticlesByTag).mockResolvedValue(manyArticles)
 
-      const Component = await TagPage({ params: { slug: 'bitcoin' } })
-      const { getByText } = render(Component)
+      const Component = await TagPage({ 
+        params: { slug: 'bitcoin' },
+        searchParams: {}
+      })
+      const { getByTestId } = render(Component)
 
-      expect(
-        getByText('さらに記事を読み込む機能は準備中です')
-      ).toBeInTheDocument()
+      expect(getByTestId('pagination')).toBeInTheDocument()
+      expect(getByTestId('pagination')).toHaveTextContent('Page 1 of 3') // 25/12 = 3 pages
+    })
+
+    it('handles page parameter correctly', async () => {
+      vi.mocked(microCMS.getTagBySlug).mockResolvedValue(mockTag)
+      vi.mocked(microCMS.getMediaArticlesByTag).mockResolvedValue(mockArticles)
+
+      const Component = await TagPage({ 
+        params: { slug: 'bitcoin' },
+        searchParams: { page: '2' }
+      })
+      render(Component)
+
+      expect(microCMS.getMediaArticlesByTag).toHaveBeenCalledWith('bitcoin', {
+        limit: 12,
+        offset: 12, // (2-1) * 12
+        orders: '-publishedAt',
+      })
+    })
+
+    it('does not show pagination for single page', async () => {
+      vi.mocked(microCMS.getTagBySlug).mockResolvedValue(mockTag)
+      vi.mocked(microCMS.getMediaArticlesByTag).mockResolvedValue(mockArticles)
+
+      const Component = await TagPage({ 
+        params: { slug: 'bitcoin' },
+        searchParams: {}
+      })
+      const { queryByTestId } = render(Component)
+
+      expect(queryByTestId('pagination')).not.toBeInTheDocument()
     })
 
     it('renders dummy page in CI environment', async () => {
       process.env.CI = 'true'
 
-      const Component = await TagPage({ params: { slug: 'any-slug' } })
+      const Component = await TagPage({ 
+        params: { slug: 'any-slug' },
+        searchParams: {}
+      })
       const { getByText } = render(Component)
 
       expect(

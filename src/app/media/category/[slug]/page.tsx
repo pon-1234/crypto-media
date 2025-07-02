@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 import { ArticleGrid } from '@/components/media/ArticleGrid'
+import { Pagination } from '@/components/ui/Pagination'
 import {
   getCategories,
   getCategoryBySlug,
@@ -13,6 +14,9 @@ export const dynamicParams = false
 interface CategoryPageProps {
   params: {
     slug: string
+  }
+  searchParams?: {
+    page?: string
   }
 }
 
@@ -88,7 +92,10 @@ export async function generateStaticParams() {
  * @param props - Page props containing category slug
  * @returns Category page component
  */
-export default async function CategoryPage({ params }: CategoryPageProps) {
+export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
+  const currentPage = Number(searchParams?.page) || 1
+  const limit = 12 // 1ページあたりの表示件数
+  const offset = (currentPage - 1) * limit
   // CI環境ではダミーページを返す
   if (process.env.CI === 'true') {
     return (
@@ -111,7 +118,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   // Fetch articles for this category
   const articlesResponse = await getMediaArticlesByCategory(params.slug, {
-    limit: 20,
+    limit,
+    offset,
     orders: '-publishedAt',
   })
 
@@ -156,10 +164,14 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
       <ArticleGrid articles={articlesResponse.contents} />
 
-      {/* TODO: Add pagination component when implemented */}
-      {articlesResponse.totalCount > articlesResponse.contents.length && (
-        <div className="mt-8 text-center text-gray-500">
-          <p>さらに記事を読み込む機能は準備中です</p>
+      {/* ページネーション */}
+      {articlesResponse.totalCount > limit && (
+        <div className="mt-8">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(articlesResponse.totalCount / limit)}
+            className="mt-8"
+          />
         </div>
       )}
     </div>

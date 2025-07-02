@@ -46,6 +46,14 @@ vi.mock('@/components/media/ArticleGrid', () => ({
   ),
 }))
 
+vi.mock('@/components/ui/Pagination', () => ({
+  Pagination: ({ currentPage, totalPages }: { currentPage: number; totalPages: number }) => (
+    <div data-testid="pagination">
+      Page {currentPage} of {totalPages}
+    </div>
+  ),
+}))
+
 describe('CategoryPage', () => {
   const mockCategory = {
     id: 'cat1',
@@ -165,7 +173,10 @@ describe('CategoryPage', () => {
         mockArticles
       )
 
-      const Component = await CategoryPage({ params: { slug: 'blockchain' } })
+      const Component = await CategoryPage({ 
+        params: { slug: 'blockchain' },
+        searchParams: {}
+      })
       const { getByTestId, getByText } = render(Component)
 
       // Check breadcrumbs
@@ -195,12 +206,15 @@ describe('CategoryPage', () => {
     it('calls notFound for non-existent category', async () => {
       vi.mocked(microCMS.getCategoryBySlug).mockResolvedValue(null)
 
-      await CategoryPage({ params: { slug: 'non-existent' } })
+      await CategoryPage({ 
+        params: { slug: 'non-existent' },
+        searchParams: {}
+      })
 
       expect(notFound).toHaveBeenCalled()
     })
 
-    it('shows pagination hint when more articles exist', async () => {
+    it('shows pagination when more than 12 articles exist', async () => {
       const manyArticles = {
         ...mockArticles,
         totalCount: 25,
@@ -211,18 +225,53 @@ describe('CategoryPage', () => {
         manyArticles
       )
 
-      const Component = await CategoryPage({ params: { slug: 'blockchain' } })
-      const { getByText } = render(Component)
+      const Component = await CategoryPage({ 
+        params: { slug: 'blockchain' },
+        searchParams: {}
+      })
+      const { getByTestId } = render(Component)
 
-      expect(
-        getByText('さらに記事を読み込む機能は準備中です')
-      ).toBeInTheDocument()
+      expect(getByTestId('pagination')).toBeInTheDocument()
+      expect(getByTestId('pagination')).toHaveTextContent('Page 1 of 3') // 25/12 = 3 pages
+    })
+
+    it('handles page parameter correctly', async () => {
+      vi.mocked(microCMS.getCategoryBySlug).mockResolvedValue(mockCategory)
+      vi.mocked(microCMS.getMediaArticlesByCategory).mockResolvedValue(mockArticles)
+
+      const Component = await CategoryPage({ 
+        params: { slug: 'blockchain' },
+        searchParams: { page: '2' }
+      })
+      render(Component)
+
+      expect(microCMS.getMediaArticlesByCategory).toHaveBeenCalledWith('blockchain', {
+        limit: 12,
+        offset: 12, // (2-1) * 12
+        orders: '-publishedAt',
+      })
+    })
+
+    it('does not show pagination for single page', async () => {
+      vi.mocked(microCMS.getCategoryBySlug).mockResolvedValue(mockCategory)
+      vi.mocked(microCMS.getMediaArticlesByCategory).mockResolvedValue(mockArticles)
+
+      const Component = await CategoryPage({ 
+        params: { slug: 'blockchain' },
+        searchParams: {}
+      })
+      const { queryByTestId } = render(Component)
+
+      expect(queryByTestId('pagination')).not.toBeInTheDocument()
     })
 
     it('renders dummy page in CI environment', async () => {
       process.env.CI = 'true'
 
-      const Component = await CategoryPage({ params: { slug: 'any-slug' } })
+      const Component = await CategoryPage({ 
+        params: { slug: 'any-slug' },
+        searchParams: {}
+      })
       const { getByText } = render(Component)
 
       expect(

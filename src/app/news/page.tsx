@@ -61,11 +61,15 @@ export default async function NewsListPage({ searchParams }: PageProps) {
           </ul>
 
           {/* ページネーション */}
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            basePath="/news"
-          />
+          {totalPages > 1 && (
+            <div className="mt-8">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                className="mt-8"
+              />
+            </div>
+          )}
         </>
       )}
     </div>
