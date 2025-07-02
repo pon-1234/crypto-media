@@ -2,10 +2,13 @@
  * メディア記事一覧ページ
  * @doc DEVELOPMENT_GUIDE.md#メディア記事一覧
  * @issue #5 - メディア記事一覧・詳細ページの実装
+ * @issue #28 - 記事一覧ページの機能拡張
  */
 import { Metadata } from 'next'
-import { getMediaArticlesList } from '@/lib/microcms'
+import { getMediaArticlesList, getCategories, getTags } from '@/lib/microcms'
 import { ArticleCard } from '@/components/media/ArticleCard'
+import { Pagination } from '@/components/ui/Pagination'
+import { ArticleFilters } from '@/components/media/ArticleFilters'
 
 /**
  * ISR（Incremental Static Regeneration）設定
@@ -35,22 +38,66 @@ export const metadata: Metadata = {
   },
 }
 
+interface MediaArticlesPageProps {
+  searchParams?: {
+    page?: string
+    category?: string
+    tag?: string
+  }
+}
+
 /**
  * 記事一覧ページコンポーネント
+ * @param searchParams URLクエリパラメータ
  * @returns 記事一覧ページのJSX要素
  */
-export default async function MediaArticlesPage() {
+export default async function MediaArticlesPage({ searchParams }: MediaArticlesPageProps) {
+  const currentPage = Number(searchParams?.page) || 1
+  const limit = 12 // 1ページあたりの表示件数
+  const offset = (currentPage - 1) * limit
+  const selectedCategory = searchParams?.category
+  const selectedTag = searchParams?.tag
+
   let articlesResponse
+  let categories
+  let tags
 
   try {
-    // 記事一覧を取得（この時点ではmembershipLevelは無視）
-    articlesResponse = await getMediaArticlesList({
-      limit: 20,
-      orders: '-publishedAt',
-    })
+    // フィルタ条件を構築
+    const filters: string[] = []
+    if (selectedCategory) {
+      // カテゴリでフィルタ
+      const categoryData = await getCategories({ filters: `slug[equals]${selectedCategory}` })
+      if (categoryData.contents.length > 0) {
+        filters.push(`category[equals]${categoryData.contents[0].id}`)
+      }
+    }
+    if (selectedTag) {
+      // タグでフィルタ
+      const tagData = await getTags({ filters: `slug[equals]${selectedTag}` })
+      if (tagData.contents.length > 0) {
+        filters.push(`tags[contains]${tagData.contents[0].id}`)
+      }
+    }
+
+    // 並行してデータを取得
+    const [articlesRes, categoriesRes, tagsRes] = await Promise.all([
+      getMediaArticlesList({
+        limit,
+        offset,
+        orders: '-publishedAt',
+        filters: filters.length > 0 ? filters.join('[and]') : undefined,
+      }),
+      getCategories({ limit: 100 }),
+      getTags({ limit: 100 }),
+    ])
+
+    articlesResponse = articlesRes
+    categories = categoriesRes.contents
+    tags = tagsRes.contents
   } catch (error) {
-    console.error('Failed to fetch articles:', error)
-    throw error // Next.jsのエラーバウンダリーに委譲
+    console.error('Failed to fetch data:', error)
+    throw error // Next.jsのエラーバウンダリーに委議
   }
 
   return (
@@ -66,6 +113,16 @@ export default async function MediaArticlesPage() {
           </p>
         </div>
 
+        {/* フィルタリング */}
+        <div className="mb-8 lg:mb-12">
+          <ArticleFilters
+            categories={categories}
+            tags={tags}
+            selectedCategory={selectedCategory}
+            selectedTag={selectedTag}
+          />
+        </div>
+
         {/* 記事一覧 */}
         {articlesResponse.contents.length > 0 ? (
           <>
@@ -75,14 +132,20 @@ export default async function MediaArticlesPage() {
               ))}
             </div>
 
-            {/* ページネーション（将来的に実装） */}
-            {articlesResponse.totalCount > articlesResponse.limit && (
-              <div className="mt-8 border-t border-gray-200 pt-8 text-center">
-                <p className="text-sm text-gray-600 sm:text-base">
-                  全{articlesResponse.totalCount}件中{' '}
-                  {articlesResponse.contents.length}件を表示しています
-                </p>
-                {/* TODO: ページネーションコンポーネントの実装 */}
+            {/* ページネーション */}
+            {articlesResponse.totalCount > limit && (
+              <div className="mt-8">
+                <div className="mb-4 text-center">
+                  <p className="text-sm text-gray-600 sm:text-base">
+                    全{articlesResponse.totalCount}件中 
+                    {offset + 1}-{Math.min(offset + articlesResponse.contents.length, articlesResponse.totalCount)}件を表示
+                  </p>
+                </div>
+                <Pagination 
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(articlesResponse.totalCount / limit)}
+                  className="mt-8"
+                />
               </div>
             )}
           </>

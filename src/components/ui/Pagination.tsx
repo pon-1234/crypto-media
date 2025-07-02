@@ -1,115 +1,143 @@
-import type { FC } from 'react'
+/**
+ * ページネーションコンポーネント
+ * @doc DEVELOPMENT_GUIDE.md#UI/UXコンポーネント
+ * @issue #28 - 記事一覧ページの機能拡張
+ */
+'use client'
+
 import Link from 'next/link'
+import { usePathname, useSearchParams } from 'next/navigation'
+// Heroiconsの代わりにシンプルなSVGアイコンを使用
+const ChevronLeftIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+  </svg>
+)
+
+const ChevronRightIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+  </svg>
+)
+
+interface PaginationProps {
+  currentPage: number
+  totalPages: number
+  className?: string
+}
 
 /**
  * ページネーションコンポーネント
+ * @param currentPage 現在のページ番号
+ * @param totalPages 総ページ数
+ * @param className 追加のCSSクラス
  */
+export function Pagination({ 
+  currentPage, 
+  totalPages, 
+  className = '' 
+}: PaginationProps) {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
-interface PaginationProps {
   /**
-   * 現在のページ番号
+   * ページ番号付きのURLを生成
+   * @param page ページ番号
+   * @returns URL文字列
    */
-  currentPage: number
-  /**
-   * 総ページ数
-   */
-  totalPages: number
-  /**
-   * ページネーションのリンクのベースパス
-   * 例: /news
-   */
-  basePath: string
-  /**
-   * 現在ページの前後何ページを表示するか
-   */
-  siblingCount?: number
-}
-
-export const Pagination: FC<PaginationProps> = ({
-  currentPage,
-  totalPages,
-  basePath,
-  siblingCount = 2,
-}) => {
-  if (totalPages <= 1) {
-    return null
+  const createPageURL = (page: number) => {
+    const params = new URLSearchParams(searchParams)
+    params.set('page', page.toString())
+    return `${pathname}?${params.toString()}`
   }
 
-  const pageNumbers: (number | '...')[] = []
+  /**
+   * 表示するページ番号の配列を生成
+   * @returns ページ番号の配列
+   */
+  const getPageNumbers = (): (number | string)[] => {
+    const delta = 2 // 現在のページから前後に表示するページ数
+    const range: number[] = []
+    const rangeWithDots: (number | string)[] = []
+    let l: number | undefined
 
-  // 開始ページ
-  const startPage = Math.max(1, currentPage - siblingCount)
-  // 終了ページ
-  const endPage = Math.min(totalPages, currentPage + siblingCount)
-
-  // 最初のページと省略記号を追加
-  if (startPage > 1) {
-    pageNumbers.push(1)
-    if (startPage > 2) {
-      pageNumbers.push('...')
+    for (let i = 1; i <= totalPages; i++) {
+      if (i === 1 || i === totalPages || (i >= currentPage - delta && i <= currentPage + delta)) {
+        range.push(i)
+      }
     }
+
+    range.forEach((i) => {
+      if (l) {
+        if (i - l === 2) {
+          rangeWithDots.push(l + 1)
+        } else if (i - l !== 1) {
+          rangeWithDots.push('...')
+        }
+      }
+      rangeWithDots.push(i)
+      l = i
+    })
+
+    return rangeWithDots
   }
 
-  // 間のページ番号を追加
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i)
-  }
-
-  // 最後のページと省略記号を追加
-  if (endPage < totalPages) {
-    if (endPage < totalPages - 1) {
-      pageNumbers.push('...')
-    }
-    pageNumbers.push(totalPages)
-  }
+  const pageNumbers = getPageNumbers()
 
   return (
-    <nav className="mt-8 flex justify-center">
-      <ul className="flex space-x-2">
-        {/* 前へ */}
+    <nav 
+      className={`flex items-center justify-between border-t border-gray-200 px-4 sm:px-0 ${className}`}
+      aria-label="ページネーション"
+    >
+      <div className="-mt-px flex w-0 flex-1">
         {currentPage > 1 && (
-          <li>
-            <Link
-              href={`${basePath}?page=${currentPage - 1}`}
-              className="rounded border px-4 py-2 transition-colors hover:bg-gray-100"
-            >
-              前へ
-            </Link>
-          </li>
+          <Link
+            href={createPageURL(currentPage - 1)}
+            className="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          >
+            <ChevronLeftIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+            前へ
+          </Link>
         )}
-
-        {/* ページ番号 */}
+      </div>
+      
+      <div className="hidden md:-mt-px md:flex">
         {pageNumbers.map((page, index) => (
-          <li key={`${page}-${index}`}>
-            {page === '...' ? (
-              <span className="px-4 py-2">...</span>
-            ) : (
-              <Link
-                href={`${basePath}?page=${page}`}
-                className={`rounded border px-4 py-2 transition-colors ${
-                  page === currentPage
-                    ? 'bg-blue-600 text-white'
-                    : 'hover:bg-gray-100'
-                }`}
-              >
-                {page}
-              </Link>
-            )}
-          </li>
-        ))}
-
-        {/* 次へ */}
-        {currentPage < totalPages && (
-          <li>
+          typeof page === 'number' ? (
             <Link
-              href={`${basePath}?page=${currentPage + 1}`}
-              className="rounded border px-4 py-2 transition-colors hover:bg-gray-100"
+              key={index}
+              href={createPageURL(page)}
+              className={`inline-flex items-center border-t-2 px-4 pt-4 text-sm font-medium ${
+                page === currentPage
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+              }`}
+              aria-current={page === currentPage ? 'page' : undefined}
             >
-              次へ
+              {page}
             </Link>
-          </li>
+          ) : (
+            <span
+              key={index}
+              className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500"
+            >
+              {page}
+            </span>
+          )
+        ))}
+      </div>
+      
+      <div className="-mt-px flex w-0 flex-1 justify-end">
+        {currentPage < totalPages && (
+          <Link
+            href={createPageURL(currentPage + 1)}
+            className="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+          >
+            次へ
+            <ChevronRightIcon className="ml-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+          </Link>
         )}
-      </ul>
+      </div>
     </nav>
   )
 }
