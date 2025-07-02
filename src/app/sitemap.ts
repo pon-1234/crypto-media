@@ -1,5 +1,4 @@
 import { MetadataRoute } from 'next'
-import { client } from '@/lib/microcms/client'
 import type { MediaArticle } from '@/lib/schema/article.schema'
 import type { CorporateNews } from '@/lib/schema/corporate-news.schema'
 import type { Category } from '@/lib/schema/category.schema'
@@ -175,6 +174,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   try {
+    // 動的インポートを使用して、CI環境での不要な初期化を避ける
+    const { client } = await import('@/lib/microcms/client')
+
     // 動的コンテンツの取得
     const [articles, corporateNews, categories, tags, experts, features] =
       await Promise.all([
