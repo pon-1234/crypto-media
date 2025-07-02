@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { useSession, signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import LoginPage from '../page'
+import type { LiteralUnion } from 'next-auth/react'
 
 // Mock NextAuth
 vi.mock('next-auth/react', () => ({
@@ -15,6 +16,13 @@ vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
   useSearchParams: vi.fn(),
 }))
+
+type MockSignInResponse = {
+  ok: boolean
+  error: LiteralUnion<'CredentialsSignin'> | null
+  status: number
+  url: string | null
+}
 
 describe('LoginPage', () => {
   const mockPush = vi.fn()
@@ -101,7 +109,12 @@ describe('LoginPage', () => {
     describe('メール/パスワード認証', () => {
       it('正しい情報でログインに成功し、リダイレクトされる', async () => {
         mockGet.mockReturnValue('/dashboard')
-        vi.mocked(signIn).mockResolvedValue({ ok: true, error: null } as any)
+        vi.mocked(signIn).mockResolvedValue({
+          ok: true,
+          error: null,
+          status: 200,
+          url: '/dashboard',
+        } as MockSignInResponse)
 
         render(<LoginPage />)
 
@@ -130,7 +143,9 @@ describe('LoginPage', () => {
         vi.mocked(signIn).mockResolvedValue({
           ok: false,
           error: 'CredentialsSignin',
-        } as any)
+          status: 401,
+          url: null,
+        } as MockSignInResponse)
         render(<LoginPage />)
 
         fireEvent.change(screen.getByPlaceholderText('メールアドレス'), {
@@ -150,7 +165,13 @@ describe('LoginPage', () => {
 
       it('ログイン処理中にボタンが無効化され、テキストが変更される', async () => {
         vi.mocked(signIn).mockImplementation(
-          () => new Promise((resolve) => setTimeout(() => resolve({ ok: true } as any), 100))
+          () =>
+            new Promise((resolve) =>
+              setTimeout(
+                () => resolve({ ok: true, status: 200, url: '/', error: null } as MockSignInResponse),
+                100
+              )
+            )
         )
         render(<LoginPage />)
 
