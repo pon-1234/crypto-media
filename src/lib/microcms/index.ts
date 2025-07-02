@@ -98,3 +98,5 @@ export {
   getAllFeatureIds,
   getAllFeatureSlugs,
 } from './features'
+
+export { searchMediaArticles, highlightSearchQuery } from './search'

@@ -17,6 +17,14 @@ vi.mock('next-auth/react', () => ({
   SessionProvider: ({ children }: { children: React.ReactNode }) => children,
 }))
 
+vi.mock('@/components/ui/SearchForm', () => ({
+  SearchForm: ({ className }: { className?: string }) => (
+    <form data-testid="search-form" className={className}>
+      <input placeholder="記事を検索..." />
+    </form>
+  ),
+}))
+
 describe('MediaHeader', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -115,6 +123,20 @@ describe('MediaHeader', () => {
     )
   })
 
+  it('should display search form in desktop view', async () => {
+    const { useSession } = await import('next-auth/react')
+    ;(useSession as ReturnType<typeof vi.fn>).mockReturnValue({ data: null })
+
+    render(<MediaHeader />)
+
+    const searchForms = screen.getAllByTestId('search-form')
+    expect(searchForms.length).toBeGreaterThan(0)
+    
+    // デスクトップビューの検索フォームが特定のクラスを持つ
+    const desktopSearchForm = searchForms.find(form => form.classList.contains('w-64'))
+    expect(desktopSearchForm).toBeTruthy()
+  })
+
   it('should toggle mobile menu when hamburger button is clicked', async () => {
     const { useSession } = await import('next-auth/react')
     ;(useSession as ReturnType<typeof vi.fn>).mockReturnValue({ data: null })
@@ -127,6 +149,11 @@ describe('MediaHeader', () => {
 
     const mobileNavItems = screen.getAllByRole('link', { name: 'トップ' })
     expect(mobileNavItems).toHaveLength(2)
+
+    // モバイルメニューにも検索フォームが表示される
+    const searchForms = screen.getAllByTestId('search-form')
+    const mobileSearchForm = searchForms.find(form => form.classList.contains('w-full'))
+    expect(mobileSearchForm).toBeTruthy()
 
     fireEvent.click(menuButton)
 

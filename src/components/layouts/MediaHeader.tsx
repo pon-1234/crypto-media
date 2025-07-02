@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import Image from 'next/image'
+import { SearchForm } from '@/components/ui/SearchForm'
 
 /**
  * メディアサイト用ヘッダーコンポーネント
@@ -50,6 +51,10 @@ export default function MediaHeader() {
                   {item.label}
                 </Link>
               ))}
+            </div>
+
+            <div className="ml-4">
+              <SearchForm className="w-64" />
             </div>
 
             <div className="relative ml-4">
@@ -162,6 +167,10 @@ export default function MediaHeader() {
       {isMobileMenuOpen && (
         <div className="md:hidden">
           <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+            <div className="mb-4 px-1">
+              <SearchForm className="w-full" />
+            </div>
+
             {navItems.map((item) => (
               <Link
                 key={item.href}
