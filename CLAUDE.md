@@ -199,6 +199,7 @@ Required variables (see `DEVELOPMENT_GUIDE.md` for full list and details):
 - `NEXT_PUBLIC_FIREBASE_*`: Firebase configuration
 - `MICROCMS_SERVICE_DOMAIN`: microCMS domain
 - `MICROCMS_API_KEY`: microCMS API key
+- `MICROCMS_PREVIEW_SECRET`: microCMS preview mode secret for draftKey validation
 - `STRIPE_SECRET_KEY`: Stripe secret key
 - `STRIPE_WEBHOOK_SECRET`: Stripe webhook secret
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: Stripe public key

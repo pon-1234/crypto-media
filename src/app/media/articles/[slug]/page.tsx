@@ -10,8 +10,10 @@ import Link from 'next/link'
 import { format } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import DOMPurify from 'isomorphic-dompurify'
+import { draftMode } from 'next/headers'
 import {
   getMediaArticleBySlug,
+  getMediaArticleDetail,
   getAllMediaArticleSlugs,
   getRelatedArticles,
   getOptimizedImageUrl,
@@ -32,6 +34,9 @@ export const revalidate = 3600
 interface PageProps {
   params: {
     slug: string
+  }
+  searchParams: {
+    draftKey?: string
   }
 }
 
@@ -58,6 +63,7 @@ export async function generateStaticParams() {
  */
 export async function generateMetadata({
   params,
+  searchParams,
 }: PageProps): Promise<Metadata> {
   // CI環境ではデフォルトメタデータを返す
   if (process.env.CI === 'true') {
@@ -68,7 +74,11 @@ export async function generateMetadata({
     }
   }
 
-  const article = await getMediaArticleBySlug(params.slug)
+  // プレビューモードの確認
+  const { isEnabled: isDraftMode } = await draftMode()
+  const draftKey = isDraftMode ? searchParams.draftKey : undefined
+
+  const article = await getMediaArticleBySlug(params.slug, draftKey ? { draftKey } : undefined)
 
   if (!article) {
     return {
@@ -115,7 +125,7 @@ export async function generateMetadata({
  * @param props - ページプロパティ
  * @returns 記事詳細ページのJSX要素
  */
-export default async function MediaArticleDetailPage({ params }: PageProps) {
+export default async function MediaArticleDetailPage({ params, searchParams }: PageProps) {
   // CI環境かつテスト実行中でない場合のみダミーページを返す
   if (process.env.CI === 'true' && process.env.NODE_ENV !== 'test') {
     return (
@@ -132,11 +142,27 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
     )
   }
 
+  // プレビューモードの確認
+  const { isEnabled: isDraftMode } = await draftMode()
+  const draftKey = isDraftMode ? searchParams.draftKey : undefined
+
   let article
   let relatedArticles = []
 
   try {
-    article = await getMediaArticleBySlug(params.slug)
+    // プレビューモード時はIDベースでの取得も試みる
+    if (isDraftMode && draftKey && params.slug.match(/^[a-zA-Z0-9_-]+$/)) {
+      try {
+        // まずIDとして取得を試みる
+        article = await getMediaArticleDetail(params.slug, { draftKey })
+      } catch {
+        // IDでの取得に失敗したらslugとして取得
+        article = await getMediaArticleBySlug(params.slug, { draftKey })
+      }
+    } else {
+      // 通常モードではslugで取得
+      article = await getMediaArticleBySlug(params.slug)
+    }
 
     if (!article) {
       notFound()
@@ -418,6 +444,31 @@ export default async function MediaArticleDetailPage({ params }: PageProps) {
               )}
             </aside>
           </div>
+
+          {/* プレビューモード時の終了リンク */}
+          {isDraftMode && (
+            <div className="fixed bottom-4 right-4 z-50">
+              <Link
+                href={`/api/exit-preview?redirect=/media/articles/${article.slug}`}
+                className="inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-lg transition-colors hover:bg-red-700"
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+                プレビューモードを終了
+              </Link>
+            </div>
+          )}
         </div>
       </article>
     </>

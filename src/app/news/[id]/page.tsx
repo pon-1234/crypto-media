@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { draftMode } from 'next/headers'
 import { getCorporateNewsDetail, getAllCorporateNewsIds } from '@/lib/microcms'
 import { RichTextRenderer } from '@/components/ui/RichTextRenderer'
 import { formatDate } from '@/lib/utils/date'
@@ -13,6 +14,7 @@ import { formatDate } from '@/lib/utils/date'
 
 interface PageProps {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ draftKey?: string }>
 }
 
 export async function generateStaticParams() {
@@ -29,8 +31,10 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: PageProps): Promise<Metadata> {
   const { id } = await params
+  const { draftKey } = await searchParams
 
   // CI環境ではデフォルトメタデータを返す
   if (process.env.CI === 'true') {
@@ -40,8 +44,11 @@ export async function generateMetadata({
     }
   }
 
+  // プレビューモードの確認
+  const { isEnabled: isDraftMode } = await draftMode()
+
   try {
-    const news = await getCorporateNewsDetail(id)
+    const news = await getCorporateNewsDetail(id, isDraftMode && draftKey ? { draftKey } : undefined)
 
     return {
       title: `${news.title} | お知らせ | 株式会社Example`,
@@ -62,8 +69,9 @@ export async function generateMetadata({
   }
 }
 
-export default async function NewsDetailPage({ params }: PageProps) {
+export default async function NewsDetailPage({ params, searchParams }: PageProps) {
   const { id } = await params
+  const { draftKey } = await searchParams
 
   // CI環境ではダミーページを返す
   if (process.env.CI === 'true') {
@@ -81,9 +89,12 @@ export default async function NewsDetailPage({ params }: PageProps) {
     )
   }
 
+  // プレビューモードの確認
+  const { isEnabled: isDraftMode } = await draftMode()
+
   let news
   try {
-    news = await getCorporateNewsDetail(id)
+    news = await getCorporateNewsDetail(id, isDraftMode && draftKey ? { draftKey } : undefined)
   } catch {
     // エラー処理はhandleError内で完了しているためエラー自体は使用しない
     notFound()
@@ -148,6 +159,31 @@ export default async function NewsDetailPage({ params }: PageProps) {
             お知らせ一覧に戻る
           </Link>
         </div>
+
+        {/* プレビューモード時の終了リンク */}
+        {isDraftMode && (
+          <div className="fixed bottom-4 right-4 z-50">
+            <Link
+              href={`/api/exit-preview?redirect=/news/${id}`}
+              className="inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-lg transition-colors hover:bg-red-700"
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+              プレビューモードを終了
+            </Link>
+          </div>
+        )}
       </div>
     </article>
   )
