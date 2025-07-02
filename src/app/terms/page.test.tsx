@@ -5,15 +5,17 @@ import TermsPage, { generateMetadata } from './page'
 import { getCorporatePageBySlug } from '@/lib/microcms/corporate-pages'
 
 vi.mock('next/navigation', () => ({
-  notFound: vi.fn()
+  notFound: vi.fn(),
 }))
 
 vi.mock('@/lib/microcms/corporate-pages', () => ({
-  getCorporatePageBySlug: vi.fn()
+  getCorporatePageBySlug: vi.fn(),
 }))
 
 vi.mock('@/components/corporate/CorporatePageContent', () => ({
-  CorporatePageContent: ({ page }: { page: { content: string } }) => <div>{page.content}</div>
+  CorporatePageContent: ({ page }: { page: { content: string } }) => (
+    <div>{page.content}</div>
+  ),
 }))
 
 /**
@@ -29,7 +31,7 @@ describe('TermsPage', () => {
     description: '当サービスの利用規約',
     content: '<p>利用規約の詳細</p>',
     createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z'
+    updatedAt: '2025-01-01T00:00:00.000Z',
   }
 
   beforeEach(() => {
@@ -78,18 +80,19 @@ describe('generateMetadata', () => {
     id: 'terms-id',
     slug: 'terms',
     title: '利用規約',
-    description: 'Crypto Mediaの利用規約について。サービスの利用条件などを記載しています。',
+    description:
+      'Crypto Mediaの利用規約について。サービスの利用条件などを記載しています。',
     content: '<p>詳細</p>',
     metadata: {
       ogImage: {
         url: 'https://example.com/og-image.jpg',
         width: 1200,
-        height: 630
+        height: 630,
       },
-      keywords: ['利用規約', '会員規約', '免責事項']
+      keywords: ['利用規約', '会員規約', '免責事項'],
     },
     createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z'
+    updatedAt: '2025-01-01T00:00:00.000Z',
   }
 
   beforeEach(() => {
@@ -104,8 +107,9 @@ describe('generateMetadata', () => {
     expect(getCorporatePageBySlug).toHaveBeenCalledWith('terms')
     expect(metadata).toMatchObject({
       title: '利用規約',
-      description: 'Crypto Mediaの利用規約について。サービスの利用条件などを記載しています。',
-      keywords: '利用規約, 会員規約, 免責事項'
+      description:
+        'Crypto Mediaの利用規約について。サービスの利用条件などを記載しています。',
+      keywords: '利用規約, 会員規約, 免責事項',
     })
   })
 

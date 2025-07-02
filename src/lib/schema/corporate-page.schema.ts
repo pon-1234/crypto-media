@@ -12,19 +12,25 @@ export const corporatePageSchema = z.object({
   title: z.string(),
   description: z.string(),
   content: z.string(),
-  sections: z.array(z.object({
-    title: z.string(),
-    content: z.string(),
-    type: z.enum(['text', 'table', 'list'])
-  })).optional(),
-  metadata: z.object({
-    ogImage: microCMSImageSchema.optional(),
-    keywords: z.array(z.string()).optional()
-  }).optional(),
+  sections: z
+    .array(
+      z.object({
+        title: z.string(),
+        content: z.string(),
+        type: z.enum(['text', 'table', 'list']),
+      })
+    )
+    .optional(),
+  metadata: z
+    .object({
+      ogImage: microCMSImageSchema.optional(),
+      keywords: z.array(z.string()).optional(),
+    })
+    .optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
   publishedAt: z.string().optional(),
-  revisedAt: z.string().optional()
+  revisedAt: z.string().optional(),
 })
 
 export type CorporatePage = z.infer<typeof corporatePageSchema>
@@ -36,7 +42,7 @@ export const corporatePageListSchema = z.object({
   contents: z.array(corporatePageSchema),
   totalCount: z.number(),
   offset: z.number(),
-  limit: z.number()
+  limit: z.number(),
 })
 
 export type CorporatePageList = z.infer<typeof corporatePageListSchema>

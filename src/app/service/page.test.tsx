@@ -5,15 +5,17 @@ import ServicePage, { generateMetadata } from './page'
 import { getCorporatePageBySlug } from '@/lib/microcms/corporate-pages'
 
 vi.mock('next/navigation', () => ({
-  notFound: vi.fn()
+  notFound: vi.fn(),
 }))
 
 vi.mock('@/lib/microcms/corporate-pages', () => ({
-  getCorporatePageBySlug: vi.fn()
+  getCorporatePageBySlug: vi.fn(),
 }))
 
 vi.mock('@/components/corporate/CorporatePageContent', () => ({
-  CorporatePageContent: ({ page }: { page: { content: string } }) => <div>{page.content}</div>
+  CorporatePageContent: ({ page }: { page: { content: string } }) => (
+    <div>{page.content}</div>
+  ),
 }))
 
 /**
@@ -29,7 +31,7 @@ describe('ServicePage', () => {
     description: '当社の事業内容',
     content: '<p>事業の詳細情報</p>',
     createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z'
+    updatedAt: '2025-01-01T00:00:00.000Z',
   }
 
   beforeEach(() => {
@@ -84,12 +86,12 @@ describe('generateMetadata', () => {
       ogImage: {
         url: 'https://example.com/og-image.jpg',
         width: 1200,
-        height: 630
+        height: 630,
       },
-      keywords: ['暗号資産', 'メディア事業', '調査レポート']
+      keywords: ['暗号資産', 'メディア事業', '調査レポート'],
     },
     createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z'
+    updatedAt: '2025-01-01T00:00:00.000Z',
   }
 
   beforeEach(() => {
@@ -105,7 +107,7 @@ describe('generateMetadata', () => {
     expect(metadata).toMatchObject({
       title: '事業内容',
       description: '株式会社クリプトメディアの事業内容をご紹介します',
-      keywords: '暗号資産, メディア事業, 調査レポート'
+      keywords: '暗号資産, メディア事業, 調査レポート',
     })
   })
 

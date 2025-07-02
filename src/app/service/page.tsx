@@ -23,7 +23,6 @@ export default async function ServicePage() {
       <div className="mx-auto max-w-4xl">
         <h1 className="mb-8 text-3xl font-bold">{page.title}</h1>
         <CorporatePageContent page={page} />
-
       </div>
     </main>
   )

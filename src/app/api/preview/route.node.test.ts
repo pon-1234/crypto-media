@@ -22,7 +22,7 @@ describe('/api/preview', () => {
     // 環境変数をリセット
     process.env = { ...originalEnv }
     delete process.env.MICROCMS_PREVIEW_SECRET
-    
+
     mockEnable = vi.fn()
     const { draftMode } = await import('next/headers')
     vi.mocked(draftMode).mockResolvedValue({
@@ -31,7 +31,7 @@ describe('/api/preview', () => {
       isEnabled: false,
     })
   })
-  
+
   afterEach(() => {
     process.env = originalEnv
   })
@@ -39,7 +39,7 @@ describe('/api/preview', () => {
   describe('GET', () => {
     it('開発環境ではdraftKey検証なしでプレビューモードを有効化できる', async () => {
       vi.mocked(isDevelopment).mockReturnValue(true)
-      
+
       const request = new NextRequest(
         'http://localhost:3000/api/preview?contentId=test-id&draftKey=test-key&endpoint=media_articles'
       )
@@ -55,7 +55,7 @@ describe('/api/preview', () => {
 
     it('corporate_newsエンドポイントで正常にプレビューモードを有効化できる', async () => {
       vi.mocked(isDevelopment).mockReturnValue(true)
-      
+
       const request = new NextRequest(
         'http://localhost:3000/api/preview?contentId=news-id&draftKey=news-key&endpoint=corporate_news'
       )
@@ -68,13 +68,29 @@ describe('/api/preview', () => {
         '/news/news-id?draftKey=news-key'
       )
     })
-    
+
     it('本番環境で無効なdraftKeyの場合は403エラーを返す', async () => {
       vi.mocked(isDevelopment).mockReturnValue(false)
       process.env.MICROCMS_PREVIEW_SECRET = 'test-secret'
-      
+
       const request = new NextRequest(
         'http://localhost:3000/api/preview?contentId=test-id&draftKey=invalid-key&endpoint=media_articles'
+      )
+
+      const response = await GET(request)
+      const data = await response.json()
+
+      expect(response.status).toBe(403)
+      expect(data.error).toBe('Invalid draft key')
+      expect(mockEnable).not.toHaveBeenCalled()
+    })
+
+    it('本番環境で長さの異なる不正なdraftKeyの場合は403エラーを返す', async () => {
+      vi.mocked(isDevelopment).mockReturnValue(false)
+      process.env.MICROCMS_PREVIEW_SECRET = 'test-secret'
+
+      const request = new NextRequest(
+        'http://localhost:3000/api/preview?contentId=test-id&draftKey=short-key&endpoint=media_articles'
       )
 
       const response = await GET(request)
@@ -127,11 +143,9 @@ describe('/api/preview', () => {
 
     it('draftMode().enableでエラーが発生した場合は500エラーを返す', async () => {
       vi.mocked(isDevelopment).mockReturnValue(true)
-      
+
       const { draftMode } = await import('next/headers')
-      vi.mocked(draftMode).mockRejectedValueOnce(
-        new Error('Draft mode error')
-      )
+      vi.mocked(draftMode).mockRejectedValueOnce(new Error('Draft mode error'))
 
       const request = new NextRequest(
         'http://localhost:3000/api/preview?contentId=test-id&draftKey=test-key&endpoint=media_articles'

@@ -22,7 +22,6 @@ export default async function TermsPage() {
       <div className="container mx-auto px-4 py-16">
         <h1 className="mb-8 text-4xl font-bold">{page.title}</h1>
         <CorporatePageContent page={page} />
-
       </div>
     </main>
   )

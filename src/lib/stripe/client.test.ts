@@ -77,7 +77,7 @@ describe('Stripe Client', () => {
       // isTestOrCIをfalseにして本番環境をシミュレート
       const { isTestOrCI } = await import('@/lib/env/detect')
       vi.mocked(isTestOrCI).mockReturnValue(false)
-      
+
       vi.stubEnv('NODE_ENV', 'production')
 
       await expect(import('./client')).rejects.toThrow(
@@ -89,7 +89,7 @@ describe('Stripe Client', () => {
       // isTestOrCIをfalseにして開発環境をシミュレート
       const { isTestOrCI } = await import('@/lib/env/detect')
       vi.mocked(isTestOrCI).mockReturnValue(false)
-      
+
       vi.stubEnv('NODE_ENV', 'development')
       // 有効な形式のダミーキーを設定して形式チェックエラーを回避
       vi.stubEnv('STRIPE_SECRET_KEY', 'sk_test_dummy')
@@ -106,7 +106,7 @@ describe('Stripe Client', () => {
       // isTestOrCIをfalseにして形式チェックを有効化
       const { isTestOrCI } = await import('@/lib/env/detect')
       vi.mocked(isTestOrCI).mockReturnValue(false)
-      
+
       vi.stubEnv('NODE_ENV', 'development')
       vi.stubEnv('STRIPE_SECRET_KEY', 'invalid_key')
       vi.stubEnv('STRIPE_MONTHLY_PRICE_ID', 'price_123')
@@ -122,7 +122,7 @@ describe('Stripe Client', () => {
       // isTestOrCIをfalseにして形式チェックを有効化
       const { isTestOrCI } = await import('@/lib/env/detect')
       vi.mocked(isTestOrCI).mockReturnValue(false)
-      
+
       vi.stubEnv('NODE_ENV', 'development')
       vi.stubEnv('STRIPE_SECRET_KEY', 'sk_test_123')
       vi.stubEnv('STRIPE_MONTHLY_PRICE_ID', 'price_123')
@@ -138,7 +138,7 @@ describe('Stripe Client', () => {
       // isTestOrCIをfalseにしてバリデーションを実行
       const { isTestOrCI } = await import('@/lib/env/detect')
       vi.mocked(isTestOrCI).mockReturnValue(false)
-      
+
       vi.stubEnv('NODE_ENV', 'development')
       vi.stubEnv('STRIPE_SECRET_KEY', 'sk_test_123')
       vi.stubEnv('STRIPE_MONTHLY_PRICE_ID', 'price_123')
@@ -154,7 +154,7 @@ describe('Stripe Client', () => {
       // isTestOrCIをtrueにしてテスト環境をシミュレート
       const { isTestOrCI } = await import('@/lib/env/detect')
       vi.mocked(isTestOrCI).mockReturnValue(true)
-      
+
       vi.stubEnv('NODE_ENV', 'test')
       // No environment variables set
 

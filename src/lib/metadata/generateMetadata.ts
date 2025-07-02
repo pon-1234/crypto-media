@@ -75,8 +75,8 @@ export function generatePageMetadata(
   const ogImageUrl = ogImage
     ? ogImage
     : ogImageParams
-    ? createOgImageUrl(ogImageParams)
-    : createOgImageUrl({ title, description, type: 'default' })
+      ? createOgImageUrl(ogImageParams)
+      : createOgImageUrl({ title, description, type: 'default' })
 
   const metadata: Metadata = {
     title,

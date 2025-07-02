@@ -87,7 +87,7 @@ describe('CategoryPage', () => {
     // Disable CI mode for tests
     process.env.CI = undefined
   })
-  
+
   afterEach(() => {
     // Restore original CI env
     process.env.CI = originalCI

@@ -1,21 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { 
-  getCorporatePages, 
-  getCorporatePageBySlug, 
+import {
+  getCorporatePages,
+  getCorporatePageBySlug,
   getCorporatePageById,
-  corporatePageExists 
+  corporatePageExists,
 } from './corporate-pages'
 import { client } from './client'
 import { MicroCMSApiError } from './errors'
 
 vi.mock('./client', () => ({
   client: {
-    get: vi.fn()
+    get: vi.fn(),
   },
   defaultQueries: {
     limit: 100,
-    orders: '-publishedAt'
-  }
+    orders: '-publishedAt',
+  },
 }))
 
 describe('corporate-pages', () => {
@@ -31,14 +31,14 @@ describe('corporate-pages', () => {
     content: '<p>会社概要の内容</p>',
     createdAt: '2025-01-01T00:00:00.000Z',
     updatedAt: '2025-01-01T00:00:00.000Z',
-    publishedAt: '2025-01-01T00:00:00.000Z'
+    publishedAt: '2025-01-01T00:00:00.000Z',
   }
 
   const mockListResponse = {
     contents: [mockCorporatePage],
     totalCount: 1,
     offset: 0,
-    limit: 100
+    limit: 100,
   }
 
   describe('getCorporatePages', () => {
@@ -51,8 +51,8 @@ describe('corporate-pages', () => {
         endpoint: 'pages_corporate',
         queries: {
           limit: 100,
-          orders: '-publishedAt'
-        }
+          orders: '-publishedAt',
+        },
       })
       expect(result).toEqual(mockListResponse)
     })
@@ -68,8 +68,8 @@ describe('corporate-pages', () => {
           limit: 10,
           orders: '-publishedAt',
           offset: 20,
-          draftKey: 'test-key'
-        }
+          draftKey: 'test-key',
+        },
       })
     })
   })
@@ -84,8 +84,8 @@ describe('corporate-pages', () => {
         endpoint: 'pages_corporate',
         queries: {
           filters: 'slug[equals]about',
-          limit: 1
-        }
+          limit: 1,
+        },
       })
       expect(result).toEqual(mockCorporatePage)
     })
@@ -95,7 +95,7 @@ describe('corporate-pages', () => {
         contents: [],
         totalCount: 0,
         offset: 0,
-        limit: 1
+        limit: 1,
       })
 
       const result = await getCorporatePageBySlug('non-existent')
@@ -113,13 +113,15 @@ describe('corporate-pages', () => {
         queries: {
           filters: 'slug[equals]about',
           limit: 1,
-          draftKey: 'preview-key'
-        }
+          draftKey: 'preview-key',
+        },
       })
     })
 
     it('should handle 404 errors gracefully', async () => {
-      vi.mocked(client.get).mockRejectedValueOnce(new MicroCMSApiError('Not Found', 404))
+      vi.mocked(client.get).mockRejectedValueOnce(
+        new MicroCMSApiError('Not Found', 404)
+      )
 
       const result = await getCorporatePageBySlug('not-found')
 
@@ -129,7 +131,9 @@ describe('corporate-pages', () => {
     it('should throw non-404 errors', async () => {
       vi.mocked(client.get).mockRejectedValueOnce(new Error('Network error'))
 
-      await expect(getCorporatePageBySlug('about')).rejects.toThrow(MicroCMSApiError)
+      await expect(getCorporatePageBySlug('about')).rejects.toThrow(
+        MicroCMSApiError
+      )
     })
   })
 
@@ -142,7 +146,7 @@ describe('corporate-pages', () => {
       expect(client.get).toHaveBeenCalledWith({
         endpoint: 'pages_corporate',
         contentId: 'test-id',
-        queries: undefined
+        queries: undefined,
       })
       expect(result).toEqual(mockCorporatePage)
     })
@@ -155,12 +159,14 @@ describe('corporate-pages', () => {
       expect(client.get).toHaveBeenCalledWith({
         endpoint: 'pages_corporate',
         contentId: 'test-id',
-        queries: { draftKey: 'preview-key' }
+        queries: { draftKey: 'preview-key' },
       })
     })
 
     it('should return null for 404 errors', async () => {
-      vi.mocked(client.get).mockRejectedValueOnce(new MicroCMSApiError('Not Found', 404))
+      vi.mocked(client.get).mockRejectedValueOnce(
+        new MicroCMSApiError('Not Found', 404)
+      )
 
       const result = await getCorporatePageById('not-found')
 
@@ -170,7 +176,9 @@ describe('corporate-pages', () => {
     it('should throw non-404 errors', async () => {
       vi.mocked(client.get).mockRejectedValueOnce(new Error('Server error'))
 
-      await expect(getCorporatePageById('test-id')).rejects.toThrow(MicroCMSApiError)
+      await expect(getCorporatePageById('test-id')).rejects.toThrow(
+        MicroCMSApiError
+      )
     })
   })
 
@@ -188,7 +196,7 @@ describe('corporate-pages', () => {
         contents: [],
         totalCount: 0,
         offset: 0,
-        limit: 1
+        limit: 1,
       })
 
       const result = await corporatePageExists('non-existent')

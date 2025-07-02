@@ -5,15 +5,17 @@ import AboutPage, { generateMetadata } from './page'
 import { getCorporatePageBySlug } from '@/lib/microcms/corporate-pages'
 
 vi.mock('next/navigation', () => ({
-  notFound: vi.fn()
+  notFound: vi.fn(),
 }))
 
 vi.mock('@/lib/microcms/corporate-pages', () => ({
-  getCorporatePageBySlug: vi.fn()
+  getCorporatePageBySlug: vi.fn(),
 }))
 
 vi.mock('@/components/corporate/CorporatePageContent', () => ({
-  CorporatePageContent: ({ page }: { page: { content: string } }) => <div>{page.content}</div>
+  CorporatePageContent: ({ page }: { page: { content: string } }) => (
+    <div>{page.content}</div>
+  ),
 }))
 
 /**
@@ -29,7 +31,7 @@ describe('AboutPage', () => {
     description: '当社の会社概要',
     content: '<p>会社の詳細情報</p>',
     createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z'
+    updatedAt: '2025-01-01T00:00:00.000Z',
   }
 
   beforeEach(() => {
@@ -84,12 +86,12 @@ describe('generateMetadata', () => {
       ogImage: {
         url: 'https://example.com/og-image.jpg',
         width: 1200,
-        height: 630
+        height: 630,
       },
-      keywords: ['暗号資産', 'ブロックチェーン', '会社概要']
+      keywords: ['暗号資産', 'ブロックチェーン', '会社概要'],
     },
     createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z'
+    updatedAt: '2025-01-01T00:00:00.000Z',
   }
 
   beforeEach(() => {
@@ -105,7 +107,7 @@ describe('generateMetadata', () => {
     expect(metadata).toMatchObject({
       title: '会社概要',
       description: '株式会社クリプトメディアの会社概要です',
-      keywords: '暗号資産, ブロックチェーン, 会社概要'
+      keywords: '暗号資産, ブロックチェーン, 会社概要',
     })
   })
 

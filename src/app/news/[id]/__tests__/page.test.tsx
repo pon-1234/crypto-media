@@ -25,7 +25,6 @@ vi.mock('@/lib/utils/date', () => ({
   formatDate: vi.fn((date) => new Date(date).toLocaleDateString('ja-JP')),
 }))
 
-
 // Store original CI env
 const originalCI = process.env.CI
 
@@ -140,7 +139,9 @@ describe('NewsDetailPage', () => {
       render(Component)
 
       // Check title - use more specific query to avoid duplicates
-      expect(screen.getByRole('heading', { name: '新サービスリリースのお知らせ' })).toBeInTheDocument()
+      expect(
+        screen.getByRole('heading', { name: '新サービスリリースのお知らせ' })
+      ).toBeInTheDocument()
 
       // Check date
       expect(formatDate).toHaveBeenCalledWith('2024-01-01T00:00:00.000Z')
@@ -182,7 +183,9 @@ describe('NewsDetailPage', () => {
       render(Component)
 
       expect(screen.getByText('お知らせ詳細')).toBeInTheDocument()
-      expect(screen.getByText('CI環境でのビルド用ダミーページです。')).toBeInTheDocument()
+      expect(
+        screen.getByText('CI環境でのビルド用ダミーページです。')
+      ).toBeInTheDocument()
       expect(microCMS.getCorporateNewsDetail).not.toHaveBeenCalled()
     })
   })

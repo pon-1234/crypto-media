@@ -48,9 +48,7 @@ describe('/api/exit-preview', () => {
 
     it('draftMode().disableでエラーが発生してもホームへリダイレクトする', async () => {
       const { draftMode } = await import('next/headers')
-      vi.mocked(draftMode).mockRejectedValueOnce(
-        new Error('Draft mode error')
-      )
+      vi.mocked(draftMode).mockRejectedValueOnce(new Error('Draft mode error'))
 
       const request = new NextRequest('http://localhost:3000/api/exit-preview')
 

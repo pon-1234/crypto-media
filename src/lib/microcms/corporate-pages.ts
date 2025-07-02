@@ -4,11 +4,11 @@
  * @issue https://github.com/pon-1234/crypto-media/issues/25
  */
 import { client, defaultQueries } from './client'
-import { 
-  corporatePageSchema, 
+import {
+  corporatePageSchema,
   corporatePageListSchema,
   type CorporatePage,
-  type CorporatePageList 
+  type CorporatePageList,
 } from '@/lib/schema/corporate-page.schema'
 import { isMicroCMS404Error, parseMicroCMSError } from './errors'
 
@@ -24,13 +24,15 @@ type CorporatePageQueries = {
 /**
  * Get all corporate pages
  */
-export async function getCorporatePages(queries?: CorporatePageQueries): Promise<CorporatePageList> {
+export async function getCorporatePages(
+  queries?: CorporatePageQueries
+): Promise<CorporatePageList> {
   const response = await client.get({
     endpoint: 'pages_corporate',
     queries: {
       ...defaultQueries,
-      ...queries
-    }
+      ...queries,
+    },
   })
 
   return corporatePageListSchema.parse(response)
@@ -49,8 +51,8 @@ export async function getCorporatePageBySlug(
       queries: {
         filters: `slug[equals]${slug}`,
         limit: 1,
-        ...queries
-      }
+        ...queries,
+      },
     })
 
     const parsed = corporatePageListSchema.parse(response)
@@ -75,7 +77,7 @@ export async function getCorporatePageById(
     const response = await client.get({
       endpoint: 'pages_corporate',
       contentId: id,
-      queries
+      queries,
     })
 
     return corporatePageSchema.parse(response)

@@ -5,15 +5,17 @@ import PrivacyPolicyPage, { generateMetadata } from './page'
 import { getCorporatePageBySlug } from '@/lib/microcms/corporate-pages'
 
 vi.mock('next/navigation', () => ({
-  notFound: vi.fn()
+  notFound: vi.fn(),
 }))
 
 vi.mock('@/lib/microcms/corporate-pages', () => ({
-  getCorporatePageBySlug: vi.fn()
+  getCorporatePageBySlug: vi.fn(),
 }))
 
 vi.mock('@/components/corporate/CorporatePageContent', () => ({
-  CorporatePageContent: ({ page }: { page: { content: string } }) => <div>{page.content}</div>
+  CorporatePageContent: ({ page }: { page: { content: string } }) => (
+    <div>{page.content}</div>
+  ),
 }))
 
 /**
@@ -29,7 +31,7 @@ describe('PrivacyPolicyPage', () => {
     description: '当社のプライバシーポリシー',
     content: '<p>個人情報の取扱いについて</p>',
     createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z'
+    updatedAt: '2025-01-01T00:00:00.000Z',
   }
 
   beforeEach(() => {
@@ -44,7 +46,9 @@ describe('PrivacyPolicyPage', () => {
 
     expect(getCorporatePageBySlug).toHaveBeenCalledWith('privacy-policy')
     expect(screen.getByText('プライバシーポリシー')).toBeInTheDocument()
-    expect(screen.getByText('<p>個人情報の取扱いについて</p>')).toBeInTheDocument()
+    expect(
+      screen.getByText('<p>個人情報の取扱いについて</p>')
+    ).toBeInTheDocument()
   })
 
   it('should call notFound when page is not found', async () => {
@@ -84,12 +88,12 @@ describe('generateMetadata', () => {
       ogImage: {
         url: 'https://example.com/og-image.jpg',
         width: 1200,
-        height: 630
+        height: 630,
       },
-      keywords: ['プライバシーポリシー', '個人情報保護', 'クリプトメディア']
+      keywords: ['プライバシーポリシー', '個人情報保護', 'クリプトメディア'],
     },
     createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z'
+    updatedAt: '2025-01-01T00:00:00.000Z',
   }
 
   beforeEach(() => {
@@ -105,7 +109,7 @@ describe('generateMetadata', () => {
     expect(metadata).toMatchObject({
       title: 'プライバシーポリシー',
       description: '株式会社クリプトメディアのプライバシーポリシーです',
-      keywords: 'プライバシーポリシー, 個人情報保護, クリプトメディア'
+      keywords: 'プライバシーポリシー, 個人情報保護, クリプトメディア',
     })
   })
 

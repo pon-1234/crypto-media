@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { corporatePageSchema, corporatePageListSchema } from './corporate-page.schema'
+import {
+  corporatePageSchema,
+  corporatePageListSchema,
+} from './corporate-page.schema'
 
 describe('corporatePageSchema', () => {
   const validCorporatePage = {
@@ -9,7 +12,7 @@ describe('corporatePageSchema', () => {
     description: '当社の事業内容と理念について',
     content: '<p>詳細なコンテンツ</p>',
     createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z'
+    updatedAt: '2025-01-01T00:00:00.000Z',
   }
 
   it('should validate a valid corporate page', () => {
@@ -27,14 +30,14 @@ describe('corporatePageSchema', () => {
         {
           title: 'ビジョン',
           content: '私たちのビジョンは...',
-          type: 'text'
+          type: 'text',
         },
         {
           title: 'サービス一覧',
           content: '<ul><li>サービス1</li></ul>',
-          type: 'list'
-        }
-      ]
+          type: 'list',
+        },
+      ],
     }
     const result = corporatePageSchema.safeParse(pageWithSections)
     expect(result.success).toBe(true)
@@ -52,15 +55,17 @@ describe('corporatePageSchema', () => {
         ogImage: {
           url: 'https://images.microcms-assets.io/test.jpg',
           width: 1200,
-          height: 630
+          height: 630,
         },
-        keywords: ['暗号資産', 'ブロックチェーン', '会社概要']
-      }
+        keywords: ['暗号資産', 'ブロックチェーン', '会社概要'],
+      },
     }
     const result = corporatePageSchema.safeParse(pageWithMetadata)
     expect(result.success).toBe(true)
     if (result.success) {
-      expect(result.data.metadata?.ogImage?.url).toBe('https://images.microcms-assets.io/test.jpg')
+      expect(result.data.metadata?.ogImage?.url).toBe(
+        'https://images.microcms-assets.io/test.jpg'
+      )
       expect(result.data.metadata?.keywords).toHaveLength(3)
     }
   })
@@ -69,7 +74,7 @@ describe('corporatePageSchema', () => {
     const publishedPage = {
       ...validCorporatePage,
       publishedAt: '2025-01-01T00:00:00.000Z',
-      revisedAt: '2025-01-01T00:00:00.000Z'
+      revisedAt: '2025-01-01T00:00:00.000Z',
     }
     const result = corporatePageSchema.safeParse(publishedPage)
     expect(result.success).toBe(true)
@@ -86,9 +91,9 @@ describe('corporatePageSchema', () => {
         {
           title: '無効なセクション',
           content: 'コンテンツ',
-          type: 'invalid'
-        }
-      ]
+          type: 'invalid',
+        },
+      ],
     }
     const result = corporatePageSchema.safeParse(invalidPage)
     expect(result.success).toBe(false)
@@ -97,7 +102,7 @@ describe('corporatePageSchema', () => {
   it('should reject missing required fields', () => {
     const invalidPage = {
       id: 'test-id',
-      slug: 'about'
+      slug: 'about',
       // missing title, description, content, createdAt, updatedAt
     }
     const result = corporatePageSchema.safeParse(invalidPage)
@@ -116,7 +121,7 @@ describe('corporatePageListSchema', () => {
           description: '当社について',
           content: '<p>コンテンツ</p>',
           createdAt: '2025-01-01T00:00:00.000Z',
-          updatedAt: '2025-01-01T00:00:00.000Z'
+          updatedAt: '2025-01-01T00:00:00.000Z',
         },
         {
           id: 'test-id-2',
@@ -125,12 +130,12 @@ describe('corporatePageListSchema', () => {
           description: 'サービス内容',
           content: '<p>サービス詳細</p>',
           createdAt: '2025-01-01T00:00:00.000Z',
-          updatedAt: '2025-01-01T00:00:00.000Z'
-        }
+          updatedAt: '2025-01-01T00:00:00.000Z',
+        },
       ],
       totalCount: 2,
       offset: 0,
-      limit: 10
+      limit: 10,
     }
     const result = corporatePageListSchema.safeParse(validList)
     expect(result.success).toBe(true)
@@ -147,7 +152,7 @@ describe('corporatePageListSchema', () => {
       contents: [],
       totalCount: 0,
       offset: 0,
-      limit: 10
+      limit: 10,
     }
     const result = corporatePageListSchema.safeParse(emptyList)
     expect(result.success).toBe(true)
@@ -160,7 +165,7 @@ describe('corporatePageListSchema', () => {
   it('should reject missing pagination fields', () => {
     const invalidList = {
       contents: [],
-      totalCount: 0
+      totalCount: 0,
       // missing offset and limit
     }
     const result = corporatePageListSchema.safeParse(invalidList)

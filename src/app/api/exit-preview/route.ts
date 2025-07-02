@@ -1,8 +1,8 @@
 /**
  * プレビューモード終了APIエンドポイント
- * 
+ *
  * プレビューモードを無効化し、通常のページ表示に戻します。
- * 
+ *
  * @doc DEVELOPMENT_GUIDE.md#プレビュー機能
  * @issue #24 - プレビュー機能の実装
  */
@@ -11,19 +11,19 @@ import { draftMode } from 'next/headers'
 
 /**
  * 安全なリダイレクトURLを生成
- * 
+ *
  * 外部URLへのリダイレクトを防ぐため、以下のルールを適用します：
  * 1. 絶対URLは拒否（同一オリジンでも）
  * 2. プロトコル相対URL（//で始まる）は拒否
  * 3. 相対パスのみ許可
- * 
+ *
  * @param redirectUrl - リダイレクト先として指定されたURL
  * @param requestUrl - 現在のリクエストURL
  * @returns 安全なリダイレクトURL
  */
 function getSafeRedirectUrl(redirectUrl: string, requestUrl: string): URL {
   const url = new URL(requestUrl)
-  
+
   // 危険なパターンをチェック
   if (
     redirectUrl.startsWith('http://') ||
@@ -34,7 +34,7 @@ function getSafeRedirectUrl(redirectUrl: string, requestUrl: string): URL {
     // 危険なURLの場合はホームへ
     return new URL('/', url.origin)
   }
-  
+
   // 相対パスとして安全に解決
   try {
     return new URL(redirectUrl, url.origin)
@@ -46,15 +46,15 @@ function getSafeRedirectUrl(redirectUrl: string, requestUrl: string): URL {
 
 /**
  * GETリクエストハンドラー
- * 
+ *
  * プレビューモードを無効化します。
- * 
+ *
  * @param request - NextRequest
  * @returns リダイレクトレスポンス
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
-  
+
   try {
     // プレビューモードを無効化
     const draft = await draftMode()
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(safeRedirectUrl)
   } catch (error) {
     console.error('Exit preview API error:', error)
-    
+
     // エラーが発生してもホームへリダイレクト
     return NextResponse.redirect(new URL('/', request.url))
   }

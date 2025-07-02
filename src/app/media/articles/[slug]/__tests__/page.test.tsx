@@ -127,7 +127,7 @@ describe('MediaArticleDetailPage', () => {
     // CI環境フラグをfalseに設定してテスト実行
     process.env = { ...originalEnv, CI: 'false' }
   })
-  
+
   afterEach(() => {
     process.env = originalEnv
   })

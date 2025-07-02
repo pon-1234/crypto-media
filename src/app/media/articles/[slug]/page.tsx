@@ -78,7 +78,10 @@ export async function generateMetadata({
   const { isEnabled: isDraftMode } = await draftMode()
   const draftKey = isDraftMode ? searchParams.draftKey : undefined
 
-  const article = await getMediaArticleBySlug(params.slug, draftKey ? { draftKey } : undefined)
+  const article = await getMediaArticleBySlug(
+    params.slug,
+    draftKey ? { draftKey } : undefined
+  )
 
   if (!article) {
     return {
@@ -125,7 +128,10 @@ export async function generateMetadata({
  * @param props - ページプロパティ
  * @returns 記事詳細ページのJSX要素
  */
-export default async function MediaArticleDetailPage({ params, searchParams }: PageProps) {
+export default async function MediaArticleDetailPage({
+  params,
+  searchParams,
+}: PageProps) {
   // CI環境かつテスト実行中でない場合のみダミーページを返す
   if (process.env.CI === 'true' && process.env.NODE_ENV !== 'test') {
     return (

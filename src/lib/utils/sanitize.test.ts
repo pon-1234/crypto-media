@@ -83,7 +83,8 @@ describe('sanitizeRichText', () => {
   })
 
   it('should remove style tags and attributes', () => {
-    const input = '<p style="color: red;">Text</p><style>body { color: red; }</style>'
+    const input =
+      '<p style="color: red;">Text</p><style>body { color: red; }</style>'
     const result = sanitizeRichText(input)
     expect(result).toBe('<p>Text</p>')
   })

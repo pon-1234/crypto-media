@@ -83,7 +83,7 @@ describe('Firebase Admin', () => {
     // モックインスタンスが返されることを確認
     expect(adminDb).toBeDefined()
     expect(adminDb.collection).toBeDefined()
-    
+
     // collectionを呼び出してモックのメソッドが動作することを確認
     const collection = adminDb.collection('test')
     expect(collection.doc).toBeDefined()

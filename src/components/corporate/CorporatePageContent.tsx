@@ -37,39 +37,41 @@ export function CorporatePageContent({ page }: CorporatePageContentProps) {
 /**
  * Render section content based on type
  */
-function renderSectionContent(section: NonNullable<CorporatePage['sections']>[0]) {
+function renderSectionContent(
+  section: NonNullable<CorporatePage['sections']>[0]
+) {
   switch (section.type) {
     case 'text':
       return (
-        <div 
+        <div
           className="prose prose-gray max-w-none"
-          dangerouslySetInnerHTML={{ __html: sanitizeHtml(section.content) }} 
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(section.content) }}
         />
       )
-    
+
     case 'list':
       return (
-        <div 
-          className="prose prose-gray max-w-none prose-ul:list-disc prose-ul:list-inside"
-          dangerouslySetInnerHTML={{ __html: sanitizeHtml(section.content) }} 
+        <div
+          className="prose prose-gray prose-ul:list-disc prose-ul:list-inside max-w-none"
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(section.content) }}
         />
       )
-    
+
     case 'table':
       return (
         <div className="overflow-hidden rounded-lg border border-gray-200">
-          <div 
-            className="prose prose-gray max-w-none prose-table:w-full prose-th:bg-gray-50 prose-th:text-left prose-th:font-medium prose-td:border-b prose-td:border-gray-200"
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(section.content) }} 
+          <div
+            className="prose prose-gray prose-table:w-full prose-th:bg-gray-50 prose-th:text-left prose-th:font-medium prose-td:border-b prose-td:border-gray-200 max-w-none"
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(section.content) }}
           />
         </div>
       )
-    
+
     default:
       return (
-        <div 
+        <div
           className="prose prose-gray max-w-none"
-          dangerouslySetInnerHTML={{ __html: sanitizeHtml(section.content) }} 
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(section.content) }}
         />
       )
   }

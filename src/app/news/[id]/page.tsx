@@ -48,7 +48,10 @@ export async function generateMetadata({
   const { isEnabled: isDraftMode } = await draftMode()
 
   try {
-    const news = await getCorporateNewsDetail(id, isDraftMode && draftKey ? { draftKey } : undefined)
+    const news = await getCorporateNewsDetail(
+      id,
+      isDraftMode && draftKey ? { draftKey } : undefined
+    )
 
     return {
       title: `${news.title} | お知らせ | 株式会社Example`,
@@ -69,7 +72,10 @@ export async function generateMetadata({
   }
 }
 
-export default async function NewsDetailPage({ params, searchParams }: PageProps) {
+export default async function NewsDetailPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { id } = params
   const { draftKey } = searchParams
 
@@ -94,7 +100,10 @@ export default async function NewsDetailPage({ params, searchParams }: PageProps
 
   let news
   try {
-    news = await getCorporateNewsDetail(id, isDraftMode && draftKey ? { draftKey } : undefined)
+    news = await getCorporateNewsDetail(
+      id,
+      isDraftMode && draftKey ? { draftKey } : undefined
+    )
   } catch {
     // エラー処理はhandleError内で完了しているためエラー自体は使用しない
     notFound()
