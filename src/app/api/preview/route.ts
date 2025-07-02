@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { draftMode } from 'next/headers'
 import { z } from 'zod'
 import crypto from 'crypto'
+import { isDevelopment } from '@/lib/env/detect'
 
 /**
  * プレビューリクエストのパラメータスキーマ
@@ -36,7 +37,7 @@ function validateDraftKey(contentId: string, draftKey: string): boolean {
   // 環境変数が設定されていない場合は、開発環境として常に許可
   if (!secret) {
     console.warn('MICROCMS_PREVIEW_SECRET is not set. Preview mode is insecure.')
-    return process.env.NODE_ENV === 'development'
+    return isDevelopment()
   }
   
   // HMACを使用して期待されるdraftKeyを生成

@@ -1,10 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { NextRequest } from 'next/server'
 import { GET } from './route'
+import { isDevelopment } from '@/lib/env/detect'
 
 // next/headers をモック
 vi.mock('next/headers', () => ({
   draftMode: vi.fn(),
+}))
+
+// isDevelopment をモック
+vi.mock('@/lib/env/detect', () => ({
+  isDevelopment: vi.fn(),
 }))
 
 describe('/api/preview', () => {
@@ -32,7 +38,7 @@ describe('/api/preview', () => {
 
   describe('GET', () => {
     it('開発環境ではdraftKey検証なしでプレビューモードを有効化できる', async () => {
-      process.env.NODE_ENV = 'development'
+      vi.mocked(isDevelopment).mockReturnValue(true)
       
       const request = new NextRequest(
         'http://localhost:3000/api/preview?contentId=test-id&draftKey=test-key&endpoint=media_articles'
@@ -48,7 +54,7 @@ describe('/api/preview', () => {
     })
 
     it('corporate_newsエンドポイントで正常にプレビューモードを有効化できる', async () => {
-      process.env.NODE_ENV = 'development'
+      vi.mocked(isDevelopment).mockReturnValue(true)
       
       const request = new NextRequest(
         'http://localhost:3000/api/preview?contentId=news-id&draftKey=news-key&endpoint=corporate_news'
@@ -64,7 +70,7 @@ describe('/api/preview', () => {
     })
     
     it('本番環境で無効なdraftKeyの場合は403エラーを返す', async () => {
-      process.env.NODE_ENV = 'production'
+      vi.mocked(isDevelopment).mockReturnValue(false)
       process.env.MICROCMS_PREVIEW_SECRET = 'test-secret'
       
       const request = new NextRequest(
@@ -120,7 +126,7 @@ describe('/api/preview', () => {
     })
 
     it('draftMode().enableでエラーが発生した場合は500エラーを返す', async () => {
-      process.env.NODE_ENV = 'development'
+      vi.mocked(isDevelopment).mockReturnValue(true)
       
       const { draftMode } = await import('next/headers')
       vi.mocked(draftMode).mockRejectedValueOnce(
