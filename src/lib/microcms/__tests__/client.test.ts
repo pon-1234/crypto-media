@@ -4,6 +4,7 @@
  * @issue #2 - microCMSクライアントと型定義の実装
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import type { Mock } from 'vitest'
 
 // microcms-js-sdkは各スイートで動的にモックする
 describe('microCMS Client', () => {
@@ -24,7 +25,7 @@ describe('microCMS Client', () => {
 
   it('正しい設定でクライアントが作成される', async () => {
     const { createClient } = (await vi.importMock('microcms-js-sdk')) as {
-      createClient: any
+      createClient: Mock
     }
     createClient.mockClear()
     await import('../client')
@@ -49,7 +50,15 @@ describe('microCMS Client', () => {
 })
 
 describe('getOptimizedImageUrl', () => {
-  let getOptimizedImageUrl: any
+  let getOptimizedImageUrl: (
+    url: string,
+    options?: {
+      width?: number
+      height?: number
+      format?: 'webp' | 'jpg' | 'png'
+      quality?: number
+    }
+  ) => string
 
   beforeEach(async () => {
     vi.resetModules()
@@ -69,72 +78,37 @@ describe('getOptimizedImageUrl', () => {
     expect(result).toBe(`${baseUrl}?w=800`)
   })
 
-  describe('共通設定', () => {
-    it('defaultQueriesが正しく設定されている', async () => {
-      const { defaultQueries } = await import('../client')
-      expect(defaultQueries).toEqual({
-        limit: 100,
-        orders: '-publishedAt',
-      })
-    })
-
-    it('MAX_LIMITが正しく設定されている', async () => {
-      const { MAX_LIMIT } = await import('../client')
-      expect(MAX_LIMIT).toBe(100)
-    })
+  it('高さのみ指定した場合', () => {
+    const result = getOptimizedImageUrl(baseUrl, { height: 600 })
+    expect(result).toBe(`${baseUrl}?h=600`)
   })
 
-  describe('getOptimizedImageUrl', () => {
-    const baseUrl = 'https://images.microcms-assets.io/assets/test/image.jpg'
-    let getOptimizedImageUrl: any
+  it('フォーマットのみ指定した場合', () => {
+    const result = getOptimizedImageUrl(baseUrl, { format: 'webp' })
+    expect(result).toBe(`${baseUrl}?fm=webp`)
+  })
 
-    beforeEach(async () => {
-      const clientModule = await import('../client')
-      getOptimizedImageUrl = clientModule.getOptimizedImageUrl
-    })
+  it('品質のみ指定した場合', () => {
+    const result = getOptimizedImageUrl(baseUrl, { quality: 85 })
+    expect(result).toBe(`${baseUrl}?q=85`)
+  })
 
-    it('オプションなしでURLを返す', () => {
-      const result = getOptimizedImageUrl(baseUrl)
-      expect(result).toBe(`${baseUrl}?`)
+  it('すべてのオプションを指定した場合', () => {
+    const result = getOptimizedImageUrl(baseUrl, {
+      width: 1200,
+      height: 630,
+      format: 'jpg',
+      quality: 90,
     })
+    expect(result).toBe(`${baseUrl}?w=1200&h=630&fm=jpg&q=90`)
+  })
 
-    it('幅のみ指定した場合', () => {
-      const result = getOptimizedImageUrl(baseUrl, { width: 800 })
-      expect(result).toBe(`${baseUrl}?w=800`)
+  it('複数のオプションを部分的に指定した場合', () => {
+    const result = getOptimizedImageUrl(baseUrl, {
+      width: 600,
+      format: 'webp',
     })
-
-    it('高さのみ指定した場合', () => {
-      const result = getOptimizedImageUrl(baseUrl, { height: 600 })
-      expect(result).toBe(`${baseUrl}?h=600`)
-    })
-
-    it('フォーマットのみ指定した場合', () => {
-      const result = getOptimizedImageUrl(baseUrl, { format: 'webp' })
-      expect(result).toBe(`${baseUrl}?fm=webp`)
-    })
-
-    it('品質のみ指定した場合', () => {
-      const result = getOptimizedImageUrl(baseUrl, { quality: 85 })
-      expect(result).toBe(`${baseUrl}?q=85`)
-    })
-
-    it('すべてのオプションを指定した場合', () => {
-      const result = getOptimizedImageUrl(baseUrl, {
-        width: 1200,
-        height: 630,
-        format: 'jpg',
-        quality: 90,
-      })
-      expect(result).toBe(`${baseUrl}?w=1200&h=630&fm=jpg&q=90`)
-    })
-
-    it('複数のオプションを部分的に指定した場合', () => {
-      const result = getOptimizedImageUrl(baseUrl, {
-        width: 600,
-        format: 'webp',
-      })
-      expect(result).toBe(`${baseUrl}?w=600&fm=webp`)
-    })
+    expect(result).toBe(`${baseUrl}?w=600&fm=webp`)
   })
 })
 
