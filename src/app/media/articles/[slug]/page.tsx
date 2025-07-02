@@ -21,9 +21,6 @@ import {
 import { ArticleCard } from '@/components/media/ArticleCard'
 import { Paywall } from '@/components/media/Paywall'
 import { hasAccess } from '@/lib/auth/membership'
-import Breadcrumbs from '@/components/ui/Breadcrumbs'
-import RichTextRenderer from '@/components/ui/RichTextRenderer'
-import { generateMetadata } from '@/lib/metadata/generateMetadata'
 
 export const dynamicParams = false
 
@@ -51,14 +48,19 @@ interface PageProps {
  */
 export async function generateStaticParams() {
   // CI環境では静的パラメータ生成をスキップ
-  if (process.env.CI === 'true') {
+  if (process.env.CI === 'true' || !process.env.MICROCMS_API_KEY) {
     return []
   }
 
-  const slugs = await getAllMediaArticleSlugs()
-  return slugs.map((slug) => ({
-    slug,
-  }))
+  try {
+    const slugs = await getAllMediaArticleSlugs()
+    return slugs.map((slug) => ({
+      slug,
+    }))
+  } catch (error) {
+    console.warn('Failed to generate static params for articles:', error)
+    return []
+  }
 }
 
 /**

@@ -60,14 +60,19 @@ export async function generateMetadata({
  */
 export async function generateStaticParams() {
   // CI環境では静的パラメータ生成をスキップ
-  if (process.env.CI === 'true') {
+  if (process.env.CI === 'true' || !process.env.MICROCMS_API_KEY) {
     return []
   }
 
-  const tags = await getTags({ limit: 100 })
-  return tags.contents.map((tag) => ({
-    slug: tag.slug,
-  }))
+  try {
+    const tags = await getTags({ limit: 100 })
+    return tags.contents.map((tag) => ({
+      slug: tag.slug,
+    }))
+  } catch (error) {
+    console.warn('Failed to generate static params for tags:', error)
+    return []
+  }
 }
 
 /**

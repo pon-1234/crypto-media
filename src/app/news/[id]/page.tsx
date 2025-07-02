@@ -5,7 +5,6 @@ import { draftMode } from 'next/headers'
 import { getCorporateNewsDetail, getAllCorporateNewsIds } from '@/lib/microcms'
 import { RichTextRenderer } from '@/components/ui/RichTextRenderer'
 import { formatDate } from '@/lib/utils/date'
-import { generatePageMetadata } from '@/lib/metadata/generateMetadata'
 import { isMicroCMS404Error } from '@/lib/microcms/errors'
 
 export const dynamicParams = false
@@ -23,14 +22,19 @@ interface PageProps {
 
 export async function generateStaticParams() {
   // CI環境では静的パラメータ生成をスキップ
-  if (process.env.CI === 'true') {
+  if (process.env.CI === 'true' || !process.env.MICROCMS_API_KEY) {
     return []
   }
 
-  const ids = await getAllCorporateNewsIds()
-  return ids.map((id) => ({
-    id,
-  }))
+  try {
+    const ids = await getAllCorporateNewsIds()
+    return ids.map((id) => ({
+      id,
+    }))
+  } catch (error) {
+    console.warn('Failed to generate static params for news:', error)
+    return []
+  }
 }
 
 export async function generateMetadata({

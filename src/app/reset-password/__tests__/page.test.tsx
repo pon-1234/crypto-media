@@ -15,7 +15,7 @@ vi.mock('next/navigation', () => ({
 }))
 
 // fetchモック
-global.fetch = vi.fn() as any
+global.fetch = vi.fn() as unknown as typeof fetch
 
 describe('ResetPasswordPage', () => {
   const mockPush = vi.fn()
@@ -25,14 +25,14 @@ describe('ResetPasswordPage', () => {
     vi.clearAllMocks()
     vi.mocked(useRouter).mockReturnValue({
       push: mockPush,
-    } as any)
+    } as unknown as ReturnType<typeof useRouter>)
   })
 
   describe('トークンなしの場合（パスワードリセット要求）', () => {
     beforeEach(() => {
       vi.mocked(useSearchParams).mockReturnValue({
         get: mockGet.mockReturnValue(null),
-      } as any)
+      } as unknown as ReturnType<typeof useSearchParams>)
     })
 
     it('パスワードリセット要求フォームが表示される', () => {
@@ -50,7 +50,7 @@ describe('ResetPasswordPage', () => {
         json: async () => ({
           message: 'パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）',
         }),
-      } as any)
+      } as unknown as Response)
 
       render(<ResetPasswordPage />)
 
@@ -82,7 +82,7 @@ describe('ResetPasswordPage', () => {
         json: async () => ({
           error: '予期しないエラーが発生しました',
         }),
-      } as any)
+      } as unknown as Response)
 
       render(<ResetPasswordPage />)
 
@@ -104,7 +104,7 @@ describe('ResetPasswordPage', () => {
     beforeEach(() => {
       vi.mocked(useSearchParams).mockReturnValue({
         get: mockGet.mockReturnValue('reset-token-123'),
-      } as any)
+      } as unknown as ReturnType<typeof useSearchParams>)
     })
 
     it('パスワード設定フォームが表示される', () => {
@@ -157,7 +157,7 @@ describe('ResetPasswordPage', () => {
         json: async () => ({
           message: 'パスワードが正常に更新されました',
         }),
-      } as any)
+      } as unknown as Response)
 
       render(<ResetPasswordPage />)
 

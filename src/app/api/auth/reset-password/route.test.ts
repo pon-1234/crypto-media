@@ -52,7 +52,7 @@ describe('POST /api/auth/reset-password', () => {
           get: mockGet,
         })),
       })),
-    } as any)
+    } as unknown as ReturnType<typeof adminDb.collection>)
 
     vi.mocked(validatePasswordStrength).mockReturnValue({ isValid: true, errors: [] })
     vi.mocked(verifyResetToken).mockResolvedValue('test@example.com')
@@ -143,7 +143,7 @@ describe('POST /api/auth/reset-password', () => {
           get: mockGet,
         })),
       })),
-    } as any)
+    } as unknown as ReturnType<typeof adminDb.collection>)
 
     vi.mocked(validatePasswordStrength).mockReturnValue({ isValid: true, errors: [] })
     vi.mocked(verifyResetToken).mockResolvedValue('nonexistent@example.com')

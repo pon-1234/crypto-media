@@ -64,14 +64,19 @@ export async function generateMetadata({
  */
 export async function generateStaticParams() {
   // CI環境では静的パラメータ生成をスキップ
-  if (process.env.CI === 'true') {
+  if (process.env.CI === 'true' || !process.env.MICROCMS_API_KEY) {
     return []
   }
 
-  const categories = await getCategories({ limit: 100 })
-  return categories.contents.map((category) => ({
-    slug: category.slug,
-  }))
+  try {
+    const categories = await getCategories({ limit: 100 })
+    return categories.contents.map((category) => ({
+      slug: category.slug,
+    }))
+  } catch (error) {
+    console.warn('Failed to generate static params for categories:', error)
+    return []
+  }
 }
 
 /**

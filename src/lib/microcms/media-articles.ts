@@ -237,3 +237,66 @@ export async function getRelatedArticles(
   const parsed = mediaArticleListSchema.parse(response)
   return parsed.contents
 }
+
+/**
+ * 執筆者による記事一覧を取得
+ * @param authorId 執筆者ID
+ * @param queries クエリパラメータ
+ * @returns 記事一覧
+ */
+export async function getMediaArticlesByAuthor(
+  authorId: string,
+  queries?: MicroCMSQueries
+) {
+  const data = await client.getList({
+    endpoint: 'media_articles',
+    queries: {
+      ...defaultQueries,
+      ...queries,
+      filters: `author[equals]${authorId}`,
+    },
+  })
+  return mediaArticleListSchema.parse(data)
+}
+
+/**
+ * 監修者による記事一覧を取得
+ * @param supervisorId 監修者ID
+ * @param queries クエリパラメータ
+ * @returns 記事一覧
+ */
+export async function getMediaArticlesBySupervisor(
+  supervisorId: string,
+  queries?: MicroCMSQueries
+) {
+  const data = await client.getList({
+    endpoint: 'media_articles',
+    queries: {
+      ...defaultQueries,
+      ...queries,
+      filters: `supervisor[equals]${supervisorId}`,
+    },
+  })
+  return mediaArticleListSchema.parse(data)
+}
+
+/**
+ * 特集に属する記事一覧を取得
+ * @param featureId 特集ID
+ * @param queries クエリパラメータ
+ * @returns 記事一覧
+ */
+export async function getMediaArticlesByFeature(
+  featureId: string,
+  queries?: MicroCMSQueries
+) {
+  const data = await client.getList({
+    endpoint: 'media_articles',
+    queries: {
+      ...defaultQueries,
+      ...queries,
+      filters: `features[contains]${featureId}`,
+    },
+  })
+  return mediaArticleListSchema.parse(data)
+}

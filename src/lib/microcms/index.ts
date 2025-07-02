@@ -7,6 +7,9 @@
 // クライアント
 export { defaultQueries, MAX_LIMIT, getOptimizedImageUrl } from './client'
 
+// ユーティリティ
+export { getAllContents, stripHtmlTags } from './utils'
+
 // スキーマとバリデーション
 export {
   // スキーマ
@@ -71,8 +74,27 @@ export {
   getMediaArticlesByCategory,
   getMediaArticlesByTag,
   getRelatedArticles,
+  getMediaArticlesByAuthor,
+  getMediaArticlesBySupervisor,
+  getMediaArticlesByFeature,
 } from './media-articles'
 
 export { getCategories, getCategoryBySlug, getCategoryById } from './categories'
 
 export { getTags, getTagBySlug, getTagById } from './tags'
+
+export {
+  getExperts,
+  getExpertById,
+  getExpertBySlug,
+  getAllExpertIds,
+  getAllExpertSlugs,
+} from './experts'
+
+export {
+  getFeatures,
+  getFeatureById,
+  getFeatureBySlug,
+  getAllFeatureIds,
+  getAllFeatureSlugs,
+} from './features'

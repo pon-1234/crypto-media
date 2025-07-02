@@ -55,7 +55,7 @@ describe('reset-token utilities', () => {
         doc: vi.fn(() => ({
           set: mockSet,
         })),
-      } as any)
+      } as unknown as ReturnType<typeof adminDb.collection>)
 
       const email = 'test@example.com'
       const token = 'test-token'
@@ -83,7 +83,7 @@ describe('reset-token utilities', () => {
         doc: vi.fn(() => ({
           set: mockSet,
         })),
-      } as any)
+      } as unknown as ReturnType<typeof adminDb.collection>)
 
       const email = 'test@example.com'
       const token = 'test-token'
@@ -115,7 +115,7 @@ describe('reset-token utilities', () => {
         doc: vi.fn(() => ({
           get: mockGet,
         })),
-      } as any)
+      } as unknown as ReturnType<typeof adminDb.collection>)
 
       const result = await verifyResetToken('valid-token')
       expect(result).toBe('test@example.com')
@@ -130,7 +130,7 @@ describe('reset-token utilities', () => {
         doc: vi.fn(() => ({
           get: mockGet,
         })),
-      } as any)
+      } as unknown as ReturnType<typeof adminDb.collection>)
 
       const result = await verifyResetToken('invalid-token')
       expect(result).toBeNull()
@@ -152,7 +152,7 @@ describe('reset-token utilities', () => {
         doc: vi.fn(() => ({
           get: mockGet,
         })),
-      } as any)
+      } as unknown as ReturnType<typeof adminDb.collection>)
 
       const result = await verifyResetToken('used-token')
       expect(result).toBeNull()
@@ -174,7 +174,7 @@ describe('reset-token utilities', () => {
         doc: vi.fn(() => ({
           get: mockGet,
         })),
-      } as any)
+      } as unknown as ReturnType<typeof adminDb.collection>)
 
       const result = await verifyResetToken('expired-token')
       expect(result).toBeNull()
@@ -187,7 +187,7 @@ describe('reset-token utilities', () => {
         doc: vi.fn(() => ({
           get: mockGet,
         })),
-      } as any)
+      } as unknown as ReturnType<typeof adminDb.collection>)
 
       const result = await verifyResetToken('error-token')
       expect(result).toBeNull()
@@ -201,7 +201,7 @@ describe('reset-token utilities', () => {
         doc: vi.fn(() => ({
           update: mockUpdate,
         })),
-      } as any)
+      } as unknown as ReturnType<typeof adminDb.collection>)
 
       await markTokenAsUsed('test-token')
 
@@ -229,12 +229,12 @@ describe('reset-token utilities', () => {
         where: vi.fn(() => ({
           get: mockGet,
         })),
-      } as any)
+      } as unknown as ReturnType<typeof adminDb.collection>)
 
       vi.mocked(adminDb.batch).mockReturnValue({
         delete: mockDelete,
         commit: mockCommit,
-      } as any)
+      } as unknown as ReturnType<typeof adminDb.collection>)
 
       const count = await cleanupExpiredTokens()
 
@@ -254,12 +254,12 @@ describe('reset-token utilities', () => {
         where: vi.fn(() => ({
           get: mockGet,
         })),
-      } as any)
+      } as unknown as ReturnType<typeof adminDb.collection>)
 
       vi.mocked(adminDb.batch).mockReturnValue({
         delete: vi.fn(),
         commit: mockCommit,
-      } as any)
+      } as unknown as ReturnType<typeof adminDb.collection>)
 
       const count = await cleanupExpiredTokens()
 

@@ -46,7 +46,7 @@ describe('POST /api/auth/forgot-password', () => {
           get: mockGet,
         })),
       })),
-    } as any)
+    } as unknown as ReturnType<typeof adminDb.collection>)
 
     vi.mocked(generateResetToken).mockReturnValue('test-reset-token')
     vi.mocked(saveResetToken).mockResolvedValue(undefined)
@@ -87,7 +87,7 @@ describe('POST /api/auth/forgot-password', () => {
           get: mockGet,
         })),
       })),
-    } as any)
+    } as unknown as ReturnType<typeof adminDb.collection>)
 
     vi.mocked(generateResetToken).mockReturnValue('test-reset-token')
 
@@ -139,7 +139,7 @@ describe('POST /api/auth/forgot-password', () => {
           get: mockGet,
         })),
       })),
-    } as any)
+    } as unknown as ReturnType<typeof adminDb.collection>)
 
     const request = new NextRequest('http://localhost:3000/api/auth/forgot-password', {
       method: 'POST',
@@ -174,7 +174,7 @@ describe('POST /api/auth/forgot-password', () => {
           get: mockGet,
         })),
       })),
-    } as any)
+    } as unknown as ReturnType<typeof adminDb.collection>)
 
     const request = new NextRequest('http://localhost:3000/api/auth/forgot-password', {
       method: 'POST',
@@ -204,7 +204,7 @@ describe('POST /api/auth/forgot-password', () => {
           get: mockGet,
         })),
       })),
-    } as any)
+    } as unknown as ReturnType<typeof adminDb.collection>)
 
     const request = new NextRequest('http://localhost:3000/api/auth/forgot-password', {
       method: 'POST',
