@@ -4,23 +4,39 @@
  * @issue #2 - microCMSクライアントと型定義の実装
  */
 import { createClient } from 'microcms-js-sdk'
+import { isTestOrCI } from '@/lib/env/detect'
 
-if (!process.env.MICROCMS_SERVICE_DOMAIN) {
-  throw new Error('MICROCMS_SERVICE_DOMAIN is required')
-}
+const createMicroCMSClient = () => {
+  if (isTestOrCI()) {
+    // CI/テスト環境ではキーがないため、モッククライアントを返すか、
+    // エラーを防ぐためにnullを返すなどの対応が考えられるが、
+    // ここではエラーをスローしないように最低限のダミー設定で初期化する。
+    // 実際にAPIコールされると失敗するが、ビルドは通るようになる。
+    return createClient({
+      serviceDomain: 'dummy-domain',
+      apiKey: 'dummy-key',
+    })
+  }
 
-if (!process.env.MICROCMS_API_KEY) {
-  throw new Error('MICROCMS_API_KEY is required')
+  if (!process.env.MICROCMS_SERVICE_DOMAIN) {
+    throw new Error('MICROCMS_SERVICE_DOMAIN is required')
+  }
+
+  if (!process.env.MICROCMS_API_KEY) {
+    throw new Error('MICROCMS_API_KEY is required')
+  }
+
+  return createClient({
+    serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN,
+    apiKey: process.env.MICROCMS_API_KEY,
+  })
 }
 
 /**
  * microCMS クライアントインスタンス
  * @see https://github.com/microcmsio/microcms-js-sdk
  */
-export const client = createClient({
-  serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN,
-  apiKey: process.env.MICROCMS_API_KEY,
-})
+export const client = createMicroCMSClient()
 
 /**
  * プレビューモードでの記事取得について
