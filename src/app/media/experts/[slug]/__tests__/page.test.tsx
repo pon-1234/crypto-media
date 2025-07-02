@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { notFound } from 'next/navigation'
 import ExpertDetailPage, { generateStaticParams, generateMetadata } from '../page'
+import { getAllExpertSlugs } from '@/lib/microcms'
 
 // モックの設定
 vi.mock('next/navigation', () => ({
@@ -32,6 +33,9 @@ vi.mock('next/image', () => ({
   )),
 }))
 
+const mockSlugs = ['yamada-taro', 'suzuki-hanako']
+vi.mocked(getAllExpertSlugs).mockResolvedValue(mockSlugs)
+
 describe('ExpertDetailPage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -42,7 +46,7 @@ describe('ExpertDetailPage', () => {
       id: '1',
       name: '山田太郎',
       slug: 'yamada-taro',
-      role: ['執筆者'],
+      role: ['執筆者' as const],
       profile: 'ブロックチェーン技術の専門家。\n10年以上の開発経験を持つ。',
       avatar: {
         url: 'https://example.com/avatar.jpg',
@@ -65,7 +69,7 @@ describe('ExpertDetailPage', () => {
           membershipLevel: 'public' as const,
           content: '記事内容',
           heroImage: { url: 'https://example.com/image1.jpg', width: 800, height: 600 },
-          category: { id: '1', name: 'ビットコイン', slug: 'bitcoin' },
+          category: { id: '1', name: 'ビットコイン', slug: 'bitcoin', createdAt: '2023-01-01T00:00:00.000Z', updatedAt: '2023-01-01T00:00:00.000Z' },
           tags: [],
           author: mockExpert,
           publishedAt: '2023-01-01T00:00:00.000Z',
@@ -81,7 +85,7 @@ describe('ExpertDetailPage', () => {
           membershipLevel: 'public' as const,
           content: '記事内容',
           heroImage: { url: 'https://example.com/image2.jpg', width: 800, height: 600 },
-          category: { id: '2', name: 'DeFi', slug: 'defi' },
+          category: { id: '2', name: 'DeFi', slug: 'defi', createdAt: '2023-01-01T00:00:00.000Z', updatedAt: '2023-01-01T00:00:00.000Z' },
           tags: [],
           author: mockExpert,
           publishedAt: '2023-01-02T00:00:00.000Z',
@@ -131,7 +135,7 @@ describe('ExpertDetailPage', () => {
       id: '1',
       name: '鈴木花子',
       slug: 'suzuki-hanako',
-      role: ['執筆者', '監修者'],
+      role: ['執筆者' as const, '監修者' as const],
       profile: '専門家',
       createdAt: '2023-01-01T00:00:00.000Z',
       updatedAt: '2023-01-01T00:00:00.000Z',
@@ -204,7 +208,7 @@ describe('ExpertDetailPage', () => {
       id: '1',
       name: '田中一郎',
       slug: 'tanaka-ichiro',
-      role: ['監修者'],
+      role: ['監修者' as const],
       profile: '専門家',
       createdAt: '2023-01-01T00:00:00.000Z',
       updatedAt: '2023-01-01T00:00:00.000Z',
@@ -245,9 +249,6 @@ describe('ExpertDetailPage', () => {
   })
 
   it('generateStaticParamsが正しく動作する', async () => {
-    const { getAllExpertSlugs } = await import('@/lib/microcms')
-    vi.mocked(getAllExpertSlugs).mockResolvedValue(['yamada-taro', 'suzuki-hanako'])
-
     const result = await generateStaticParams()
 
     expect(result).toEqual([
@@ -261,7 +262,7 @@ describe('ExpertDetailPage', () => {
       id: '1',
       name: '山田太郎',
       slug: 'yamada-taro',
-      role: ['執筆者'],
+      role: ['執筆者' as const],
       profile: 'ブロックチェーン技術の専門家',
       createdAt: '2023-01-01T00:00:00.000Z',
       updatedAt: '2023-01-01T00:00:00.000Z',

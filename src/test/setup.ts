@@ -33,6 +33,10 @@ process.env.FIREBASE_ADMIN_PROJECT_ID = 'test-project'
 process.env.FIREBASE_ADMIN_CLIENT_EMAIL = 'test@test.iam.gserviceaccount.com'
 process.env.FIREBASE_ADMIN_PRIVATE_KEY = 'test-key'
 
+// microCMS環境変数のモック（テスト環境用）
+process.env.MICROCMS_SERVICE_DOMAIN = 'dummy-domain'
+process.env.MICROCMS_API_KEY = 'dummy-key'
+
 // Firebase adminのモック
 vi.mock('firebase-admin/app', () => ({
   initializeApp: vi.fn().mockReturnValue({}),

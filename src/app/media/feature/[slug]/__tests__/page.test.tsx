@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { notFound } from 'next/navigation'
 import FeatureDetailPage, { generateStaticParams, generateMetadata } from '../page'
+import { getAllFeatureSlugs } from '@/lib/microcms'
 
 // モックの設定
 vi.mock('next/navigation', () => ({
@@ -30,6 +31,9 @@ vi.mock('next/image', () => ({
     <img src={src} alt={alt} {...props} />
   )),
 }))
+
+const mockSlugs = ['2025-crypto-trends', 'defi-introduction']
+vi.mocked(getAllFeatureSlugs).mockResolvedValue(mockSlugs)
 
 describe('FeatureDetailPage', () => {
   beforeEach(() => {
@@ -227,9 +231,6 @@ describe('FeatureDetailPage', () => {
   })
 
   it('generateStaticParamsが正しく動作する', async () => {
-    const { getAllFeatureSlugs } = await import('@/lib/microcms')
-    vi.mocked(getAllFeatureSlugs).mockResolvedValue(['2025-crypto-trends', 'defi-introduction'])
-
     const result = await generateStaticParams()
 
     expect(result).toEqual([

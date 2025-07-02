@@ -7,6 +7,7 @@ import {
   cleanupExpiredTokens,
 } from './reset-token'
 import { adminDb } from '@/lib/firebase/admin'
+import { WriteBatch } from 'firebase-admin/firestore'
 
 /**
  * パスワードリセットトークンのテスト
@@ -234,7 +235,7 @@ describe('reset-token utilities', () => {
       vi.mocked(adminDb.batch).mockReturnValue({
         delete: mockDelete,
         commit: mockCommit,
-      } as unknown as ReturnType<typeof adminDb.collection>)
+      } as unknown as WriteBatch)
 
       const count = await cleanupExpiredTokens()
 
@@ -259,7 +260,7 @@ describe('reset-token utilities', () => {
       vi.mocked(adminDb.batch).mockReturnValue({
         delete: vi.fn(),
         commit: mockCommit,
-      } as unknown as ReturnType<typeof adminDb.collection>)
+      } as unknown as WriteBatch)
 
       const count = await cleanupExpiredTokens()
 

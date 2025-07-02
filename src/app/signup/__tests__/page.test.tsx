@@ -28,6 +28,11 @@ describe('SignupPage', () => {
     vi.clearAllMocks()
     vi.mocked(useRouter).mockReturnValue({
       push: mockPush,
+      back: vi.fn(),
+      forward: vi.fn(),
+      refresh: vi.fn(),
+      replace: vi.fn(),
+      prefetch: vi.fn(),
     })
   })
 
@@ -94,7 +99,7 @@ describe('SignupPage', () => {
         user: { id: '123', email: 'test@example.com', name: 'Test User' },
         message: 'アカウントが正常に作成されました',
       }),
-    })
+    } as Response)
     vi.mocked(signIn).mockResolvedValueOnce({ error: null } as never)
 
     render(<SignupPage />)
@@ -149,7 +154,7 @@ describe('SignupPage', () => {
       json: async () => ({
         error: 'このメールアドレスは既に登録されています',
       }),
-    })
+    } as Response)
 
     render(<SignupPage />)
 

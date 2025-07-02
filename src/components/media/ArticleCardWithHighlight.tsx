@@ -35,10 +35,10 @@ export function ArticleCardWithHighlight({ article, query = '' }: ArticleCardWit
   return (
     <article className="overflow-hidden rounded-lg bg-white shadow-md transition-shadow hover:shadow-lg dark:bg-gray-800">
       <Link href={`/media/articles/${article.slug}`} className="block">
-        {article.thumbnail && (
+        {article.heroImage && (
           <div className="relative aspect-[16/9] overflow-hidden">
             <Image
-              src={article.thumbnail.url}
+              src={article.heroImage.url}
               alt={article.title}
               fill
               className="object-cover transition-transform hover:scale-105"
@@ -66,12 +66,6 @@ export function ArticleCardWithHighlight({ article, query = '' }: ArticleCardWit
           <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">
             {renderHighlightedText(article.title)}
           </h3>
-          
-          {article.description && (
-            <p className="text-gray-600 dark:text-gray-400">
-              {renderHighlightedText(article.description)}
-            </p>
-          )}
           
           {article.tags && article.tags.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">

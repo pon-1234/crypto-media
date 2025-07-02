@@ -24,6 +24,11 @@ vi.mock('next-auth/react', () => ({
   useSession: vi.fn(() => ({ data: null, status: 'unauthenticated' })),
 }))
 
+// SearchFormをモック
+vi.mock('@/components/ui/SearchForm', () => ({
+  SearchForm: () => <div data-testid="search-form-mock" />,
+}))
+
 import RootLayout from '../layout'
 
 describe('RootLayout', () => {

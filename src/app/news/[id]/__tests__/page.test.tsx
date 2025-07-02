@@ -25,6 +25,10 @@ vi.mock('@/lib/utils/date', () => ({
   formatDate: vi.fn((date) => new Date(date).toLocaleDateString('ja-JP')),
 }))
 
+// Mock IDs for generateStaticParams
+const mockIds = ['news1', 'news2', 'news3']
+vi.mocked(microCMS.getAllCorporateNewsIds).mockResolvedValue(mockIds)
+
 // Store original CI env
 const originalCI = process.env.CI
 
@@ -59,9 +63,6 @@ describe('NewsDetailPage', () => {
 
   describe('generateStaticParams', () => {
     it('returns all news IDs', async () => {
-      const mockIds = ['news1', 'news2', 'news3']
-      vi.mocked(microCMS.getAllCorporateNewsIds).mockResolvedValue(mockIds)
-
       const params = await generateStaticParams()
 
       expect(params).toEqual([

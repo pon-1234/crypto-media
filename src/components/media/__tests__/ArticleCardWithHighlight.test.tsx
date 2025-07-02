@@ -5,10 +5,10 @@ import type { MediaArticle } from '@/lib/schema/article.schema'
 
 // Mock highlightSearchQuery
 vi.mock('@/lib/microcms', () => ({
-  highlightSearchQuery: vi.fn((text, query) => {
+  highlightSearchQuery: vi.fn((text: string, query: string) => {
     if (!query) return [text]
     const parts = text.split(new RegExp(`(${query})`, 'gi'))
-    return parts.map((part, index) => {
+    return parts.map((part: string, index: number) => {
       if (index % 2 === 1) {
         return {
           type: 'mark',
@@ -26,9 +26,8 @@ const mockArticle: MediaArticle = {
   type: 'article',
   title: 'ビットコインの基礎知識',
   slug: 'bitcoin-basics',
-  description: 'ビットコインについて詳しく解説します',
   content: 'コンテンツ',
-  thumbnail: {
+  heroImage: {
     url: 'https://example.com/thumbnail.jpg',
     width: 800,
     height: 600,
@@ -67,7 +66,6 @@ describe('ArticleCardWithHighlight', () => {
     render(<ArticleCardWithHighlight article={mockArticle} />)
 
     expect(screen.getByText('ビットコインの基礎知識')).toBeInTheDocument()
-    expect(screen.getByText('ビットコインについて詳しく解説します')).toBeInTheDocument()
     expect(screen.getByText('基礎知識')).toBeInTheDocument()
     expect(screen.getByText('#ビットコイン')).toBeInTheDocument()
     expect(screen.getByText('#仮想通貨')).toBeInTheDocument()
@@ -104,13 +102,11 @@ describe('ArticleCardWithHighlight', () => {
   it('説明文がない場合も正しく表示される', () => {
     const articleWithoutDescription = {
       ...mockArticle,
-      description: undefined,
     }
 
     render(<ArticleCardWithHighlight article={articleWithoutDescription} />)
 
     expect(screen.getByText('ビットコインの基礎知識')).toBeInTheDocument()
-    expect(screen.queryByText('ビットコインについて詳しく解説します')).not.toBeInTheDocument()
   })
 
   it('タグがない場合も正しく表示される', () => {

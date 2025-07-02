@@ -54,14 +54,14 @@ describe('Pagination', () => {
     render(<Pagination {...defaultProps} currentPage={3} totalPages={5} />)
 
     const currentPageLink = screen.getByRole('link', { name: '3' })
-    expect(currentPageLink).toHaveClass('bg-blue-600', 'text-white')
+    expect(currentPageLink).toHaveClass('border-blue-500', 'text-blue-600')
 
     const otherPageLink = screen.getByRole('link', { name: '2' })
-    expect(otherPageLink).not.toHaveClass('bg-blue-600', 'text-white')
+    expect(otherPageLink).not.toHaveClass('border-blue-500', 'text-blue-600')
   })
 
   it('ページ数が多い場合は省略記号を表示する（前後の省略）', () => {
-    render(<Pagination {...defaultProps} currentPage={5} totalPages={10} />)
+    render(<Pagination {...defaultProps} currentPage={5} totalPages={10} siblingCount={1} />)
 
     // 最初のページ
     expect(screen.getByText('1')).toBeInTheDocument()
@@ -71,18 +71,18 @@ describe('Pagination', () => {
     expect(ellipses).toHaveLength(2)
 
     // 現在ページ周辺
-    expect(screen.getByText('3')).toBeInTheDocument()
+    expect(screen.queryByText('3')).not.toBeInTheDocument()
     expect(screen.getByText('4')).toBeInTheDocument()
     expect(screen.getByText('5')).toBeInTheDocument()
     expect(screen.getByText('6')).toBeInTheDocument()
-    expect(screen.getByText('7')).toBeInTheDocument()
+    expect(screen.queryByText('7')).not.toBeInTheDocument()
 
     // 最後のページ
     expect(screen.getByText('10')).toBeInTheDocument()
   })
 
   it('ページ数が多い場合は省略記号を表示する（後ろのみ省略）', () => {
-    render(<Pagination {...defaultProps} currentPage={2} totalPages={10} />)
+    render(<Pagination {...defaultProps} currentPage={3} totalPages={10} siblingCount={1}/>)
 
     // 最初のページ付近
     expect(screen.getByText('1')).toBeInTheDocument()
@@ -99,7 +99,7 @@ describe('Pagination', () => {
   })
 
   it('ページ数が多い場合は省略記号を表示する（前のみ省略）', () => {
-    render(<Pagination {...defaultProps} currentPage={9} totalPages={10} />)
+    render(<Pagination {...defaultProps} currentPage={8} totalPages={10} siblingCount={1} />)
 
     // 最初のページ
     expect(screen.getByText('1')).toBeInTheDocument()
@@ -163,21 +163,17 @@ describe('Pagination', () => {
     render(
       <Pagination
         {...defaultProps}
-        currentPage={1}
+        currentPage={4}
         totalPages={6}
-        siblingCount={2}
+        siblingCount={1}
       />
     )
 
-    // 1-5は連続で表示され、6だけが離れている
-    expect(screen.getByText('1')).toBeInTheDocument()
-    expect(screen.getByText('2')).toBeInTheDocument()
+    // 3,4,5,6ページが表示され、...は表示されない
+    expect(screen.queryByText('...')).not.toBeInTheDocument()
     expect(screen.getByText('3')).toBeInTheDocument()
-    expect(screen.queryByText('4')).not.toBeInTheDocument()
-    expect(screen.queryByText('5')).not.toBeInTheDocument()
-
-    // 省略記号と最後のページ
-    expect(screen.getByText('...')).toBeInTheDocument()
+    expect(screen.getByText('4')).toBeInTheDocument()
+    expect(screen.getByText('5')).toBeInTheDocument()
     expect(screen.getByText('6')).toBeInTheDocument()
   })
 
@@ -200,7 +196,7 @@ describe('Pagination', () => {
   })
 
   it('複数の省略記号がある場合、それぞれユニークなキーを持つ', () => {
-    render(<Pagination {...defaultProps} currentPage={5} totalPages={10} />)
+    render(<Pagination {...defaultProps} currentPage={5} totalPages={10} siblingCount={1}/>)
 
     // 省略記号の要素を取得
     const ellipses = screen.getAllByText('...')
@@ -208,11 +204,11 @@ describe('Pagination', () => {
 
     // ページ番号の要素を確認（ユニークなものが表示されている）
     expect(screen.getByText('1')).toBeInTheDocument()
-    expect(screen.getByText('3')).toBeInTheDocument()
+    expect(screen.queryByText('3')).not.toBeInTheDocument()
     expect(screen.getByText('4')).toBeInTheDocument()
     expect(screen.getByText('5')).toBeInTheDocument()
     expect(screen.getByText('6')).toBeInTheDocument()
-    expect(screen.getByText('7')).toBeInTheDocument()
+    expect(screen.queryByText('7')).not.toBeInTheDocument()
     expect(screen.getByText('10')).toBeInTheDocument()
   })
 })

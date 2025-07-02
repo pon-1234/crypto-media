@@ -71,8 +71,7 @@ describe('POST /api/auth/forgot-password', () => {
   })
 
   it('開発環境ではリセットURLを返す', async () => {
-    const originalEnv = process.env.NODE_ENV
-    process.env.NODE_ENV = 'development'
+    vi.stubEnv('NODE_ENV', 'development')
 
     const mockGet = vi.fn().mockResolvedValue({
       empty: false,
@@ -107,7 +106,7 @@ describe('POST /api/auth/forgot-password', () => {
     expect(response.status).toBe(200)
     expect(data.resetUrl).toBe('http://localhost:3000/reset-password?token=test-reset-token')
 
-    process.env.NODE_ENV = originalEnv
+    vi.unstubAllEnvs()
   })
 
   it('無効なメールアドレスの場合、400エラーを返す', async () => {

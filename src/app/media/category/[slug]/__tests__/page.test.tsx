@@ -16,6 +16,27 @@ vi.mock('@/lib/microcms', () => ({
   getMediaArticlesByCategory: vi.fn(),
 }))
 
+const mockCategory = {
+  id: 'cat1',
+  name: 'ブロックチェーン',
+  slug: 'blockchain',
+  createdAt: '2024-01-01T00:00:00.000Z',
+  updatedAt: '2024-01-01T00:00:00.000Z',
+  publishedAt: '2024-01-01T00:00:00.000Z',
+  revisedAt: '2024-01-01T00:00:00.000Z',
+}
+
+const mockCategories = {
+  contents: [
+    mockCategory,
+    { ...mockCategory, id: 'cat2', slug: 'defi', name: 'DeFi' },
+  ],
+  totalCount: 2,
+  offset: 0,
+  limit: 100,
+}
+vi.mocked(microCMS.getCategories).mockResolvedValue(mockCategories)
+
 // Store original CI env
 const originalCI = process.env.CI
 
@@ -55,16 +76,6 @@ vi.mock('@/components/ui/Pagination', () => ({
 }))
 
 describe('CategoryPage', () => {
-  const mockCategory = {
-    id: 'cat1',
-    name: 'ブロックチェーン',
-    slug: 'blockchain',
-    createdAt: '2024-01-01T00:00:00.000Z',
-    updatedAt: '2024-01-01T00:00:00.000Z',
-    publishedAt: '2024-01-01T00:00:00.000Z',
-    revisedAt: '2024-01-01T00:00:00.000Z',
-  }
-
   const mockArticles = {
     contents: [
       {
@@ -139,18 +150,6 @@ describe('CategoryPage', () => {
 
   describe('generateStaticParams', () => {
     it('returns all category slugs', async () => {
-      const mockCategories = {
-        contents: [
-          { ...mockCategory, slug: 'blockchain' },
-          { ...mockCategory, slug: 'defi', name: 'DeFi' },
-        ],
-        totalCount: 2,
-        offset: 0,
-        limit: 100,
-      }
-
-      vi.mocked(microCMS.getCategories).mockResolvedValue(mockCategories)
-
       const params = await generateStaticParams()
 
       expect(params).toEqual([{ slug: 'blockchain' }, { slug: 'defi' }])

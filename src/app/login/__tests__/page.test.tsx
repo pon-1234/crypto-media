@@ -48,7 +48,7 @@ describe('LoginPage', () => {
       mockGet.mockReturnValue(null)
       render(<LoginPage />)
 
-      expect(screen.getByText('ログイン')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'ログイン' })).toBeInTheDocument()
       expect(
         screen.getByText(
           '会員限定コンテンツへアクセスするにはログインが必要です'

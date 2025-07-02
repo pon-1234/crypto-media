@@ -41,13 +41,13 @@ describe('POST /api/auth/signup', () => {
     const mockAdd = vi.fn().mockResolvedValue({ id: 'new-user-id' })
 
     vi.mocked(adminDb.collection).mockReturnValue({
-      where: vi.fn(() => ({
-        limit: vi.fn(() => ({
+      where: vi.fn().mockReturnValue({
+        limit: vi.fn().mockReturnValue({
           get: mockGet,
-        })),
-      })),
+        }),
+      }),
       add: mockAdd,
-    })
+    } as unknown as ReturnType<typeof adminDb.collection>)
 
     vi.mocked(hashPassword).mockResolvedValue('hashed-password')
     vi.mocked(validatePasswordStrength).mockReturnValue({
@@ -164,12 +164,12 @@ describe('POST /api/auth/signup', () => {
     const mockGet = vi.fn().mockResolvedValue({ empty: false })
 
     vi.mocked(adminDb.collection).mockReturnValue({
-      where: vi.fn(() => ({
-        limit: vi.fn(() => ({
+      where: vi.fn().mockReturnValue({
+        limit: vi.fn().mockReturnValue({
           get: mockGet,
-        })),
-      })),
-    })
+        }),
+      }),
+    } as unknown as ReturnType<typeof adminDb.collection>)
 
     vi.mocked(validatePasswordStrength).mockReturnValue({
       isValid: true,
@@ -219,12 +219,12 @@ describe('POST /api/auth/signup', () => {
     const mockGet = vi.fn().mockRejectedValue(new Error('Firestore error'))
 
     vi.mocked(adminDb.collection).mockReturnValue({
-      where: vi.fn(() => ({
-        limit: vi.fn(() => ({
+      where: vi.fn().mockReturnValue({
+        limit: vi.fn().mockReturnValue({
           get: mockGet,
-        })),
-      })),
-    })
+        }),
+      }),
+    } as unknown as ReturnType<typeof adminDb.collection>)
 
     vi.mocked(validatePasswordStrength).mockReturnValue({
       isValid: true,

@@ -16,6 +16,27 @@ vi.mock('@/lib/microcms', () => ({
   getMediaArticlesByTag: vi.fn(),
 }))
 
+const mockTag = {
+  id: 'tag1',
+  name: 'ビットコイン',
+  slug: 'bitcoin',
+  createdAt: '2024-01-01T00:00:00.000Z',
+  updatedAt: '2024-01-01T00:00:00.000Z',
+  publishedAt: '2024-01-01T00:00:00.000Z',
+  revisedAt: '2024-01-01T00:00:00.000Z',
+}
+
+const mockTags = {
+  contents: [
+    mockTag,
+    { ...mockTag, id: 'tag2', slug: 'ethereum', name: 'イーサリアム' },
+  ],
+  totalCount: 2,
+  offset: 0,
+  limit: 100,
+}
+vi.mocked(microCMS.getTags).mockResolvedValue(mockTags)
+
 // Store original CI env
 const originalCI = process.env.CI
 
@@ -55,16 +76,6 @@ vi.mock('@/components/ui/Pagination', () => ({
 }))
 
 describe('TagPage', () => {
-  const mockTag = {
-    id: 'tag1',
-    name: 'ビットコイン',
-    slug: 'bitcoin',
-    createdAt: '2024-01-01T00:00:00.000Z',
-    updatedAt: '2024-01-01T00:00:00.000Z',
-    publishedAt: '2024-01-01T00:00:00.000Z',
-    revisedAt: '2024-01-01T00:00:00.000Z',
-  }
-
   const mockArticles = {
     contents: [
       {
@@ -142,18 +153,6 @@ describe('TagPage', () => {
 
   describe('generateStaticParams', () => {
     it('returns all tag slugs', async () => {
-      const mockTags = {
-        contents: [
-          { ...mockTag, slug: 'bitcoin' },
-          { ...mockTag, slug: 'ethereum', name: 'イーサリアム' },
-        ],
-        totalCount: 2,
-        offset: 0,
-        limit: 100,
-      }
-
-      vi.mocked(microCMS.getTags).mockResolvedValue(mockTags)
-
       const params = await generateStaticParams()
 
       expect(params).toEqual([{ slug: 'bitcoin' }, { slug: 'ethereum' }])

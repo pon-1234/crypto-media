@@ -16,7 +16,7 @@ vi.mock('next/navigation', () => ({
 describe('Pagination', () => {
   beforeEach(() => {
     vi.mocked(usePathname).mockReturnValue('/media/articles')
-    vi.mocked(useSearchParams).mockReturnValue(new URLSearchParams())
+    vi.mocked(useSearchParams).mockReturnValue(new URLSearchParams() as unknown as ReturnType<typeof useSearchParams>)
   })
 
   it('基本的なページネーションが正しく表示される', () => {
@@ -82,7 +82,7 @@ describe('Pagination', () => {
 
   it('既存のクエリパラメータが保持される', () => {
     const searchParams = new URLSearchParams('category=blockchain&sort=newest')
-    vi.mocked(useSearchParams).mockReturnValue(searchParams)
+    vi.mocked(useSearchParams).mockReturnValue(searchParams as unknown as ReturnType<typeof useSearchParams>)
 
     render(<Pagination currentPage={1} totalPages={3} />)
 
@@ -98,15 +98,9 @@ describe('Pagination', () => {
     expect(nav).toHaveClass('mt-8')
   })
 
-  it('単一ページの場合、ナビゲーションが最小限になる', () => {
-    render(<Pagination currentPage={1} totalPages={1} />)
-
-    // ページ番号1のみ表示される
-    expect(screen.getByText('1')).toBeInTheDocument()
-
-    // 前へ・次へリンクは表示されない
-    expect(screen.queryByText('前へ')).not.toBeInTheDocument()
-    expect(screen.queryByText('次へ')).not.toBeInTheDocument()
+  it('単一ページの場合、何も表示しない', () => {
+    const { container } = render(<Pagination currentPage={1} totalPages={1} />)
+    expect(container.firstChild).toBeNull()
   })
 
   it('ページ番号のリンクが正しいURLを生成する', () => {

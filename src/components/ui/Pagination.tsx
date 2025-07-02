@@ -23,19 +23,25 @@ const ChevronRightIcon = ({ className }: { className?: string }) => (
 interface PaginationProps {
   currentPage: number
   totalPages: number
+  basePath?: string
   className?: string
+  siblingCount?: number
 }
 
 /**
  * ページネーションコンポーネント
  * @param currentPage 現在のページ番号
  * @param totalPages 総ページ数
+ * @param basePath ページネーションのベースパス
  * @param className 追加のCSSクラス
+ * @param siblingCount 現在ページの前後に表示するページ数
  */
 export function Pagination({ 
   currentPage, 
   totalPages, 
-  className = '' 
+  basePath,
+  className = '',
+  siblingCount = 2
 }: PaginationProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -48,7 +54,25 @@ export function Pagination({
   const createPageURL = (page: number) => {
     const params = new URLSearchParams(searchParams)
     params.set('page', page.toString())
-    return `${pathname}?${params.toString()}`
+    const basePathWithQuery = basePath ? basePath.split('?')[0] : pathname
+    const existingQuery = basePath ? basePath.split('?')[1] : ''
+    
+    const newParams = new URLSearchParams(existingQuery)
+    searchParams?.forEach((value, key) => {
+      if (key !== 'page') {
+        newParams.set(key, value)
+      }
+    })
+    newParams.set('page', page.toString())
+
+    // `q` パラメータが `basePath` に含まれている場合、それを優先する
+    if (basePath && new URLSearchParams(basePath.split('?')[1] || '').has('q')) {
+        const basePathParams = new URLSearchParams(basePath.split('?')[1] || '')
+        basePathParams.set('page', page.toString())
+        return `${basePath.split('?')[0]}?${basePathParams.toString()}`
+    }
+
+    return `${basePathWithQuery}?${newParams.toString()}`
   }
 
   /**
@@ -56,7 +80,7 @@ export function Pagination({
    * @returns ページ番号の配列
    */
   const getPageNumbers = (): (number | string)[] => {
-    const delta = 2 // 現在のページから前後に表示するページ数
+    const delta = siblingCount
     const range: number[] = []
     const rangeWithDots: (number | string)[] = []
     let l: number | undefined
@@ -83,6 +107,10 @@ export function Pagination({
   }
 
   const pageNumbers = getPageNumbers()
+
+  if (totalPages <= 1) {
+    return null
+  }
 
   return (
     <nav 

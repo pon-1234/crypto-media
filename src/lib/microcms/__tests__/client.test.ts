@@ -3,76 +3,95 @@
  * @doc DEVELOPMENT_GUIDE.md#microCMS
  * @issue #2 - microCMSクライアントと型定義の実装
  */
-import { describe, it, expect, vi, beforeAll } from 'vitest'
-import { createClient } from 'microcms-js-sdk'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-// 環境変数をモック - importの前に設定
-process.env.MICROCMS_SERVICE_DOMAIN = 'test-domain'
-process.env.MICROCMS_API_KEY = 'test-api-key'
-
-// microcms-js-sdkのモック
-vi.mock('microcms-js-sdk', () => ({
-  createClient: vi.fn().mockReturnValue({
-    get: vi.fn(),
-    getList: vi.fn(),
-    getListDetail: vi.fn(),
-  }),
-}))
-
-// モジュールを動的にインポート
-let client: ReturnType<typeof createClient>
-let defaultQueries: { limit: number; orders: string }
-let MAX_LIMIT: number
-let getOptimizedImageUrl: (
-  url: string,
-  options?: {
-    width?: number
-    height?: number
-    format?: 'webp' | 'jpg' | 'png'
-    quality?: number
-  }
-) => string
-
-beforeAll(async () => {
-  const clientModule = await import('../client')
-  client = clientModule.client
-  defaultQueries = clientModule.defaultQueries
-  MAX_LIMIT = clientModule.MAX_LIMIT
-  getOptimizedImageUrl = clientModule.getOptimizedImageUrl
-})
-
+// microcms-js-sdkは各スイートで動的にモックする
 describe('microCMS Client', () => {
-  describe('クライアント初期化', () => {
-    it('正しい設定でクライアントが作成される', () => {
-      expect(createClient).toHaveBeenCalledWith({
-        serviceDomain: 'test-domain',
-        apiKey: 'test-api-key',
-      })
-      expect(client).toBeDefined()
-    })
+  const originalEnv = { ...process.env }
 
-    it('環境変数のバリデーション', () => {
-      // 環境変数が設定されていることを確認
-      expect(process.env.MICROCMS_SERVICE_DOMAIN).toBe('test-domain')
-      expect(process.env.MICROCMS_API_KEY).toBe('test-api-key')
+  beforeEach(() => {
+    vi.resetModules()
+    process.env = {
+      ...originalEnv,
+      MICROCMS_SERVICE_DOMAIN: 'test-domain',
+      MICROCMS_API_KEY: 'test-api-key',
+    }
+  })
+
+  afterEach(() => {
+    process.env = originalEnv
+  })
+
+  it('正しい設定でクライアントが作成される', async () => {
+    const { createClient } = (await vi.importMock('microcms-js-sdk')) as {
+      createClient: any
+    }
+    createClient.mockClear()
+    await import('../client')
+    expect(createClient).toHaveBeenCalledWith({
+      serviceDomain: 'test-domain',
+      apiKey: 'test-api-key',
     })
   })
 
+  it('defaultQueriesが正しく設定されている', async () => {
+    const { defaultQueries } = await import('../client')
+    expect(defaultQueries).toEqual({
+      limit: 100,
+      orders: '-publishedAt',
+    })
+  })
+
+  it('MAX_LIMITが正しく設定されている', async () => {
+    const { MAX_LIMIT } = await import('../client')
+    expect(MAX_LIMIT).toBe(100)
+  })
+})
+
+describe('getOptimizedImageUrl', () => {
+  let getOptimizedImageUrl: any
+
+  beforeEach(async () => {
+    vi.resetModules()
+    const clientModule = await import('../client')
+    getOptimizedImageUrl = clientModule.getOptimizedImageUrl
+  })
+
+  const baseUrl = 'https://images.microcms-assets.io/assets/test/image.jpg'
+
+  it('オプションなしでURLを返す', () => {
+    const result = getOptimizedImageUrl(baseUrl)
+    expect(result).toBe(`${baseUrl}?`)
+  })
+
+  it('幅のみ指定した場合', () => {
+    const result = getOptimizedImageUrl(baseUrl, { width: 800 })
+    expect(result).toBe(`${baseUrl}?w=800`)
+  })
+
   describe('共通設定', () => {
-    it('defaultQueriesが正しく設定されている', () => {
+    it('defaultQueriesが正しく設定されている', async () => {
+      const { defaultQueries } = await import('../client')
       expect(defaultQueries).toEqual({
         limit: 100,
         orders: '-publishedAt',
       })
     })
 
-    it('MAX_LIMITが正しく設定されている', () => {
+    it('MAX_LIMITが正しく設定されている', async () => {
+      const { MAX_LIMIT } = await import('../client')
       expect(MAX_LIMIT).toBe(100)
     })
   })
 
   describe('getOptimizedImageUrl', () => {
     const baseUrl = 'https://images.microcms-assets.io/assets/test/image.jpg'
+    let getOptimizedImageUrl: any
+
+    beforeEach(async () => {
+      const clientModule = await import('../client')
+      getOptimizedImageUrl = clientModule.getOptimizedImageUrl
+    })
 
     it('オプションなしでURLを返す', () => {
       const result = getOptimizedImageUrl(baseUrl)
@@ -120,32 +139,24 @@ describe('microCMS Client', () => {
 })
 
 describe('環境変数チェック', () => {
-  it('環境変数が設定されていない場合にエラーをスローする', async () => {
-    // 環境変数を一時的に削除
-    const originalServiceDomain = process.env.MICROCMS_SERVICE_DOMAIN
-    const originalApiKey = process.env.MICROCMS_API_KEY
+  const originalEnv = { ...process.env }
 
+  beforeEach(() => {
     vi.resetModules()
+    process.env = { ...originalEnv }
+  })
 
-    // サービスドメインがない場合
+  afterEach(() => {
+    process.env = originalEnv
+  })
+
+  it('MICROCMS_SERVICE_DOMAINが設定されていない場合にエラーをスローする', async () => {
     delete process.env.MICROCMS_SERVICE_DOMAIN
-    process.env.MICROCMS_API_KEY = 'test-key'
+    await expect(import('../client')).rejects.toThrow('MICROCMS_SERVICE_DOMAIN is required')
+  })
 
-    await expect(async () => {
-      await import('../client')
-    }).rejects.toThrow('MICROCMS_SERVICE_DOMAIN is required')
-
-    // APIキーがない場合
-    process.env.MICROCMS_SERVICE_DOMAIN = 'test-domain'
+  it('MICROCMS_API_KEYが設定されていない場合にエラーをスローする', async () => {
     delete process.env.MICROCMS_API_KEY
-    vi.resetModules()
-
-    await expect(async () => {
-      await import('../client')
-    }).rejects.toThrow('MICROCMS_API_KEY is required')
-
-    // 環境変数を復元
-    process.env.MICROCMS_SERVICE_DOMAIN = originalServiceDomain
-    process.env.MICROCMS_API_KEY = originalApiKey
+    await expect(import('../client')).rejects.toThrow('MICROCMS_API_KEY is required')
   })
 })

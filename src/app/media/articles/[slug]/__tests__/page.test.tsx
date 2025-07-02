@@ -59,6 +59,9 @@ import {
   getRelatedArticles,
 } from '@/lib/microcms'
 
+const mockSlugs = ['article-1', 'article-2', 'article-3']
+vi.mocked(getAllMediaArticleSlugs).mockResolvedValue(mockSlugs)
+
 /**
  * テスト用の記事データを作成
  */
@@ -365,9 +368,6 @@ describe('MediaArticleDetailPage', () => {
 
   describe('generateStaticParams', () => {
     it('すべての記事スラッグを返す', async () => {
-      const mockSlugs = ['article-1', 'article-2', 'article-3']
-      vi.mocked(getAllMediaArticleSlugs).mockResolvedValueOnce(mockSlugs)
-
       const params = await generateStaticParams()
 
       expect(params).toEqual([

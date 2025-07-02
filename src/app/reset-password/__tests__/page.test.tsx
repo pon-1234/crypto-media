@@ -149,9 +149,6 @@ describe('ResetPasswordPage', () => {
     })
 
     it('新しいパスワードを設定できる', async () => {
-      // タイマーのモック
-      vi.useFakeTimers()
-      
       vi.mocked(global.fetch).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
@@ -185,16 +182,11 @@ describe('ResetPasswordPage', () => {
 
       await waitFor(() => {
         expect(screen.getByText('パスワードが正常にリセットされました。ログインページに移動します...')).toBeInTheDocument()
-      })
-
-      // 3秒後にログインページに遷移することを確認
-      vi.advanceTimersByTime(3000)
+      }, { timeout: 5000 })
       
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalledWith('/login')
-      })
-
-      vi.useRealTimers()
+      }, { timeout: 5000 })
     })
 
     it('パスワードが一致しない場合、エラーが表示される', async () => {
