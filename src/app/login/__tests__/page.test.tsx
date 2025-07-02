@@ -97,6 +97,82 @@ describe('LoginPage', () => {
       expect(termsLink).toHaveAttribute('href', '/terms')
       expect(privacyLink).toHaveAttribute('href', '/privacy-policy')
     })
+
+    describe('メール/パスワード認証', () => {
+      it('正しい情報でログインに成功し、リダイレクトされる', async () => {
+        mockGet.mockReturnValue('/dashboard')
+        vi.mocked(signIn).mockResolvedValue({ ok: true, error: null } as any)
+
+        render(<LoginPage />)
+
+        fireEvent.change(screen.getByPlaceholderText('メールアドレス'), {
+          target: { value: 'test@example.com' },
+        })
+        fireEvent.change(screen.getByPlaceholderText('パスワード'), {
+          target: { value: 'password123' },
+        })
+
+        const loginButton = screen.getByRole('button', { name: 'ログイン' })
+        fireEvent.click(loginButton)
+
+        await waitFor(() => {
+          expect(signIn).toHaveBeenCalledWith('credentials', {
+            email: 'test@example.com',
+            password: 'password123',
+            redirect: false,
+            callbackUrl: '/dashboard',
+          })
+          expect(mockPush).toHaveBeenCalledWith('/dashboard')
+        })
+      })
+
+      it('不正な情報でログインに失敗し、エラーメッセージが表示される', async () => {
+        vi.mocked(signIn).mockResolvedValue({
+          ok: false,
+          error: 'CredentialsSignin',
+        } as any)
+        render(<LoginPage />)
+
+        fireEvent.change(screen.getByPlaceholderText('メールアドレス'), {
+          target: { value: 'wrong@example.com' },
+        })
+        fireEvent.change(screen.getByPlaceholderText('パスワード'), {
+          target: { value: 'wrongpassword' },
+        })
+        fireEvent.click(screen.getByRole('button', { name: 'ログイン' }))
+
+        await waitFor(() => {
+          expect(
+            screen.getByText('メールアドレスまたはパスワードが正しくありません')
+          ).toBeInTheDocument()
+        })
+      })
+
+      it('ログイン処理中にボタンが無効化され、テキストが変更される', async () => {
+        vi.mocked(signIn).mockImplementation(
+          () => new Promise((resolve) => setTimeout(() => resolve({ ok: true } as any), 100))
+        )
+        render(<LoginPage />)
+
+        fireEvent.change(screen.getByPlaceholderText('メールアドレス'), {
+          target: { value: 'test@example.com' },
+        })
+        fireEvent.change(screen.getByPlaceholderText('パスワード'), {
+          target: { value: 'password' },
+        })
+
+        const loginButton = screen.getByRole('button', { name: 'ログイン' })
+        fireEvent.click(loginButton)
+
+        expect(loginButton).toBeDisabled()
+        expect(loginButton).toHaveTextContent('ログイン中...')
+
+        await waitFor(() => {
+          expect(loginButton).not.toBeDisabled()
+          expect(loginButton).toHaveTextContent('ログイン')
+        })
+      })
+    })
   })
 
   describe('読み込み中', () => {
@@ -111,6 +187,33 @@ describe('LoginPage', () => {
       render(<LoginPage />)
 
       expect(screen.getByText('読み込み中...')).toBeInTheDocument()
+    })
+
+    it('メール/パスワード認証で予期せぬエラーが発生した場合、エラーメッセージが表示される', async () => {
+      vi.mocked(useSession).mockReturnValue({
+        data: null,
+        status: 'unauthenticated',
+        update: vi.fn(),
+      } as ReturnType<typeof useSession>)
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const error = new Error('Network error')
+      vi.mocked(signIn).mockRejectedValue(error)
+
+      render(<LoginPage />)
+
+      fireEvent.change(screen.getByPlaceholderText('メールアドレス'), {
+        target: { value: 'test@example.com' },
+      })
+      fireEvent.change(screen.getByPlaceholderText('パスワード'), {
+        target: { value: 'password123' },
+      })
+      fireEvent.click(screen.getByRole('button', { name: 'ログイン' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('ログイン中にエラーが発生しました')).toBeInTheDocument()
+        expect(consoleErrorSpy).toHaveBeenCalledWith('Sign in error:', error)
+      })
+      consoleErrorSpy.mockRestore()
     })
   })
 
@@ -170,6 +273,33 @@ describe('LoginPage', () => {
         expect(consoleErrorSpy).toHaveBeenCalledWith('Sign in error:', error)
       })
 
+      consoleErrorSpy.mockRestore()
+    })
+
+    it('メール/パスワード認証で予期せぬエラーが発生した場合、エラーメッセージが表示される', async () => {
+      vi.mocked(useSession).mockReturnValue({
+        data: null,
+        status: 'unauthenticated',
+        update: vi.fn(),
+      } as ReturnType<typeof useSession>)
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const error = new Error('Network error')
+      vi.mocked(signIn).mockRejectedValue(error)
+
+      render(<LoginPage />)
+
+      fireEvent.change(screen.getByPlaceholderText('メールアドレス'), {
+        target: { value: 'test@example.com' },
+      })
+      fireEvent.change(screen.getByPlaceholderText('パスワード'), {
+        target: { value: 'password123' },
+      })
+      fireEvent.click(screen.getByRole('button', { name: 'ログイン' }))
+
+      await waitFor(() => {
+        expect(screen.getByText('ログイン中にエラーが発生しました')).toBeInTheDocument()
+        expect(consoleErrorSpy).toHaveBeenCalledWith('Sign in error:', error)
+      })
       consoleErrorSpy.mockRestore()
     })
   })

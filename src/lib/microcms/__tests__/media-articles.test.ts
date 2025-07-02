@@ -14,6 +14,9 @@ import {
   getMediaArticlesByCategory,
   getMediaArticlesByTag,
   getRelatedArticles,
+  getMediaArticlesByAuthor,
+  getMediaArticlesBySupervisor,
+  getMediaArticlesByFeature,
 } from '../media-articles'
 import type { MediaArticle } from '@/lib/schema'
 
@@ -214,6 +217,27 @@ describe('media-articles API', () => {
       expect(result).toEqual(['id-1', 'id-2', 'id-3'])
       expect(client.getList).toHaveBeenCalledTimes(2)
     })
+
+    it('コンテンツが1ページに収まる場合は1回だけAPIを呼び出す', async () => {
+      const mockResponse = {
+        contents: [{ id: 'id-1', createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-01T00:00:00.000Z' }],
+        totalCount: 1,
+        offset: 0,
+        limit: 100,
+      }
+      vi.mocked(client.getList).mockResolvedValueOnce(mockResponse)
+      const result = await getAllMediaArticleIds()
+      expect(result).toEqual(['id-1'])
+      expect(client.getList).toHaveBeenCalledTimes(1)
+    })
+
+    it('コンテンツが0件の場合は空配列を返す', async () => {
+      const mockResponse = { contents: [], totalCount: 0, offset: 0, limit: 100 }
+      vi.mocked(client.getList).mockResolvedValueOnce(mockResponse)
+      const result = await getAllMediaArticleIds()
+      expect(result).toEqual([])
+      expect(client.getList).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('getAllMediaArticleSlugs', () => {
@@ -259,6 +283,27 @@ describe('media-articles API', () => {
 
       expect(result).toEqual(['slug-1', 'slug-2', 'slug-3'])
       expect(client.getList).toHaveBeenCalledTimes(2)
+    })
+
+    it('コンテンツが1ページに収まる場合は1回だけAPIを呼び出す', async () => {
+      const mockResponse = {
+        contents: [{ id: 'id-1', slug: 'slug-1', createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-01T00:00:00.000Z' }],
+        totalCount: 1,
+        offset: 0,
+        limit: 100,
+      }
+      vi.mocked(client.getList).mockResolvedValueOnce(mockResponse)
+      const result = await getAllMediaArticleSlugs()
+      expect(result).toEqual(['slug-1'])
+      expect(client.getList).toHaveBeenCalledTimes(1)
+    })
+
+    it('コンテンツが0件の場合は空配列を返す', async () => {
+      const mockResponse = { contents: [], totalCount: 0, offset: 0, limit: 100 }
+      vi.mocked(client.getList).mockResolvedValueOnce(mockResponse)
+      const result = await getAllMediaArticleSlugs()
+      expect(result).toEqual([])
+      expect(client.getList).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -312,6 +357,72 @@ describe('media-articles API', () => {
     })
   })
 
+  describe('getMediaArticlesByAuthor', () => {
+    it('執筆者別の記事一覧を取得できる', async () => {
+      const mockResponse = {
+        contents: [createMockArticle()],
+        totalCount: 1,
+        offset: 0,
+        limit: 100,
+      }
+      vi.mocked(client.getList).mockResolvedValueOnce(mockResponse)
+      const result = await getMediaArticlesByAuthor('author-1')
+      expect(client.getList).toHaveBeenCalledWith({
+        endpoint: 'media_articles',
+        queries: {
+          filters: 'author[equals]author-1',
+          limit: 100,
+          orders: '-publishedAt',
+        },
+      })
+      expect(result).toEqual(mockResponse)
+    })
+  })
+
+  describe('getMediaArticlesBySupervisor', () => {
+    it('監修者別の記事一覧を取得できる', async () => {
+      const mockResponse = {
+        contents: [createMockArticle()],
+        totalCount: 1,
+        offset: 0,
+        limit: 100,
+      }
+      vi.mocked(client.getList).mockResolvedValueOnce(mockResponse)
+      const result = await getMediaArticlesBySupervisor('supervisor-1')
+      expect(client.getList).toHaveBeenCalledWith({
+        endpoint: 'media_articles',
+        queries: {
+          filters: 'supervisor[equals]supervisor-1',
+          limit: 100,
+          orders: '-publishedAt',
+        },
+      })
+      expect(result).toEqual(mockResponse)
+    })
+  })
+
+  describe('getMediaArticlesByFeature', () => {
+    it('特集別の記事一覧を取得できる', async () => {
+      const mockResponse = {
+        contents: [createMockArticle()],
+        totalCount: 1,
+        offset: 0,
+        limit: 100,
+      }
+      vi.mocked(client.getList).mockResolvedValueOnce(mockResponse)
+      const result = await getMediaArticlesByFeature('feature-1')
+      expect(client.getList).toHaveBeenCalledWith({
+        endpoint: 'media_articles',
+        queries: {
+          filters: 'features[contains]feature-1',
+          limit: 100,
+          orders: '-publishedAt',
+        },
+      })
+      expect(result).toEqual(mockResponse)
+    })
+  })
+
   describe('getRelatedArticles', () => {
     it('同じカテゴリの関連記事を取得できる', async () => {
       const currentArticle = createMockArticle({
@@ -352,6 +463,7 @@ describe('media-articles API', () => {
         },
       })
       expect(result).toHaveLength(3)
+      expect(client.getList).toHaveBeenCalledTimes(1)
     })
 
     it('関連記事が少ない場合は最新記事で補完する', async () => {
@@ -425,6 +537,37 @@ describe('media-articles API', () => {
         },
       })
       expect(result).toHaveLength(3)
+    })
+
+    it('関連記事が十分ある場合は補完しない', async () => {
+      const currentArticle = createMockArticle({
+        id: 'current-article',
+        category: {
+          id: 'category-1',
+          createdAt: '2024-01-01T00:00:00.000Z',
+          updatedAt: '2024-01-01T00:00:00.000Z',
+          publishedAt: '2024-01-01T00:00:00.000Z',
+          revisedAt: '2024-01-01T00:00:00.000Z',
+          name: 'ビットコイン',
+          slug: 'bitcoin',
+        },
+      })
+
+      const mockResponse = {
+        contents: [
+          createMockArticle({ id: 'related-1' }),
+          createMockArticle({ id: 'related-2' }),
+          createMockArticle({ id: 'related-3' }),
+        ],
+        totalCount: 5,
+        offset: 0,
+        limit: 3,
+      }
+
+      vi.mocked(client.getList).mockResolvedValueOnce(mockResponse)
+      const result = await getRelatedArticles(currentArticle, 3)
+      expect(result).toHaveLength(3)
+      expect(client.getList).toHaveBeenCalledOnce()
     })
   })
 })
