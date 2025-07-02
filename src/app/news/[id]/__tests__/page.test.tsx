@@ -5,7 +5,6 @@ import {
   vi,
   beforeEach,
   afterEach,
-  type MockInstance,
 } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { notFound } from 'next/navigation'
