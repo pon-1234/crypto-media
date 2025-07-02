@@ -2,7 +2,7 @@
  * 特集詳細ページのテスト
  * @issue #27 - メディアサイトの主要ページ実装
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { notFound } from 'next/navigation'
 import FeatureDetailPage, { generateStaticParams, generateMetadata } from '../page'
@@ -36,8 +36,18 @@ const mockSlugs = ['2025-crypto-trends', 'defi-introduction']
 vi.mocked(getAllFeatureSlugs).mockResolvedValue(mockSlugs)
 
 describe('FeatureDetailPage', () => {
+  const originalEnv = { ...process.env }
+
   beforeEach(() => {
     vi.clearAllMocks()
+    // CI環境の判定をバイパスし、APIキーをダミー設定
+    process.env.CI = 'false'
+    process.env.MICROCMS_API_KEY = 'test-key'
+  })
+
+  afterEach(() => {
+    // 環境変数を元に戻す
+    process.env = originalEnv
   })
 
   it('特集の詳細と関連記事を表示する', async () => {

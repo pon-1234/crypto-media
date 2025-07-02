@@ -2,7 +2,7 @@
  * 執筆者・監修者詳細ページのテスト
  * @issue #27 - メディアサイトの主要ページ実装
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { notFound } from 'next/navigation'
 import ExpertDetailPage, { generateStaticParams, generateMetadata } from '../page'
@@ -37,8 +37,18 @@ const mockSlugs = ['yamada-taro', 'suzuki-hanako']
 vi.mocked(getAllExpertSlugs).mockResolvedValue(mockSlugs)
 
 describe('ExpertDetailPage', () => {
+  const originalEnv = { ...process.env }
+
   beforeEach(() => {
     vi.clearAllMocks()
+    // CI環境の判定をバイパスし、APIキーをダミー設定
+    process.env.CI = 'false'
+    process.env.MICROCMS_API_KEY = 'test-key'
+  })
+
+  afterEach(() => {
+    // 環境変数を元に戻す
+    process.env = originalEnv
   })
 
   it('執筆者の詳細と記事を表示する', async () => {

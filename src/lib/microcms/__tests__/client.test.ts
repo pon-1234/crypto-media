@@ -5,13 +5,24 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { Mock } from 'vitest'
+import { createClient } from 'microcms-js-sdk'
+import { isTestOrCI } from '@/lib/env/detect'
 
-// microcms-js-sdkは各スイートで動的にモックする
+// モジュールのモック
+vi.mock('microcms-js-sdk')
+vi.mock('@/lib/env/detect')
+
+const mockedCreateClient = createClient as Mock
+const mockedIsTestOrCI = isTestOrCI as Mock
+
 describe('microCMS Client', () => {
   const originalEnv = { ...process.env }
 
   beforeEach(() => {
     vi.resetModules()
+    mockedCreateClient.mockClear()
+    mockedIsTestOrCI.mockClear()
+
     process.env = {
       ...originalEnv,
       MICROCMS_SERVICE_DOMAIN: 'test-domain',
@@ -24,14 +35,20 @@ describe('microCMS Client', () => {
   })
 
   it('正しい設定でクライアントが作成される', async () => {
-    const { createClient } = (await vi.importMock('microcms-js-sdk')) as {
-      createClient: Mock
-    }
-    createClient.mockClear()
+    mockedIsTestOrCI.mockReturnValue(false)
     await import('../client')
-    expect(createClient).toHaveBeenCalledWith({
+    expect(mockedCreateClient).toHaveBeenCalledWith({
       serviceDomain: 'test-domain',
       apiKey: 'test-api-key',
+    })
+  })
+
+  it('テスト/CI環境ではダミークライアントが作成される', async () => {
+    mockedIsTestOrCI.mockReturnValue(true)
+    await import('../client')
+    expect(mockedCreateClient).toHaveBeenCalledWith({
+      serviceDomain: 'dummy-domain',
+      apiKey: 'dummy-key',
     })
   })
 
@@ -62,7 +79,10 @@ describe('getOptimizedImageUrl', () => {
 
   beforeEach(async () => {
     vi.resetModules()
-    const clientModule = await import('../client')
+    // isTestOrCIのモックが影響しないように、実際のモジュールをインポート
+    const clientModule = await vi.importActual<typeof import('../client')>(
+      '../client'
+    )
     getOptimizedImageUrl = clientModule.getOptimizedImageUrl
   })
 
@@ -117,6 +137,7 @@ describe('環境変数チェック', () => {
 
   beforeEach(() => {
     vi.resetModules()
+    mockedIsTestOrCI.mockReturnValue(false)
     process.env = { ...originalEnv }
   })
 
@@ -126,11 +147,17 @@ describe('環境変数チェック', () => {
 
   it('MICROCMS_SERVICE_DOMAINが設定されていない場合にエラーをスローする', async () => {
     delete process.env.MICROCMS_SERVICE_DOMAIN
-    await expect(import('../client')).rejects.toThrow('MICROCMS_SERVICE_DOMAIN is required')
+    process.env.MICROCMS_API_KEY = 'key' // 他の変数は定義しておく
+    await expect(import('../client')).rejects.toThrow(
+      'MICROCMS_SERVICE_DOMAIN is required'
+    )
   })
 
   it('MICROCMS_API_KEYが設定されていない場合にエラーをスローする', async () => {
     delete process.env.MICROCMS_API_KEY
-    await expect(import('../client')).rejects.toThrow('MICROCMS_API_KEY is required')
+    process.env.MICROCMS_SERVICE_DOMAIN = 'domain' // 他の変数は定義しておく
+    await expect(import('../client')).rejects.toThrow(
+      'MICROCMS_API_KEY is required'
+    )
   })
 })
