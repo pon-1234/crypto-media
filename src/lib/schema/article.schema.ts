@@ -27,7 +27,12 @@ export type ArticleType = z.infer<typeof articleTypeSchema>
  * 会員レベル（アクセス制御）
  */
 const membershipLevelSchema = z
-  .array(z.enum(['public', 'paid']))
+  .array(
+    z.preprocess(
+      (arg) => (typeof arg === 'string' ? arg.split(' ')[0] : arg),
+      z.enum(['public', 'paid'])
+    )
+  )
   .transform((val) => val[0])
 
 /**
