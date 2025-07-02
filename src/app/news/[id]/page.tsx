@@ -45,7 +45,7 @@ export async function generateMetadata({
   }
 
   // プレビューモードの確認
-  const { isEnabled: isDraftMode } = await draftMode()
+  const { isEnabled: isDraftMode } = draftMode()
 
   try {
     const news = await getCorporateNewsDetail(
@@ -96,7 +96,7 @@ export default async function NewsDetailPage({
   }
 
   // プレビューモードの確認
-  const { isEnabled: isDraftMode } = await draftMode()
+  const { isEnabled: isDraftMode } = draftMode()
 
   let news
   try {

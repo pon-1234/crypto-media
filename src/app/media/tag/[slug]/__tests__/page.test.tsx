@@ -114,6 +114,15 @@ describe('TagPage', () => {
 
       expect(metadata.title).toBe('タグが見つかりません')
     })
+
+    it('returns default metadata in CI environment', async () => {
+      process.env.CI = 'true'
+
+      const metadata = await generateMetadata({ params: { slug: 'any-slug' } })
+
+      expect(metadata.title).toBe('Tag | Crypto Media')
+      expect(microCMS.getTagBySlug).not.toHaveBeenCalled()
+    })
   })
 
   describe('generateStaticParams', () => {
@@ -133,6 +142,15 @@ describe('TagPage', () => {
       const params = await generateStaticParams()
 
       expect(params).toEqual([{ slug: 'bitcoin' }, { slug: 'ethereum' }])
+    })
+
+    it('returns empty array in CI environment', async () => {
+      process.env.CI = 'true'
+
+      const params = await generateStaticParams()
+
+      expect(params).toEqual([])
+      expect(microCMS.getTags).not.toHaveBeenCalled()
     })
   })
 
@@ -191,6 +209,15 @@ describe('TagPage', () => {
       expect(
         getByText('さらに記事を読み込む機能は準備中です')
       ).toBeInTheDocument()
+    })
+
+    it('renders dummy page in CI environment', async () => {
+      process.env.CI = 'true'
+
+      const Component = await TagPage({ params: { slug: 'any-slug' } })
+      const { getByText } = render(Component)
+
+      expect(getByText('CI環境でのビルド用ダミーページです。')).toBeInTheDocument()
     })
   })
 })

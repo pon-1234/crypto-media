@@ -116,6 +116,17 @@ describe('CategoryPage', () => {
 
       expect(metadata.title).toBe('カテゴリが見つかりません')
     })
+
+    it('returns default metadata in CI environment', async () => {
+      process.env.CI = 'true'
+
+      const metadata = await generateMetadata({
+        params: { slug: 'any-slug' },
+      })
+
+      expect(metadata.title).toBe('Category | Crypto Media')
+      expect(microCMS.getCategoryBySlug).not.toHaveBeenCalled()
+    })
   })
 
   describe('generateStaticParams', () => {
@@ -135,6 +146,15 @@ describe('CategoryPage', () => {
       const params = await generateStaticParams()
 
       expect(params).toEqual([{ slug: 'blockchain' }, { slug: 'defi' }])
+    })
+
+    it('returns empty array in CI environment', async () => {
+      process.env.CI = 'true'
+
+      const params = await generateStaticParams()
+
+      expect(params).toEqual([])
+      expect(microCMS.getCategories).not.toHaveBeenCalled()
     })
   })
 
@@ -197,6 +217,15 @@ describe('CategoryPage', () => {
       expect(
         getByText('さらに記事を読み込む機能は準備中です')
       ).toBeInTheDocument()
+    })
+
+    it('renders dummy page in CI environment', async () => {
+      process.env.CI = 'true'
+
+      const Component = await CategoryPage({ params: { slug: 'any-slug' } })
+      const { getByText } = render(Component)
+
+      expect(getByText('CI環境でのビルド用ダミーページです。')).toBeInTheDocument()
     })
   })
 })

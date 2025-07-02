@@ -1,4 +1,12 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeEach,
+  afterEach,
+  type MockInstance,
+} from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { notFound } from 'next/navigation'
 import NewsDetailPage, { generateMetadata, generateStaticParams } from '../page'
@@ -11,7 +19,7 @@ vi.mock('next/navigation', () => ({
 }))
 
 vi.mock('next/headers', () => ({
-  draftMode: vi.fn(() => ({ isEnabled: false })),
+  draftMode: vi.fn(),
 }))
 
 // Mock microCMS functions
@@ -39,10 +47,17 @@ describe('NewsDetailPage', () => {
     revisedAt: '2024-01-02T00:00:00.000Z',
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks()
     // Disable CI mode for tests
     process.env.CI = undefined
+
+    const { draftMode } = await import('next/headers')
+    vi.mocked(draftMode).mockReturnValue({
+      isEnabled: false,
+      enable: vi.fn(),
+      disable: vi.fn(),
+    })
   })
 
   afterEach(() => {
@@ -187,6 +202,29 @@ describe('NewsDetailPage', () => {
         screen.getByText('CI環境でのビルド用ダミーページです。')
       ).toBeInTheDocument()
       expect(microCMS.getCorporateNewsDetail).not.toHaveBeenCalled()
+    })
+
+    it('renders exit preview link in draft mode', async () => {
+      const { draftMode } = await import('next/headers')
+      vi.mocked(draftMode).mockReturnValue({
+        isEnabled: true,
+        enable: vi.fn(),
+        disable: vi.fn(),
+      })
+      vi.mocked(microCMS.getCorporateNewsDetail).mockResolvedValue(mockNews)
+
+      const Component = await NewsDetailPage({
+        params: { id: 'news1' },
+        searchParams: {},
+      })
+      render(Component)
+
+      const exitPreviewLink = screen.getByText('プレビューモードを終了')
+      expect(exitPreviewLink).toBeInTheDocument()
+      expect(exitPreviewLink).toHaveAttribute(
+        'href',
+        '/api/exit-preview?redirect=/news/news1'
+      )
     })
   })
 })

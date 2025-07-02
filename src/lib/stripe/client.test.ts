@@ -72,6 +72,16 @@ describe('Stripe Client', () => {
     expect(stripeModule.MONTHLY_PRICE_ID).toBeUndefined()
   })
 
+  it('should return a dummy object if STRIPE_SECRET_KEY is not set', async () => {
+    // Unset the secret key
+    vi.stubEnv('STRIPE_SECRET_KEY', '')
+
+    const { stripe } = await import('./client')
+    // Should be an empty object, not a Stripe instance
+    expect(stripe).toEqual({})
+    expect(Stripe).not.toHaveBeenCalled()
+  })
+
   describe('validateStripeConfig', () => {
     it('should throw error in production for missing environment variables', async () => {
       // isTestOrCIをfalseにして本番環境をシミュレート
@@ -82,6 +92,20 @@ describe('Stripe Client', () => {
 
       await expect(import('./client')).rejects.toThrow(
         'Stripe configuration errors:'
+      )
+    })
+
+    it('should throw error in production for multiple missing env vars', async () => {
+      const { isTestOrCI } = await import('@/lib/env/detect')
+      vi.mocked(isTestOrCI).mockReturnValue(false)
+      vi.stubEnv('NODE_ENV', 'production')
+
+      // Unset multiple variables
+      vi.stubEnv('STRIPE_SECRET_KEY', '')
+      vi.stubEnv('STRIPE_MONTHLY_PRICE_ID', '')
+
+      await expect(import('./client')).rejects.toThrow(
+        /STRIPE_SECRET_KEY is not defined\s*STRIPE_MONTHLY_PRICE_ID is not defined/
       )
     })
 

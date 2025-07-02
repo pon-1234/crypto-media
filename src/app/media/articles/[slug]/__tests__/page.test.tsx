@@ -267,6 +267,38 @@ describe('MediaArticleDetailPage', () => {
       expect(screen.getByText('お知らせ')).toBeInTheDocument()
     })
 
+    it('記事タイプの記事を正しく表示する', async () => {
+      const mockArticle = createMockArticle({
+        type: 'article',
+      })
+
+      vi.mocked(getMediaArticleBySlug).mockResolvedValueOnce(mockArticle)
+      vi.mocked(getRelatedArticles).mockResolvedValueOnce([])
+
+      const Page = await MediaArticleDetailPage({
+        params: { slug: 'test-article' },
+        searchParams: {},
+      })
+      render(Page)
+
+      expect(screen.getByText('記事')).toBeInTheDocument()
+    })
+
+    it('CI環境ではダミーページを表示する', async () => {
+      vi.stubEnv('CI', 'true')
+      vi.stubEnv('NODE_ENV', 'production')
+
+      const Page = await MediaArticleDetailPage({
+        params: { slug: 'test-article' },
+        searchParams: {},
+      })
+      render(Page)
+
+      expect(
+        screen.getByText('CI環境でのビルド用ダミーページです。')
+      ).toBeInTheDocument()
+    })
+
     it('記事が見つからない場合はnotFoundを呼ぶ', async () => {
       vi.mocked(getMediaArticleBySlug).mockResolvedValueOnce(null)
 
