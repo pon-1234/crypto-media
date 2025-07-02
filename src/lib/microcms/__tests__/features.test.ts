@@ -102,10 +102,11 @@ describe('features.ts', () => {
   })
 
   it('getAllFeatureSlugs: すべてのslugを取得する', async () => {
-    mockedGetAllContents.mockResolvedValue([
+    const mockSlugsData = [
       { id: 'feature-1', slug: 'feature-1' },
       { id: 'feature-2', slug: 'feature-2' },
-    ])
+    ]
+    mockedGetAllContents.mockResolvedValue(mockSlugsData)
     const slugs = await getAllFeatureSlugs()
     expect(slugs).toEqual(['feature-1', 'feature-2'])
     expect(mockedGetAllContents).toHaveBeenCalledWith('features', { fields: 'id,slug' })

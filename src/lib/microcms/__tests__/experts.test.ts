@@ -104,10 +104,11 @@ describe('experts.ts', () => {
   })
 
   it('getAllExpertSlugs: すべてのslugを取得する', async () => {
-    mockedGetAllContents.mockResolvedValue([
+    const mockSlugsData = [
       { id: 'expert-1', slug: 'yamada-taro' },
       { id: 'expert-2', slug: 'suzuki-hanako' },
-    ])
+    ]
+    mockedGetAllContents.mockResolvedValue(mockSlugsData)
     const slugs = await getAllExpertSlugs()
     expect(slugs).toEqual(['yamada-taro', 'suzuki-hanako'])
     expect(mockedGetAllContents).toHaveBeenCalledWith('experts', { fields: 'id,slug' })
