@@ -10,6 +10,10 @@ vi.mock('next/navigation', () => ({
   notFound: vi.fn(),
 }))
 
+vi.mock('next/headers', () => ({
+  draftMode: vi.fn(() => ({ isEnabled: false })),
+}))
+
 // Mock microCMS functions
 vi.mock('@/lib/microcms', () => ({
   getCorporateNewsDetail: vi.fn(),
@@ -76,7 +80,8 @@ describe('NewsDetailPage', () => {
       vi.mocked(microCMS.getCorporateNewsDetail).mockResolvedValue(mockNews)
 
       const metadata = await generateMetadata({
-        params: Promise.resolve({ id: 'news1' }),
+        params: { id: 'news1' },
+        searchParams: {},
       })
 
       expect(metadata.title).toBe(
@@ -86,7 +91,9 @@ describe('NewsDetailPage', () => {
         '新サービスリリースのお知らせの詳細をご覧いただけます。'
       )
       expect(metadata.openGraph?.title).toBe('新サービスリリースのお知らせ')
+      // @ts-expect-error type is a valid property
       expect(metadata.openGraph?.type).toBe('article')
+      // @ts-expect-error publishedTime is a valid property
       expect(metadata.openGraph?.publishedTime).toBe('2024-01-01T00:00:00.000Z')
     })
 
@@ -96,7 +103,8 @@ describe('NewsDetailPage', () => {
       )
 
       const metadata = await generateMetadata({
-        params: Promise.resolve({ id: 'invalid' }),
+        params: { id: 'invalid' },
+        searchParams: {},
       })
 
       expect(metadata.title).toBe('お知らせ | 株式会社Example')
@@ -106,7 +114,8 @@ describe('NewsDetailPage', () => {
       process.env.CI = 'true'
 
       const metadata = await generateMetadata({
-        params: Promise.resolve({ id: 'news1' }),
+        params: { id: 'news1' },
+        searchParams: {},
       })
 
       expect(metadata.title).toBe('お知らせ | 株式会社Example')
@@ -125,7 +134,8 @@ describe('NewsDetailPage', () => {
       )
 
       const Component = await NewsDetailPage({
-        params: Promise.resolve({ id: 'news1' }),
+        params: { id: 'news1' },
+        searchParams: {},
       })
       render(Component)
 
@@ -154,7 +164,8 @@ describe('NewsDetailPage', () => {
 
       await expect(
         NewsDetailPage({
-          params: Promise.resolve({ id: 'non-existent' }),
+          params: { id: 'non-existent' },
+          searchParams: {},
         })
       ).rejects.toThrow('NEXT_NOT_FOUND')
 
@@ -165,7 +176,8 @@ describe('NewsDetailPage', () => {
       process.env.CI = 'true'
 
       const Component = await NewsDetailPage({
-        params: Promise.resolve({ id: 'news1' }),
+        params: { id: 'news1' },
+        searchParams: {},
       })
       render(Component)
 

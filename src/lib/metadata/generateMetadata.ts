@@ -34,6 +34,7 @@ export interface GenerateMetadataOptions {
   path?: string
   ogType?: 'website' | 'article'
   ogImageParams?: OgImageParams
+  ogImage?: string
   keywords?: string[]
   noindex?: boolean
   publishedTime?: string
@@ -58,6 +59,7 @@ export function generatePageMetadata(
     path = '',
     ogType = 'website',
     ogImageParams,
+    ogImage,
     keywords = [],
     noindex = false,
     publishedTime,
@@ -70,7 +72,9 @@ export function generatePageMetadata(
   const url = `${baseUrl}${path}`
 
   // OGP画像のURL生成
-  const ogImageUrl = ogImageParams
+  const ogImageUrl = ogImage
+    ? ogImage
+    : ogImageParams
     ? createOgImageUrl(ogImageParams)
     : createOgImageUrl({ title, description, type: 'default' })
 

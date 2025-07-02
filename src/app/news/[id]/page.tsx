@@ -13,8 +13,8 @@ import { formatDate } from '@/lib/utils/date'
  */
 
 interface PageProps {
-  params: Promise<{ id: string }>
-  searchParams: Promise<{ draftKey?: string }>
+  params: { id: string }
+  searchParams: { draftKey?: string }
 }
 
 export async function generateStaticParams() {
@@ -33,8 +33,8 @@ export async function generateMetadata({
   params,
   searchParams,
 }: PageProps): Promise<Metadata> {
-  const { id } = await params
-  const { draftKey } = await searchParams
+  const { id } = params
+  const { draftKey } = searchParams
 
   // CI環境ではデフォルトメタデータを返す
   if (process.env.CI === 'true') {
@@ -70,8 +70,8 @@ export async function generateMetadata({
 }
 
 export default async function NewsDetailPage({ params, searchParams }: PageProps) {
-  const { id } = await params
-  const { draftKey } = await searchParams
+  const { id } = params
+  const { draftKey } = searchParams
 
   // CI環境ではダミーページを返す
   if (process.env.CI === 'true') {

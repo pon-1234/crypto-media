@@ -17,6 +17,10 @@ vi.mock('next/navigation', () => ({
   notFound: vi.fn(),
 }))
 
+vi.mock('next/headers', () => ({
+  draftMode: vi.fn().mockReturnValue({ isEnabled: false }),
+}))
+
 // microCMS APIのモック
 vi.mock('@/lib/microcms', () => ({
   getMediaArticleBySlug: vi.fn(),
@@ -141,6 +145,7 @@ describe('MediaArticleDetailPage', () => {
 
       const Page = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
       render(Page)
 
@@ -187,6 +192,7 @@ describe('MediaArticleDetailPage', () => {
 
       const Page = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
       render(Page)
 
@@ -219,6 +225,7 @@ describe('MediaArticleDetailPage', () => {
 
       const Page = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
       render(Page)
 
@@ -236,6 +243,7 @@ describe('MediaArticleDetailPage', () => {
 
       const Page = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
       render(Page)
 
@@ -252,6 +260,7 @@ describe('MediaArticleDetailPage', () => {
 
       const Page = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
       render(Page)
 
@@ -262,7 +271,10 @@ describe('MediaArticleDetailPage', () => {
       vi.mocked(getMediaArticleBySlug).mockResolvedValueOnce(null)
 
       try {
-        await MediaArticleDetailPage({ params: { slug: 'not-found' } })
+        await MediaArticleDetailPage({
+          params: { slug: 'not-found' },
+          searchParams: {},
+        })
       } catch {
         // notFoundはエラーをスローするため、catch内で確認
       }
@@ -275,7 +287,10 @@ describe('MediaArticleDetailPage', () => {
       vi.mocked(getMediaArticleBySlug).mockRejectedValueOnce(mockError)
 
       await expect(
-        MediaArticleDetailPage({ params: { slug: 'test-article' } })
+        MediaArticleDetailPage({
+          params: { slug: 'test-article' },
+          searchParams: {},
+        })
       ).rejects.toThrow('API Error')
     })
   })
@@ -287,6 +302,7 @@ describe('MediaArticleDetailPage', () => {
 
       const metadata = await generateMetadata({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
 
       expect(metadata.title).toBe('テスト記事タイトル | Crypto Media')
@@ -306,7 +322,10 @@ describe('MediaArticleDetailPage', () => {
     it('記事が存在しない場合、デフォルトのメタデータを返す', async () => {
       vi.mocked(getMediaArticleBySlug).mockResolvedValueOnce(null)
 
-      const metadata = await generateMetadata({ params: { slug: 'not-found' } })
+      const metadata = await generateMetadata({
+        params: { slug: 'not-found' },
+        searchParams: {},
+      })
 
       expect(metadata.title).toBe('記事が見つかりません | Crypto Media')
     })

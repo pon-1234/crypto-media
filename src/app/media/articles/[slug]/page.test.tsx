@@ -36,6 +36,10 @@ vi.mock('next/navigation', () => ({
   notFound: vi.fn(),
 }))
 
+vi.mock('next/headers', () => ({
+  draftMode: vi.fn(() => ({ isEnabled: false })),
+}))
+
 interface NextImageProps {
   src: string
   alt: string
@@ -126,6 +130,7 @@ describe('MediaArticleDetailPage', () => {
     it('記事の全文を表示する', async () => {
       const Component = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
 
       const { container } = render(Component)
@@ -139,6 +144,7 @@ describe('MediaArticleDetailPage', () => {
     it('ペイウォールを表示しない', async () => {
       const Component = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
 
       render(Component)
@@ -161,6 +167,7 @@ describe('MediaArticleDetailPage', () => {
 
       const Component = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
 
       const { container } = render(Component)
@@ -175,6 +182,7 @@ describe('MediaArticleDetailPage', () => {
 
       const Component = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
 
       render(Component)
@@ -195,6 +203,7 @@ describe('MediaArticleDetailPage', () => {
 
       const Component = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
 
       render(Component)
@@ -213,6 +222,7 @@ describe('MediaArticleDetailPage', () => {
 
       const Component = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
 
       render(Component)
@@ -234,6 +244,7 @@ describe('MediaArticleDetailPage', () => {
 
       const Component = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
 
       const { container } = render(Component)
@@ -264,6 +275,7 @@ describe('MediaArticleDetailPage', () => {
 
       const Component = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
 
       const { container } = render(Component)
@@ -287,6 +299,7 @@ describe('MediaArticleDetailPage', () => {
       try {
         await MediaArticleDetailPage({
           params: { slug: 'non-existent' },
+          searchParams: {},
         })
       } catch {
         // notFoundは例外をスローする可能性がある
@@ -302,6 +315,7 @@ describe('MediaArticleDetailPage', () => {
       await expect(
         MediaArticleDetailPage({
           params: { slug: 'test-article' },
+          searchParams: {},
         })
       ).rejects.toThrow('API Error')
     })
@@ -318,6 +332,7 @@ describe('MediaArticleDetailPage', () => {
 
       const Component = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
+        searchParams: {},
       })
 
       render(Component)

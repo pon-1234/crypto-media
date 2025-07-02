@@ -1,82 +1,120 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
-import TermsPage, { metadata } from './page'
+import { notFound } from 'next/navigation'
+import TermsPage, { generateMetadata } from './page'
+import { getCorporatePageBySlug } from '@/lib/microcms/corporate-pages'
+
+vi.mock('next/navigation', () => ({
+  notFound: vi.fn()
+}))
+
+vi.mock('@/lib/microcms/corporate-pages', () => ({
+  getCorporatePageBySlug: vi.fn()
+}))
+
+vi.mock('@/components/corporate/CorporatePageContent', () => ({
+  CorporatePageContent: ({ page }: { page: { content: string } }) => <div>{page.content}</div>
+}))
 
 /**
  * 利用規約ページのテスト
  * @issue #12 - コーポレート静的ページの実装
+ * @issue #25 - コーポレートページのCMS化
  */
 describe('TermsPage', () => {
-  it('利用規約ページが正しくレンダリングされる', () => {
-    render(<TermsPage />)
+  const mockPage = {
+    id: 'terms-id',
+    slug: 'terms',
+    title: '利用規約',
+    description: '当サービスの利用規約',
+    content: '<p>利用規約の詳細</p>',
+    createdAt: '2025-01-01T00:00:00.000Z',
+    updatedAt: '2025-01-01T00:00:00.000Z'
+  }
 
-    const heading = screen.getByRole('heading', { level: 1 })
-    expect(heading).toHaveTextContent('利用規約')
+  beforeEach(() => {
+    vi.clearAllMocks()
   })
 
-  it('最終更新日が表示される', () => {
-    render(<TermsPage />)
+  it('should render the terms page when data is available', async () => {
+    vi.mocked(getCorporatePageBySlug).mockResolvedValueOnce(mockPage)
 
-    expect(screen.getByText('最終更新日: 2024年1月1日')).toBeInTheDocument()
+    const Page = await TermsPage()
+    render(Page)
+
+    expect(getCorporatePageBySlug).toHaveBeenCalledWith('terms')
+    expect(screen.getByText('利用規約')).toBeInTheDocument()
+    expect(screen.getByText('<p>利用規約の詳細</p>')).toBeInTheDocument()
   })
 
-  it('すべての利用規約セクションが表示される', () => {
-    render(<TermsPage />)
-
-    const sections = [
-      '第1条（適用）',
-      '第2条（利用登録）',
-      '第3条（ユーザーIDおよびパスワードの管理）',
-      '第4条（利用料金および支払方法）',
-      '第5条（禁止事項）',
-      '第6条（本サービスの提供の停止等）',
-      '第7条（著作権）',
-      '第8条（免責事項）',
-      '第9条（サービス内容の変更等）',
-      '第10条（利用規約の変更）',
-      '第11条（個人情報の取扱い）',
-      '第12条（通知または連絡）',
-      '第13条（権利義務の譲渡の禁止）',
-      '第14条（準拠法・裁判管轄）',
-    ]
-
-    sections.forEach((section) => {
-      expect(screen.getByText(section)).toBeInTheDocument()
+  it('should call notFound when page is not found', async () => {
+    vi.mocked(getCorporatePageBySlug).mockResolvedValueOnce(null)
+    vi.mocked(notFound).mockImplementationOnce(() => {
+      throw new Error('NEXT_NOT_FOUND')
     })
+
+    await expect(TermsPage()).rejects.toThrow('NEXT_NOT_FOUND')
+
+    expect(getCorporatePageBySlug).toHaveBeenCalledWith('terms')
+    expect(notFound).toHaveBeenCalled()
   })
 
-  it('禁止事項のリストが表示される', () => {
-    render(<TermsPage />)
+  it('適切なコンテナークラスが適用されている', async () => {
+    vi.mocked(getCorporatePageBySlug).mockResolvedValueOnce(mockPage)
 
-    const prohibitedItems = [
-      '法令または公序良俗に違反する行為',
-      '犯罪行為に関連する行為',
-      '当社のサーバーまたはネットワークの機能を破壊したり、妨害したりする行為',
-      '本サービスによって得られた情報を商業的に利用する行為',
-      '不正アクセスをし、またはこれを試みる行為',
-    ]
+    const Page = await TermsPage()
+    const { container } = render(Page)
 
-    prohibitedItems.forEach((item) => {
-      expect(screen.getByText(item)).toBeInTheDocument()
-    })
+    const main = container.querySelector('main')
+    expect(main).toHaveClass('min-h-screen')
+
+    const contentWrapper = container.querySelector('.container')
+    expect(contentWrapper).toHaveClass('container', 'mx-auto', 'px-4', 'py-16')
   })
+})
 
-  it('会社名が正しく表示される', () => {
-    render(<TermsPage />)
-
-    const companyNames = screen.getAllByText('Crypto Media')
-    expect(companyNames.length).toBeGreaterThan(0)
-  })
-
-  it('メタデータが正しく設定される', () => {
-    expect(metadata).toEqual({
-      title: '利用規約 | Crypto Media',
-      description:
-        'Crypto Mediaの利用規約について。サービスの利用条件、会員規約、免責事項などを記載しています。',
-      openGraph: {
-        title: '利用規約 | Crypto Media',
-        description: 'Crypto Mediaの利用規約について',
+describe('generateMetadata', () => {
+  const mockPage = {
+    id: 'terms-id',
+    slug: 'terms',
+    title: '利用規約',
+    description: 'Crypto Mediaの利用規約について。サービスの利用条件などを記載しています。',
+    content: '<p>詳細</p>',
+    metadata: {
+      ogImage: {
+        url: 'https://example.com/og-image.jpg',
+        width: 1200,
+        height: 630
       },
+      keywords: ['利用規約', '会員規約', '免責事項']
+    },
+    createdAt: '2025-01-01T00:00:00.000Z',
+    updatedAt: '2025-01-01T00:00:00.000Z'
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('should generate metadata when page exists', async () => {
+    vi.mocked(getCorporatePageBySlug).mockResolvedValueOnce(mockPage)
+
+    const metadata = await generateMetadata()
+
+    expect(getCorporatePageBySlug).toHaveBeenCalledWith('terms')
+    expect(metadata).toMatchObject({
+      title: '利用規約',
+      description: 'Crypto Mediaの利用規約について。サービスの利用条件などを記載しています。',
+      keywords: '利用規約, 会員規約, 免責事項'
     })
+  })
+
+  it('should return empty metadata when page not found', async () => {
+    vi.mocked(getCorporatePageBySlug).mockResolvedValueOnce(null)
+
+    const metadata = await generateMetadata()
+
+    expect(getCorporatePageBySlug).toHaveBeenCalledWith('terms')
+    expect(metadata).toEqual({})
   })
 })

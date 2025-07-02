@@ -1,106 +1,120 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
-import PrivacyPolicyPage, { metadata } from './page'
+import { notFound } from 'next/navigation'
+import PrivacyPolicyPage, { generateMetadata } from './page'
+import { getCorporatePageBySlug } from '@/lib/microcms/corporate-pages'
+
+vi.mock('next/navigation', () => ({
+  notFound: vi.fn()
+}))
+
+vi.mock('@/lib/microcms/corporate-pages', () => ({
+  getCorporatePageBySlug: vi.fn()
+}))
+
+vi.mock('@/components/corporate/CorporatePageContent', () => ({
+  CorporatePageContent: ({ page }: { page: { content: string } }) => <div>{page.content}</div>
+}))
 
 /**
  * プライバシーポリシーページのテスト
  * @issue #12 - コーポレート静的ページの実装
+ * @issue #25 - コーポレートページのCMS化
  */
 describe('PrivacyPolicyPage', () => {
-  it('プライバシーポリシーページが正しくレンダリングされる', () => {
-    render(<PrivacyPolicyPage />)
+  const mockPage = {
+    id: 'privacy-policy-id',
+    slug: 'privacy-policy',
+    title: 'プライバシーポリシー',
+    description: '当社のプライバシーポリシー',
+    content: '<p>個人情報の取扱いについて</p>',
+    createdAt: '2025-01-01T00:00:00.000Z',
+    updatedAt: '2025-01-01T00:00:00.000Z'
+  }
 
-    const heading = screen.getByRole('heading', { level: 1 })
-    expect(heading).toHaveTextContent('プライバシーポリシー')
+  beforeEach(() => {
+    vi.clearAllMocks()
   })
 
-  it('最終更新日が表示される', () => {
-    render(<PrivacyPolicyPage />)
+  it('should render the privacy policy page when data is available', async () => {
+    vi.mocked(getCorporatePageBySlug).mockResolvedValueOnce(mockPage)
 
-    expect(screen.getByText('最終更新日: 2024年1月1日')).toBeInTheDocument()
+    const Page = await PrivacyPolicyPage()
+    render(Page)
+
+    expect(getCorporatePageBySlug).toHaveBeenCalledWith('privacy-policy')
+    expect(screen.getByText('プライバシーポリシー')).toBeInTheDocument()
+    expect(screen.getByText('<p>個人情報の取扱いについて</p>')).toBeInTheDocument()
   })
 
-  it('すべてのプライバシーポリシーセクションが表示される', () => {
-    render(<PrivacyPolicyPage />)
-
-    const sections = [
-      '第1条（個人情報）',
-      '第2条（個人情報の収集方法）',
-      '第3条（個人情報を収集・利用する目的）',
-      '第4条（利用目的の変更）',
-      '第5条（個人情報の第三者提供）',
-      '第6条（個人情報の開示）',
-      '第7条（個人情報の訂正および削除）',
-      '第8条（個人情報の利用停止等）',
-      '第9条（プライバシーポリシーの変更）',
-      '第10条（お問い合わせ窓口）',
-      '第11条（Cookie（クッキー）について）',
-      '第12条（アクセス解析ツールについて）',
-    ]
-
-    sections.forEach((section) => {
-      expect(screen.getByText(section)).toBeInTheDocument()
+  it('should call notFound when page is not found', async () => {
+    vi.mocked(getCorporatePageBySlug).mockResolvedValueOnce(null)
+    vi.mocked(notFound).mockImplementationOnce(() => {
+      throw new Error('NEXT_NOT_FOUND')
     })
+
+    await expect(PrivacyPolicyPage()).rejects.toThrow('NEXT_NOT_FOUND')
+
+    expect(getCorporatePageBySlug).toHaveBeenCalledWith('privacy-policy')
+    expect(notFound).toHaveBeenCalled()
   })
 
-  it('個人情報の利用目的リストが表示される', () => {
-    render(<PrivacyPolicyPage />)
+  it('適切なコンテナークラスが適用されている', async () => {
+    vi.mocked(getCorporatePageBySlug).mockResolvedValueOnce(mockPage)
 
-    const purposes = [
-      '当社サービスの提供・運営のため',
-      'ユーザーからのお問い合わせに回答するため（本人確認を行うことを含む）',
-      'メンテナンス、重要なお知らせなど必要に応じたご連絡のため',
-      '有料サービスにおいて、ユーザーに利用料金を請求するため',
-    ]
+    const Page = await PrivacyPolicyPage()
+    const { container } = render(Page)
 
-    purposes.forEach((purpose) => {
-      expect(screen.getByText(purpose)).toBeInTheDocument()
-    })
+    const main = container.querySelector('main')
+    expect(main).toHaveClass('min-h-screen')
+
+    const contentWrapper = container.querySelector('.container')
+    expect(contentWrapper).toHaveClass('container', 'mx-auto', 'px-4', 'py-16')
   })
+})
 
-  it('お問い合わせ窓口情報が表示される', () => {
-    render(<PrivacyPolicyPage />)
-
-    expect(screen.getByText('社名: Crypto Media')).toBeInTheDocument()
-    expect(
-      screen.getByText('Eメールアドレス: privacy@cryptomedia.jp')
-    ).toBeInTheDocument()
-  })
-
-  it('Cookieに関する説明が表示される', () => {
-    render(<PrivacyPolicyPage />)
-
-    expect(
-      screen.getByText(/Cookie（クッキー）とは、ウェブサイトを利用したときに/)
-    ).toBeInTheDocument()
-  })
-
-  it('Googleアナリティクスに関する説明が表示される', () => {
-    render(<PrivacyPolicyPage />)
-
-    expect(
-      screen.getByText(
-        /当社は、お客様のアクセス傾向を把握するために、「Googleアナリティクス」/
-      )
-    ).toBeInTheDocument()
-  })
-
-  it('会社名が正しく表示される', () => {
-    render(<PrivacyPolicyPage />)
-
-    const companyNames = screen.getAllByText('Crypto Media')
-    expect(companyNames.length).toBeGreaterThan(0)
-  })
-
-  it('メタデータが正しく設定される', () => {
-    expect(metadata).toEqual({
-      title: 'プライバシーポリシー | Crypto Media',
-      description:
-        'Crypto Mediaのプライバシーポリシー。個人情報の取扱い、利用目的、安全管理措置などについて記載しています。',
-      openGraph: {
-        title: 'プライバシーポリシー | Crypto Media',
-        description: 'Crypto Mediaのプライバシーポリシー',
+describe('generateMetadata', () => {
+  const mockPage = {
+    id: 'privacy-policy-id',
+    slug: 'privacy-policy',
+    title: 'プライバシーポリシー',
+    description: '株式会社クリプトメディアのプライバシーポリシーです',
+    content: '<p>詳細</p>',
+    metadata: {
+      ogImage: {
+        url: 'https://example.com/og-image.jpg',
+        width: 1200,
+        height: 630
       },
+      keywords: ['プライバシーポリシー', '個人情報保護', 'クリプトメディア']
+    },
+    createdAt: '2025-01-01T00:00:00.000Z',
+    updatedAt: '2025-01-01T00:00:00.000Z'
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('should generate metadata when page exists', async () => {
+    vi.mocked(getCorporatePageBySlug).mockResolvedValueOnce(mockPage)
+
+    const metadata = await generateMetadata()
+
+    expect(getCorporatePageBySlug).toHaveBeenCalledWith('privacy-policy')
+    expect(metadata).toMatchObject({
+      title: 'プライバシーポリシー',
+      description: '株式会社クリプトメディアのプライバシーポリシーです',
+      keywords: 'プライバシーポリシー, 個人情報保護, クリプトメディア'
     })
+  })
+
+  it('should return empty metadata when page not found', async () => {
+    vi.mocked(getCorporatePageBySlug).mockResolvedValueOnce(null)
+
+    const metadata = await generateMetadata()
+
+    expect(getCorporatePageBySlug).toHaveBeenCalledWith('privacy-policy')
+    expect(metadata).toEqual({})
   })
 })
