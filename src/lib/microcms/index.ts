@@ -6,7 +6,6 @@
 
 // クライアント
 export {
-  client,
   defaultQueries,
   MAX_LIMIT,
   getOptimizedImageUrl,
