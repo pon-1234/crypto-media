@@ -196,6 +196,17 @@ describe('MediaNewsDetailPage', () => {
   })
 
   describe('generateMetadata', () => {
+    let originalCI: string | undefined
+
+    beforeEach(() => {
+      originalCI = process.env.CI
+      process.env.CI = undefined
+    })
+
+    afterEach(() => {
+      process.env.CI = originalCI
+    })
+
     it('正しいメタデータを生成する', async () => {
       vi.mocked(getMediaArticleBySlug).mockResolvedValue(mockArticle)
       vi.mocked(DOMPurify.sanitize).mockReturnValue('記事の内容')
@@ -248,7 +259,6 @@ describe('MediaNewsDetailPage', () => {
     })
 
     it('CI環境ではデフォルトメタデータを返す', async () => {
-      const originalCI = process.env.CI
       process.env.CI = 'true'
 
       const metadata = await generateMetadata({
@@ -260,8 +270,6 @@ describe('MediaNewsDetailPage', () => {
         title: 'メディアニュース | Crypto Media',
         description: '暗号資産・ブロックチェーンに関するニュースの詳細をご覧いただけます。',
       })
-
-      process.env.CI = originalCI
     })
   })
 })
