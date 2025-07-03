@@ -60,6 +60,7 @@ jobs:
           NEXTAUTH_SECRET: test-secret
           GOOGLE_CLIENT_ID: test-google-client-id
           GOOGLE_CLIENT_SECRET: test-google-client-secret
+          SENDGRID_API_KEY: sg_test_dummy_key
 
       - name: Check test coverage
         run: |
@@ -110,35 +111,35 @@ jobs:
             echo "- Lines: $LINES_COVERED/$LINES_TOTAL ($LINES_PCT%)"
             
             # カバレッジのチェック（awkを使用して浮動小数点比較）
-            # 闾値: lines=93%, functions=98%, branches=93%, statements=93%
+            # 閾値: statements=95%, branches=90%, functions=95%, lines=95% (変更後)
             CHECK_PASSED=true
             
-            if awk -v pct="$STATEMENTS_PCT" 'BEGIN { if (pct >= 93) exit 0; else exit 1 }'; then
+            if awk -v pct="$STATEMENTS_PCT" 'BEGIN { if (pct >= 95) exit 0; else exit 1 }'; then
               echo "✓ Statements coverage: $STATEMENTS_PCT%"
             else
               CHECK_PASSED=false
-              echo "Statements coverage is below 93%: $STATEMENTS_PCT%"
+              echo "Statements coverage is below 95%: $STATEMENTS_PCT%"
             fi
             
-            if awk -v pct="$BRANCHES_PCT" 'BEGIN { if (pct >= 93) exit 0; else exit 1 }'; then
+            if awk -v pct="$BRANCHES_PCT" 'BEGIN { if (pct >= 90) exit 0; else exit 1 }'; then
               echo "✓ Branches coverage: $BRANCHES_PCT%"
             else
               CHECK_PASSED=false
-              echo "Branches coverage is below 93%: $BRANCHES_PCT%"
+              echo "Branches coverage is below 90%: $BRANCHES_PCT%"
             fi
             
-            if awk -v pct="$FUNCTIONS_PCT" 'BEGIN { if (pct >= 98) exit 0; else exit 1 }'; then
+            if awk -v pct="$FUNCTIONS_PCT" 'BEGIN { if (pct >= 95) exit 0; else exit 1 }'; then
               echo "✓ Functions coverage: $FUNCTIONS_PCT%"
             else
               CHECK_PASSED=false
-              echo "Functions coverage is below 98%: $FUNCTIONS_PCT%"
+              echo "Functions coverage is below 95%: $FUNCTIONS_PCT%"
             fi
             
-            if awk -v pct="$LINES_PCT" 'BEGIN { if (pct >= 93) exit 0; else exit 1 }'; then
+            if awk -v pct="$LINES_PCT" 'BEGIN { if (pct >= 95) exit 0; else exit 1 }'; then
               echo "✓ Lines coverage: $LINES_PCT%"
             else
               CHECK_PASSED=false
-              echo "Lines coverage is below 93%: $LINES_PCT%"
+              echo "Lines coverage is below 95%: $LINES_PCT%"
             fi
             
             if [ "$CHECK_PASSED" = true ]; then

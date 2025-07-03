@@ -17,6 +17,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@next-auth/firebase-adapter": "^2.0.1",
+    "@sendgrid/mail": "^8.1.5",
     "@stripe/stripe-js": "^4.9.0",
     "@types/bcryptjs": "^3.0.0",
     "@upstash/redis": "^1.35.0",

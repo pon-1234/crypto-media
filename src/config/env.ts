@@ -50,12 +50,16 @@ const envSchema = z.object({
 
   // メール送信設定（オプション）
   SENDGRID_API_KEY: z.string().optional(),
+  SENDGRID_FROM_EMAIL: z.string().email().optional(),
   CONTACT_EMAIL_TO: z.string().email().optional(),
   CONTACT_EMAIL_FROM: z.string().email().optional(),
 
   // HubSpot設定（オプション）
   NEXT_PUBLIC_HUBSPOT_PORTAL_ID: z.string().optional(),
   NEXT_PUBLIC_HUBSPOT_FORM_ID: z.string().optional(),
+  
+  // App URL設定（オプション）
+  NEXT_PUBLIC_APP_URL: z.string().url().optional(),
 })
 
 /**
@@ -170,8 +174,11 @@ function validateEnv(): Env {
     NEXT_PUBLIC_HUBSPOT_FORM_ID: process.env.NEXT_PUBLIC_HUBSPOT_FORM_ID,
     // Email
     SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
+    SENDGRID_FROM_EMAIL: process.env.SENDGRID_FROM_EMAIL,
     CONTACT_EMAIL_TO: process.env.CONTACT_EMAIL_TO,
     CONTACT_EMAIL_FROM: process.env.CONTACT_EMAIL_FROM,
+    // App URL
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   })
 
   if (!parsed.success) {

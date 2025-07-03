@@ -9,6 +9,15 @@
 - FirebaseとStripeによる会員認証・決済基盤
 - Claude CodeとGemini CLIを連携させたAI駆動の開発ワークフロー
 
+## 🔧 技術スタック
+
+- **Frontend**: Next.js (App Router), React, TypeScript, Tailwind CSS
+- **CMS**: microCMS (Headless CMS)
+- **Auth**: NextAuth.js with Firebase adapter
+- **Payments**: Stripe
+- **Email**: SendGrid (トランザクショナルメール)
+- **Hosting**: Vercel
+
 ---
 
 ## 🚀 セットアップ

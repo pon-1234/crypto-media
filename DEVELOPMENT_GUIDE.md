@@ -78,7 +78,8 @@
 | **CMS**             | **microCMS Pro** – Headless/SaaS                                                                                            | 複数モデル（記事、お知らせ、執筆者等）を一元管理                                                                                 |
 | **認証 & 会員DB**   | **NextAuth.js + Firebase Auth/Firestore** – NextAuth.jsを認証の司令塔とし、Firebaseをバックエンド（ユーザーDB）として利用。 | NextAuth.jsのFirebase Adapterを介して`users`, `sessions`等のコレクションをFirestoreで管理。会員情報は`users`コレクションに統合。 |
 | **決済**            | **Stripe** – 月額 ¥1,980 プラン                                                                                             | Webhook → Vercel Serverless `/api/stripe/webhook` (冪等チェック)                                                                 |
-| **フォーム管理**    | **HubSpot**                                                                                                                 | お問い合わせフォームはHubSpotフォームをiframeで埋め込んで利用する。                                                              |
+| **フォーム管理**    | **HubSpot** – お問い合わせフォームはiframeで埋め込み | APIエンドポイントは不要 |
+| **メール送信** | **SendGrid** – パスワードリセット等のトランザクショナルメール用 | APIキーを環境変数で管理 |
 | **画像 / OGP**      | microCMS Image API (`?fm=webp&w=`) + Vercel OG Image                                                                        | OGP 自動生成関数 `/api/og`                                                                                                       |
 | **CI/CD**           | GitHub Push → Vercel Auto Deploy                                                                                            | **Lighthouse-CI**と**Slug重複チェック**をGitHub Actionsに組込。                                                                  |
 | **監視 & アラート** | Vercel Slack Integration, Stripe Dashboard Alerts                                                                           | 5xx / Webhook Fail を #deploy-notify へ通知                                                                                      |
@@ -379,7 +380,6 @@ claude /learnings
 
 | 項目                               | 内容・方針                                                                                                                          |
 | :--------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| **お問い合わせフォームの実装詳細** | ・MVPスコープには含まれるが、具体的な実装方法（SendGrid等での自作 vs HubSpot等の外部サービス埋込）は別途決定する。                  |
 | **LINE連携 (Phase-2)**             | ・Phase-2での実装を予定。<br>・NextAuth.jsのLINEプロバイダー追加と、Firestoreの`members`コレクションにLINE IDを紐付ける設計を想定。 |
 | **E2Eテストの本格導入 (Phase-2)**  | ・リリース後の安定運用フェーズで、PlaywrightによるE2EテストをCIに本格導入することを検討する。                                       |
 | +                                  | **LPの実装 (Phase-2)**                                                                                                              | ・ビジネスモデルの確定がボトルネックとなるため、`/media/lp/[slug]`として実装予定のLPはPhase-2のスコープとする。 |

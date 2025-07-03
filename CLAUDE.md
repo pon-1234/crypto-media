@@ -66,6 +66,7 @@ This is a Crypto Media & Corporate Site - a unified platform that combines:
 - **CMS**: microCMS (Headless CMS)
 - **Auth**: NextAuth.js with Firebase adapter (Google/Email SSO)
 - **Payments**: Stripe (subscription management)
+- **Email**: SendGrid (transactional emails)
 - **Hosting**: Vercel
 - **Testing**: Vitest, React Testing Library, Playwright, **Gemini CLI (Analysis)**
 
