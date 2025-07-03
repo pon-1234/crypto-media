@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { Eye, EyeOff } from 'lucide-react'
+import { changePassword } from '@/app/actions/account'
 
 interface PasswordChangeFormProps {
   userId: string
@@ -22,7 +23,7 @@ export function PasswordChangeForm({ userId }: PasswordChangeFormProps) {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   const validatePassword = (password: string) => {
     if (password.length < 8) {
@@ -59,41 +60,30 @@ export function PasswordChangeForm({ userId }: PasswordChangeFormProps) {
       return
     }
 
-    setIsLoading(true)
-
-    try {
-      const response = await fetch('/api/account/password', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
+    startTransition(async () => {
+      try {
+        const result = await changePassword(userId, {
           currentPassword,
           newPassword,
-        }),
-      })
+          confirmPassword,
+        })
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || 'パスワードの変更に失敗しました')
+        if (result.error) {
+          toast.error(result.error)
+          return
+        }
+
+        toast.success('パスワードを変更しました')
+        
+        // フォームをリセット
+        setCurrentPassword('')
+        setNewPassword('')
+        setConfirmPassword('')
+      } catch (error) {
+        console.error('Password change error:', error)
+        toast.error('パスワードの変更に失敗しました')
       }
-
-      toast.success('パスワードを変更しました')
-      
-      // フォームをリセット
-      setCurrentPassword('')
-      setNewPassword('')
-      setConfirmPassword('')
-    } catch (error) {
-      toast.error(
-        error instanceof Error 
-          ? error.message 
-          : 'パスワードの変更に失敗しました'
-      )
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
 
   return (
@@ -112,7 +102,7 @@ export function PasswordChangeForm({ userId }: PasswordChangeFormProps) {
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            disabled={isLoading}
+            disabled={isPending}
           />
           <button
             type="button"
@@ -142,7 +132,7 @@ export function PasswordChangeForm({ userId }: PasswordChangeFormProps) {
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            disabled={isLoading}
+            disabled={isPending}
           />
           <button
             type="button"
@@ -175,7 +165,7 @@ export function PasswordChangeForm({ userId }: PasswordChangeFormProps) {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="block w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            disabled={isLoading}
+            disabled={isPending}
           />
           <button
             type="button"
@@ -194,10 +184,10 @@ export function PasswordChangeForm({ userId }: PasswordChangeFormProps) {
       <div className="flex justify-end">
         <Button
           type="submit"
-          disabled={isLoading}
+          disabled={isPending}
           className="min-w-[120px]"
         >
-          {isLoading ? '変更中...' : '変更する'}
+          {isPending ? '変更中...' : '変更する'}
         </Button>
       </div>
     </form>
