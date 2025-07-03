@@ -8,7 +8,7 @@ import { test, expect, devices } from '@playwright/test'
 
 const viewports = {
   mobile: devices['iPhone 12'].viewport,
-  tablet: devices['iPad'].viewport,
+  tablet: devices['iPad Pro 11'].viewport,
   desktop: { width: 1920, height: 1080 },
 }
 

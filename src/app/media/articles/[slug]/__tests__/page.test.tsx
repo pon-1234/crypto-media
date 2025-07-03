@@ -30,9 +30,14 @@ vi.mock('@/lib/microcms', () => ({
 }))
 
 // DOMPurifyのモック
+type DOMPurifyOptions = {
+  ALLOWED_TAGS?: string[]
+  [key: string]: unknown
+}
+
 vi.mock('isomorphic-dompurify', () => ({
   default: {
-    sanitize: vi.fn((html: string, options?: { ALLOWED_TAGS?: string[] }) => {
+    sanitize: vi.fn((html: string, options?: DOMPurifyOptions) => {
       // ALLOWED_TAGSが空の場合はテキストのみを返す
       if (options?.ALLOWED_TAGS && options.ALLOWED_TAGS.length === 0) {
         return html.replace(/<[^>]*>/g, '')

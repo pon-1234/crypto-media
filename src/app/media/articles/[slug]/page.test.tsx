@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import MediaArticleDetailPage from './page'
+import type { MediaArticle, Expert, Tag, Category, MicroCMSImage } from '@/lib/microcms'
 
 // モックの設定
 vi.mock('@/lib/microcms', () => ({
@@ -64,53 +65,60 @@ vi.mock('isomorphic-dompurify', () => ({
 }))
 
 describe('MediaArticleDetailPage', () => {
-  const mockArticle = {
+  const mockArticle: MediaArticle = {
     id: '1',
     slug: 'test-article',
     title: 'テスト記事',
     content: '<p>これは記事の本文です。</p>',
     previewContent: '<p>これはプレビューコンテンツです。</p>',
-    membershipLevel: 'public' as const,
-    type: 'media_news' as const,
+    membershipLevel: 'public',
+    type: 'media_news',
     heroImage: {
       url: 'https://example.com/image.jpg',
       height: 630,
       width: 1200,
-    },
+    } as MicroCMSImage,
     createdAt: '2025-06-30T09:00:00Z',
     publishedAt: '2025-06-30T10:00:00Z',
     updatedAt: '2025-06-30T10:00:00Z',
+    revisedAt: '2025-06-30T10:00:00Z',
     author: {
       id: 'author1',
       createdAt: '2025-06-30T09:00:00Z',
       updatedAt: '2025-06-30T09:00:00Z',
+      publishedAt: '2025-06-30T09:00:00Z',
+      revisedAt: '2025-06-30T09:00:00Z',
       name: '著者名',
       slug: 'author-1',
-      role: ['執筆者'] as Array<'執筆者' | '監修者'>,
+      role: ['執筆者'],
       profile: '著者のプロフィール',
       avatar: {
         url: 'https://example.com/author.jpg',
         height: 100,
         width: 100,
-      },
-    },
+      } as MicroCMSImage,
+    } as Expert,
     supervisor: undefined,
     tags: [
       {
         id: 'tag1',
         createdAt: '2025-06-30T09:00:00Z',
         updatedAt: '2025-06-30T09:00:00Z',
+        publishedAt: '2025-06-30T09:00:00Z',
+        revisedAt: '2025-06-30T09:00:00Z',
         name: 'タグ1',
         slug: 'tag-1',
-      },
+      } as Tag,
     ],
     category: {
       id: 'cat1',
       createdAt: '2025-06-30T09:00:00Z',
       updatedAt: '2025-06-30T09:00:00Z',
+      publishedAt: '2025-06-30T09:00:00Z',
+      revisedAt: '2025-06-30T09:00:00Z',
       name: 'カテゴリ1',
       slug: 'category-1',
-    },
+    } as Category,
   }
 
   beforeEach(() => {
@@ -213,12 +221,13 @@ describe('MediaArticleDetailPage', () => {
 
     it('プレビューコンテンツがない場合、本文の一部を表示する', async () => {
       vi.mocked(hasAccess).mockResolvedValue(false)
-      vi.mocked(getMediaArticleBySlug).mockResolvedValue({
+      const articleWithoutPreview: MediaArticle = {
         ...mockArticle,
         membershipLevel: 'paid',
         previewContent: undefined,
         content: '<p>長い記事の本文がここに入ります。</p>',
-      })
+      }
+      vi.mocked(getMediaArticleBySlug).mockResolvedValue(articleWithoutPreview)
 
       const Component = await MediaArticleDetailPage({
         params: { slug: 'test-article' },
@@ -254,7 +263,7 @@ describe('MediaArticleDetailPage', () => {
       )
       expect(scriptTag).toBeInTheDocument()
 
-      const jsonLd = JSON.parse(scriptTag?.textContent || '{}')
+      const jsonLd = JSON.parse(scriptTag?.textContent || '{}') as Record<string, unknown>
       expect(jsonLd.isAccessibleForFree).toBe('False')
       expect(jsonLd.hasPart).toEqual([
         {
@@ -283,7 +292,7 @@ describe('MediaArticleDetailPage', () => {
       const scriptTag = container.querySelector(
         'script[type="application/ld+json"]'
       )
-      const jsonLd = JSON.parse(scriptTag?.textContent || '{}')
+      const jsonLd = JSON.parse(scriptTag?.textContent || '{}') as Record<string, unknown>
 
       expect(jsonLd.isAccessibleForFree).toBeUndefined()
       expect(jsonLd.hasPart).toBeUndefined()

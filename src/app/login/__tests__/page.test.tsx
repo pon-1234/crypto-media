@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { useSession, signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import LoginPage from '../page'
-import type { LiteralUnion } from 'next-auth/react'
+import type { SignInResponse } from 'next-auth/react'
 
 // Mock NextAuth
 vi.mock('next-auth/react', () => ({
@@ -17,12 +17,27 @@ vi.mock('next/navigation', () => ({
   useSearchParams: vi.fn(),
 }))
 
-type MockSignInResponse = {
-  ok: boolean
-  error: LiteralUnion<'CredentialsSignin'> | null
-  status: number
-  url: string | null
+// モック用の型定義
+type MockRouterType = {
+  push: ReturnType<typeof vi.fn>
+  refresh: ReturnType<typeof vi.fn>
+  replace: ReturnType<typeof vi.fn>
+  prefetch: ReturnType<typeof vi.fn>
+  back: ReturnType<typeof vi.fn>
+  forward: ReturnType<typeof vi.fn>
 }
+
+type MockSearchParamsType = {
+  get: ReturnType<typeof vi.fn>
+  getAll: ReturnType<typeof vi.fn>
+  has: ReturnType<typeof vi.fn>
+  keys: ReturnType<typeof vi.fn>
+  values: ReturnType<typeof vi.fn>
+  entries: ReturnType<typeof vi.fn>
+  forEach: ReturnType<typeof vi.fn>
+  toString: ReturnType<typeof vi.fn>
+}
+
 
 describe('LoginPage', () => {
   const mockPush = vi.fn()
@@ -30,17 +45,27 @@ describe('LoginPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useRouter).mockReturnValue({
+    const mockRouter: MockRouterType = {
       push: mockPush,
       refresh: vi.fn(),
       replace: vi.fn(),
       prefetch: vi.fn(),
       back: vi.fn(),
       forward: vi.fn(),
-    } as ReturnType<typeof useRouter>)
-    vi.mocked(useSearchParams).mockReturnValue({
+    }
+    vi.mocked(useRouter).mockReturnValue(mockRouter as unknown as ReturnType<typeof useRouter>)
+    
+    const mockParams: MockSearchParamsType = {
       get: mockGet,
-    } as unknown as ReturnType<typeof useSearchParams>)
+      getAll: vi.fn(),
+      has: vi.fn(),
+      keys: vi.fn(),
+      values: vi.fn(),
+      entries: vi.fn(),
+      forEach: vi.fn(),
+      toString: vi.fn(),
+    }
+    vi.mocked(useSearchParams).mockReturnValue(mockParams as unknown as ReturnType<typeof useSearchParams>)
   })
 
   describe('未認証状態', () => {
@@ -114,7 +139,7 @@ describe('LoginPage', () => {
           error: null,
           status: 200,
           url: '/dashboard',
-        } as MockSignInResponse)
+        } as unknown as SignInResponse | undefined)
 
         render(<LoginPage />)
 
@@ -145,7 +170,7 @@ describe('LoginPage', () => {
           error: 'CredentialsSignin',
           status: 401,
           url: null,
-        } as MockSignInResponse)
+        } as unknown as SignInResponse | undefined)
         render(<LoginPage />)
 
         fireEvent.change(screen.getByPlaceholderText('メールアドレス'), {
@@ -168,7 +193,7 @@ describe('LoginPage', () => {
           () =>
             new Promise((resolve) =>
               setTimeout(
-                () => resolve({ ok: true, status: 200, url: '/', error: null } as MockSignInResponse),
+                () => resolve({ ok: true, status: 200, url: '/', error: null } as unknown as SignInResponse | undefined),
                 100
               )
             )

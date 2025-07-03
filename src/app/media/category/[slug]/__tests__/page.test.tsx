@@ -3,6 +3,7 @@ import { render } from '@testing-library/react'
 import { notFound } from 'next/navigation'
 import CategoryPage, { generateMetadata, generateStaticParams } from '../page'
 import * as microCMS from '@/lib/microcms'
+import type { Category, MediaArticle, MicroCMSListResponse, MicroCMSImage } from '@/lib/microcms'
 
 // Mock Next.js navigation
 vi.mock('next/navigation', () => ({
@@ -16,7 +17,7 @@ vi.mock('@/lib/microcms', () => ({
   getMediaArticlesByCategory: vi.fn(),
 }))
 
-const mockCategory = {
+const mockCategory: Category = {
   id: 'cat1',
   name: 'ブロックチェーン',
   slug: 'blockchain',
@@ -26,7 +27,7 @@ const mockCategory = {
   revisedAt: '2024-01-01T00:00:00.000Z',
 }
 
-const mockCategories = {
+const mockCategories: MicroCMSListResponse<Category> = {
   contents: [
     mockCategory,
     { ...mockCategory, id: 'cat2', slug: 'defi', name: 'DeFi' },
@@ -55,8 +56,6 @@ vi.mock('@/components/ui/Breadcrumbs', () => ({
   ),
 }))
 
-import type { MediaArticle } from '@/lib/schema/article.schema'
-
 vi.mock('@/components/media/ArticleGrid', () => ({
   ArticleGrid: ({ articles }: { articles: MediaArticle[] }) => (
     <div data-testid="article-grid">
@@ -76,20 +75,20 @@ vi.mock('@/components/ui/Pagination', () => ({
 }))
 
 describe('CategoryPage', () => {
-  const mockArticles = {
+  const mockArticles: MicroCMSListResponse<MediaArticle> = {
     contents: [
       {
         id: '1',
         title: 'Test Article 1',
         slug: 'test-article-1',
-        type: 'article' as const,
-        membershipLevel: 'public' as const,
+        type: 'article',
+        membershipLevel: 'public',
         content: 'Content',
         heroImage: {
           url: 'https://example.com/image.jpg',
           height: 600,
           width: 800,
-        },
+        } as MicroCMSImage,
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z',
         publishedAt: '2024-01-01T00:00:00.000Z',
@@ -196,7 +195,7 @@ describe('CategoryPage', () => {
       )
       expect(scriptTag).toBeInTheDocument()
       if (scriptTag) {
-        const jsonLd = JSON.parse(scriptTag.textContent || '{}')
+        const jsonLd = JSON.parse(scriptTag.textContent || '{}') as Record<string, unknown>
         expect(jsonLd['@type']).toBe('CollectionPage')
         expect(jsonLd.name).toBe('ブロックチェーンの記事一覧')
       }
@@ -214,7 +213,7 @@ describe('CategoryPage', () => {
     })
 
     it('shows pagination when more than 12 articles exist', async () => {
-      const manyArticles = {
+      const manyArticles: MicroCMSListResponse<MediaArticle> = {
         ...mockArticles,
         totalCount: 25,
       }

@@ -25,11 +25,21 @@ vi.mock('@/components/media/ArticleCard', () => ({
   )),
 }))
 
+// Next.js ImageコンポーネントのPropsの型定義
+type ImageProps = {
+  src: string
+  alt: string
+  [key: string]: unknown
+}
+
 vi.mock('next/image', () => ({
-  default: vi.fn(({ src, alt, ...props }) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt={alt} {...props} />
-  )),
+  default: vi.fn((props: ImageProps) => {
+    const { src, alt, ...rest } = props
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={src} alt={alt} {...rest} />
+    )
+  }),
 }))
 
 const mockSlugs = ['2025-crypto-trends', 'defi-introduction']

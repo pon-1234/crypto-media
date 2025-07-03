@@ -6,6 +6,7 @@ import { render, screen } from '@testing-library/react'
 import MediaArticlesPage from '../page'
 import { getMediaArticlesList, getCategories, getTags } from '@/lib/microcms'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
+import type { MediaArticle, Category, Tag, MicroCMSListResponse } from '@/lib/microcms'
 
 // モック
 vi.mock('@/lib/microcms', () => ({
@@ -15,7 +16,7 @@ vi.mock('@/lib/microcms', () => ({
 }))
 
 vi.mock('@/components/media/ArticleCard', () => ({
-  ArticleCard: ({ article }: { article: { id: string; title: string } }) => (
+  ArticleCard: ({ article }: { article: MediaArticle }) => (
     <div data-testid={`article-${article.id}`}>{article.title}</div>
   ),
 }))
@@ -37,43 +38,53 @@ vi.mock('@/components/media/ArticleFilters', () => ({
   ),
 }))
 
-const mockArticles = {
+const mockArticles: MicroCMSListResponse<MediaArticle> = {
   contents: [
     {
       id: '1',
-      type: 'article' as const,
+      type: 'article',
       title: 'Article 1',
       slug: 'article-1',
-      description: 'Description 1',
       content: 'Content 1',
       heroImage: { url: 'https://example.com/image1.jpg', width: 1200, height: 630 },
-      thumbnail: { url: 'https://example.com/thumb1.jpg', width: 800, height: 600 },
-      category: { id: 'cat1', name: 'Category 1', slug: 'category-1', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+      category: { 
+        id: 'cat1', 
+        name: 'Category 1', 
+        slug: 'category-1', 
+        createdAt: '2024-01-01T00:00:00.000Z', 
+        updatedAt: '2024-01-01T00:00:00.000Z',
+        publishedAt: '2024-01-01T00:00:00.000Z',
+        revisedAt: '2024-01-01T00:00:00.000Z'
+      },
       tags: [],
       publishedAt: '2024-01-01T00:00:00.000Z',
-      membershipLevel: 'public' as const,
-      authors: [],
-      supervisors: [],
+      membershipLevel: 'public',
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
+      revisedAt: '2024-01-01T00:00:00.000Z',
     },
     {
       id: '2',
-      type: 'article' as const,
+      type: 'article',
       title: 'Article 2',
       slug: 'article-2',
-      description: 'Description 2',
       content: 'Content 2',
       heroImage: { url: 'https://example.com/image2.jpg', width: 1200, height: 630 },
-      thumbnail: { url: 'https://example.com/thumb2.jpg', width: 800, height: 600 },
-      category: { id: 'cat2', name: 'Category 2', slug: 'category-2', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+      category: { 
+        id: 'cat2', 
+        name: 'Category 2', 
+        slug: 'category-2', 
+        createdAt: '2024-01-01T00:00:00.000Z', 
+        updatedAt: '2024-01-01T00:00:00.000Z',
+        publishedAt: '2024-01-01T00:00:00.000Z',
+        revisedAt: '2024-01-01T00:00:00.000Z'
+      },
       tags: [],
       publishedAt: '2024-01-02T00:00:00.000Z',
-      membershipLevel: 'paid' as const,
-      authors: [],
-      supervisors: [],
+      membershipLevel: 'paid',
       createdAt: '2024-01-02T00:00:00.000Z',
       updatedAt: '2024-01-02T00:00:00.000Z',
+      revisedAt: '2024-01-02T00:00:00.000Z',
     },
   ],
   totalCount: 25,
@@ -81,20 +92,52 @@ const mockArticles = {
   limit: 12,
 }
 
-const mockCategories = {
+const mockCategories: MicroCMSListResponse<Category> = {
   contents: [
-    { id: 'cat1', name: 'Category 1', slug: 'category-1', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-    { id: 'cat2', name: 'Category 2', slug: 'category-2', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+    { 
+      id: 'cat1', 
+      name: 'Category 1', 
+      slug: 'category-1', 
+      createdAt: '2024-01-01T00:00:00.000Z', 
+      updatedAt: '2024-01-01T00:00:00.000Z',
+      publishedAt: '2024-01-01T00:00:00.000Z',
+      revisedAt: '2024-01-01T00:00:00.000Z'
+    },
+    { 
+      id: 'cat2', 
+      name: 'Category 2', 
+      slug: 'category-2', 
+      createdAt: '2024-01-01T00:00:00.000Z', 
+      updatedAt: '2024-01-01T00:00:00.000Z',
+      publishedAt: '2024-01-01T00:00:00.000Z',
+      revisedAt: '2024-01-01T00:00:00.000Z'
+    },
   ],
   totalCount: 2,
   offset: 0,
   limit: 100,
 }
 
-const mockTags = {
+const mockTags: MicroCMSListResponse<Tag> = {
   contents: [
-    { id: 'tag1', name: 'Tag 1', slug: 'tag-1', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
-    { id: 'tag2', name: 'Tag 2', slug: 'tag-2', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+    { 
+      id: 'tag1', 
+      name: 'Tag 1', 
+      slug: 'tag-1', 
+      createdAt: '2024-01-01T00:00:00.000Z', 
+      updatedAt: '2024-01-01T00:00:00.000Z',
+      publishedAt: '2024-01-01T00:00:00.000Z',
+      revisedAt: '2024-01-01T00:00:00.000Z'
+    },
+    { 
+      id: 'tag2', 
+      name: 'Tag 2', 
+      slug: 'tag-2', 
+      createdAt: '2024-01-01T00:00:00.000Z', 
+      updatedAt: '2024-01-01T00:00:00.000Z',
+      publishedAt: '2024-01-01T00:00:00.000Z',
+      revisedAt: '2024-01-01T00:00:00.000Z'
+    },
   ],
   totalCount: 2,
   offset: 0,
@@ -205,12 +248,13 @@ describe('MediaArticlesPage', () => {
   })
 
   it('記事がない場合のメッセージが表示される', async () => {
-    vi.mocked(getMediaArticlesList).mockResolvedValue({
+    const emptyArticles: MicroCMSListResponse<MediaArticle> = {
       contents: [],
       totalCount: 0,
       offset: 0,
       limit: 12,
-    })
+    }
+    vi.mocked(getMediaArticlesList).mockResolvedValue(emptyArticles)
 
     const page = await MediaArticlesPage({ searchParams: {} })
     render(page)
