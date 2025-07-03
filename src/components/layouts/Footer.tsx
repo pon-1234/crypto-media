@@ -21,8 +21,8 @@ export default function Footer() {
 
   const legalLinks = [
     { href: '/terms', label: '利用規約' },
-    { href: '/privacy', label: 'プライバシーポリシー' },
-    { href: '/commercial', label: '特定商取引法に基づく表記' },
+    { href: '/privacy-policy', label: 'プライバシーポリシー' },
+    { href: '/dealing', label: '特定商取引法に基づく表記' },
   ]
 
   return (

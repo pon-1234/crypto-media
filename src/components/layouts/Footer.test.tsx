@@ -64,10 +64,10 @@ describe('Footer', () => {
     )
     expect(
       screen.getByRole('link', { name: 'プライバシーポリシー' })
-    ).toHaveAttribute('href', '/privacy')
+    ).toHaveAttribute('href', '/privacy-policy')
     expect(
       screen.getByRole('link', { name: '特定商取引法に基づく表記' })
-    ).toHaveAttribute('href', '/commercial')
+    ).toHaveAttribute('href', '/dealing')
   })
 
   it('should render contact section with link', () => {
