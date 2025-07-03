@@ -1,12 +1,7 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { notFound } from 'next/navigation'
 import PrivacyPolicyPage, { generateMetadata } from './page'
 import { getCorporatePageBySlug } from '@/lib/microcms/corporate-pages'
-
-vi.mock('next/navigation', () => ({
-  notFound: vi.fn(),
-}))
 
 vi.mock('@/lib/microcms/corporate-pages', () => ({
   getCorporatePageBySlug: vi.fn(),

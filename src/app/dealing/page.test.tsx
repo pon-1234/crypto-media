@@ -1,6 +1,5 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { notFound } from 'next/navigation'
 import DealingPage, { generateMetadata } from './page'
 import { getCorporatePageBySlug } from '@/lib/microcms/corporate-pages'
 
