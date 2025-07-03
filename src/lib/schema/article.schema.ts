@@ -14,9 +14,7 @@ import { featureSchema } from './feature.schema'
 /**
  * 記事のタイプ
  */
-const articleTypeSchema = z
-  .array(z.enum(['article', 'survey_report', 'media_news']))
-  .transform((val) => val[0])
+const articleTypeSchema = z.enum(['article', 'survey_report', 'media_news'])
 
 /**
  * 記事のタイプ型
@@ -26,14 +24,7 @@ export type ArticleType = z.infer<typeof articleTypeSchema>
 /**
  * 会員レベル（アクセス制御）
  */
-const membershipLevelSchema = z
-  .array(
-    z.preprocess(
-      (arg) => (typeof arg === 'string' ? arg.split(' ')[0] : arg),
-      z.enum(['public', 'paid'])
-    )
-  )
-  .transform((val) => val[0])
+const membershipLevelSchema = z.enum(['public', 'paid'])
 
 /**
  * 会員レベル型

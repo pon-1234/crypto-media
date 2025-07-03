@@ -39,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return generatePageMetadata({
     title: page.title,
-    description: page.description,
+    description: page.description || '',
     path: '/terms',
     ogImage: page.metadata?.ogImage?.url,
     keywords: page.metadata?.keywords,
