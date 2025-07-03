@@ -14,7 +14,6 @@ import {
   featureSchema,
   mediaArticleSchema,
   siteSettingsSchema,
-  researchSurveySchema,
   pageCorporateSchema,
   createListResponseSchema,
   type MicroCMSBase,
@@ -26,7 +25,6 @@ import {
   type Feature,
   type MediaArticle,
   type SiteSettings,
-  type ResearchSurvey,
   type PageCorporate,
 } from '@/lib/schema'
 
@@ -379,20 +377,6 @@ describe('microCMS Schemas', () => {
     })
   })
 
-  describe('researchSurveySchema', () => {
-    it('有効な調査データをパースできる', () => {
-      const validData = {
-        id: 'survey-1',
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
-        title: 'テスト調査',
-        description: '調査の説明',
-        data: '{"results": []}',
-      }
-      const result = researchSurveySchema.parse(validData)
-      expect(result).toEqual(validData)
-    })
-  })
 
   describe('pageCorporateSchema', () => {
     it('有効な固定ページデータをパースできる', () => {
@@ -515,12 +499,6 @@ describe('microCMS Schemas', () => {
         site_description: 'Description',
       }
 
-      const survey: ResearchSurvey = {
-        ...base,
-        title: 'Survey',
-        description: 'Description',
-        data: '{}',
-      }
 
       const page: PageCorporate = {
         ...base,
@@ -539,7 +517,6 @@ describe('microCMS Schemas', () => {
       expect(feature).toBeDefined()
       expect(article).toBeDefined()
       expect(settings).toBeDefined()
-      expect(survey).toBeDefined()
       expect(page).toBeDefined()
     })
   })

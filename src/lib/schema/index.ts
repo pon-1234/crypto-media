@@ -37,10 +37,6 @@ export {
 
 export { siteSettingsSchema, type SiteSettings } from './site-settings.schema'
 
-export {
-  researchSurveySchema,
-  type ResearchSurvey,
-} from './research-survey.schema'
 
 export {
   pageCorporateSchema,
@@ -55,7 +51,6 @@ import { categorySchema } from './category.schema'
 import { tagSchema } from './tag.schema'
 import { featureSchema } from './feature.schema'
 import { mediaArticleSchema } from './article.schema'
-import { researchSurveySchema } from './research-survey.schema'
 import { pageCorporateSchema } from './page-corporate.schema'
 
 export const corporateNewsListSchema =
@@ -66,7 +61,5 @@ export const tagListSchema = createListResponseSchema(tagSchema)
 export const featureListSchema = createListResponseSchema(featureSchema)
 export const mediaArticleListSchema =
   createListResponseSchema(mediaArticleSchema)
-export const researchSurveyListSchema =
-  createListResponseSchema(researchSurveySchema)
 export const pageCorporateListSchema =
   createListResponseSchema(pageCorporateSchema)

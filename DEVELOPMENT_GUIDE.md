@@ -18,7 +18,7 @@
 | **SSO**             | NextAuth.js（Google／Email）※LINE は Phase-2                                                                                            |
 | **コンテンツ**      | 月 30 本：SEO 15＋調査 15 (3-4k 字)                                                                                                     |
 | **ペイウォール**    | **記事単位でのアクセス制御**。有料記事は非有料会員には非表示。有料登録は`/register/`ページが起点。                                      |
-| **microCMS モデル** | `site_settings`, `experts`, `categories`, `tags`, `features`, `media_articles`, `research_surveys`, `pages_corporate`, `corporate_news` |
+| **microCMS モデル** | `site_settings`, `experts`, `categories`, `tags`, `features`, `media_articles`, `pages_corporate`, `corporate_news` |
 | **UI**              | Tailwind CSS／Corporate & Media ヘッダー切替                                                                                            |
 | **SEO/CWV 目標**    | LCP < 2s, FID < 100ms, CLS < 0.1 (Lighthouse-CI 導入、CLS対策を具体化)                                                                  |
 
@@ -125,7 +125,6 @@
 | `tags`               | メディア記事タグ（多対多）           | `id`      | -                                           |
 | **`features`**       | **特集記事（複数の記事をまとめる）** | `id`      | -                                           |
 | `media_articles`     | **メディアサイトの記事・お知らせ等** | `id`      | `experts`, `categories`, `tags`, `features` |
-| `research_surveys`   | アンケート raw データ＋集計          | `id`      | `media_articles`                            |
 | `pages_corporate`    | コーポレート固定ページ               | `id`      | -                                           |
 
 > **モデル設計方針**

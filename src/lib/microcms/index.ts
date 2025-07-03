@@ -20,7 +20,6 @@ export {
   featureSchema,
   mediaArticleSchema,
   siteSettingsSchema,
-  researchSurveySchema,
   pageCorporateSchema,
 
   // リストレスポンススキーマ
@@ -30,7 +29,6 @@ export {
   tagListSchema,
   featureListSchema,
   mediaArticleListSchema,
-  researchSurveyListSchema,
   pageCorporateListSchema,
 
   // ヘルパー関数
@@ -44,7 +42,6 @@ export {
   type Feature,
   type MediaArticle,
   type SiteSettings,
-  type ResearchSurvey,
   type PageCorporate,
 } from '@/lib/schema'
 
