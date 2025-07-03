@@ -300,3 +300,47 @@ export async function getMediaArticlesByFeature(
   })
   return mediaArticleListSchema.parse(data)
 }
+
+/**
+ * 記事タイプごとの記事一覧を取得
+ * @param type 記事タイプ (article | survey_report | media_news)
+ * @param queries クエリパラメータ
+ * @returns 記事一覧
+ * @issue #36 - メディアサイトの主要な一覧ページ実装
+ */
+export async function getMediaArticlesByType(
+  type: 'article' | 'survey_report' | 'media_news',
+  queries?: MicroCMSQueries
+) {
+  const data = await client.getList({
+    endpoint: 'media_articles',
+    queries: {
+      ...defaultQueries,
+      ...queries,
+      filters: `type[equals]${type}`,
+    },
+  })
+  return mediaArticleListSchema.parse(data)
+}
+
+/**
+ * 会員レベルごとの記事一覧を取得
+ * @param membershipLevel 会員レベル (public | paid)
+ * @param queries クエリパラメータ
+ * @returns 記事一覧
+ * @issue #36 - メディアサイトの主要な一覧ページ実装
+ */
+export async function getMediaArticlesByMembershipLevel(
+  membershipLevel: 'public' | 'paid',
+  queries?: MicroCMSQueries
+) {
+  const data = await client.getList({
+    endpoint: 'media_articles',
+    queries: {
+      ...defaultQueries,
+      ...queries,
+      filters: `membershipLevel[equals]${membershipLevel}`,
+    },
+  })
+  return mediaArticleListSchema.parse(data)
+}

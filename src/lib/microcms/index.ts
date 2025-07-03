@@ -77,6 +77,8 @@ export {
   getMediaArticlesByAuthor,
   getMediaArticlesBySupervisor,
   getMediaArticlesByFeature,
+  getMediaArticlesByType,
+  getMediaArticlesByMembershipLevel,
 } from './media-articles'
 
 export { getCategories, getCategoryBySlug, getCategoryById } from './categories'

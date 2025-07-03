@@ -1,0 +1,199 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`NewsCategoryPage > 2ページ目以降でニュースが0件の場合は空のリストを表示 1`] = `
+<main
+  className="container mx-auto px-4 py-8"
+>
+  <div
+    className="mx-auto max-w-4xl"
+  >
+    <h1
+      className="mb-8 text-3xl font-bold"
+    >
+      プレスリリース
+      のニュース一覧
+    </h1>
+    <p
+      className="text-gray-500"
+    >
+      このカテゴリーのニュースはまだありません。
+    </p>
+  </div>
+</main>
+`;
+
+exports[`NewsCategoryPage > カテゴリ別ニュース一覧が正しく表示される 1`] = `
+<main
+  className="container mx-auto px-4 py-8"
+>
+  <div
+    className="mx-auto max-w-4xl"
+  >
+    <h1
+      className="mb-8 text-3xl font-bold"
+    >
+      プレスリリース
+      のニュース一覧
+    </h1>
+    <React.Fragment>
+      <ul
+        className="divide-y divide-gray-200"
+      >
+        <li
+          className="py-4"
+        >
+          <ForwardRef(LinkComponent)
+            className="group block hover:bg-gray-50"
+            href="/news/1"
+          >
+            <div
+              className="px-4 py-4"
+            >
+              <h2
+                className="text-xl font-semibold text-gray-900 group-hover:text-blue-600"
+              >
+                ニュース1
+              </h2>
+              <time
+                className="mt-2 block text-sm text-gray-500"
+                dateTime="2024-01-01T00:00:00Z"
+              >
+                2024/1/1
+              </time>
+            </div>
+          </ForwardRef(LinkComponent)>
+        </li>
+        <li
+          className="py-4"
+        >
+          <ForwardRef(LinkComponent)
+            className="group block hover:bg-gray-50"
+            href="/news/2"
+          >
+            <div
+              className="px-4 py-4"
+            >
+              <h2
+                className="text-xl font-semibold text-gray-900 group-hover:text-blue-600"
+              >
+                ニュース2
+              </h2>
+              <time
+                className="mt-2 block text-sm text-gray-500"
+                dateTime="2024-01-02T00:00:00Z"
+              >
+                2024/1/2
+              </time>
+            </div>
+          </ForwardRef(LinkComponent)>
+        </li>
+      </ul>
+    </React.Fragment>
+  </div>
+</main>
+`;
+
+exports[`NewsCategoryPage > ページネーションが正しく動作する 1`] = `
+<main
+  className="container mx-auto px-4 py-8"
+>
+  <div
+    className="mx-auto max-w-4xl"
+  >
+    <h1
+      className="mb-8 text-3xl font-bold"
+    >
+      プレスリリース
+      のニュース一覧
+    </h1>
+    <React.Fragment>
+      <ul
+        className="divide-y divide-gray-200"
+      >
+        <li
+          className="py-4"
+        >
+          <ForwardRef(LinkComponent)
+            className="group block hover:bg-gray-50"
+            href="/news/1"
+          >
+            <div
+              className="px-4 py-4"
+            >
+              <h2
+                className="text-xl font-semibold text-gray-900 group-hover:text-blue-600"
+              >
+                ニュース1
+              </h2>
+              <time
+                className="mt-2 block text-sm text-gray-500"
+                dateTime="2024-01-01T00:00:00Z"
+              >
+                2024/1/1
+              </time>
+            </div>
+          </ForwardRef(LinkComponent)>
+        </li>
+        <li
+          className="py-4"
+        >
+          <ForwardRef(LinkComponent)
+            className="group block hover:bg-gray-50"
+            href="/news/2"
+          >
+            <div
+              className="px-4 py-4"
+            >
+              <h2
+                className="text-xl font-semibold text-gray-900 group-hover:text-blue-600"
+              >
+                ニュース2
+              </h2>
+              <time
+                className="mt-2 block text-sm text-gray-500"
+                dateTime="2024-01-02T00:00:00Z"
+              >
+                2024/1/2
+              </time>
+            </div>
+          </ForwardRef(LinkComponent)>
+        </li>
+      </ul>
+      <div
+        className="mt-8 flex justify-center space-x-2"
+      >
+        <ForwardRef(LinkComponent)
+          className="rounded border border-gray-300 px-3 py-2 text-sm hover:bg-gray-100"
+          href="/news/category/press-release?page=1"
+        >
+          前へ
+        </ForwardRef(LinkComponent)>
+        <ForwardRef(LinkComponent)
+          className="rounded px-3 py-2 text-sm border border-gray-300 hover:bg-gray-100"
+          href="/news/category/press-release?page=1"
+        >
+          1
+        </ForwardRef(LinkComponent)>
+        <ForwardRef(LinkComponent)
+          className="rounded px-3 py-2 text-sm bg-blue-500 text-white"
+          href="/news/category/press-release?page=2"
+        >
+          2
+        </ForwardRef(LinkComponent)>
+        <ForwardRef(LinkComponent)
+          className="rounded px-3 py-2 text-sm border border-gray-300 hover:bg-gray-100"
+          href="/news/category/press-release?page=3"
+        >
+          3
+        </ForwardRef(LinkComponent)>
+        <ForwardRef(LinkComponent)
+          className="rounded border border-gray-300 px-3 py-2 text-sm hover:bg-gray-100"
+          href="/news/category/press-release?page=3"
+        >
+          次へ
+        </ForwardRef(LinkComponent)>
+      </div>
+    </React.Fragment>
+  </div>
+</main>
+`;

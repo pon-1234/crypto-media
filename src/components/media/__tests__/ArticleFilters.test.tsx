@@ -3,7 +3,7 @@
  * @issue #28 - 記事一覧ページの機能拡張
  */
 import { render, screen, fireEvent } from '@testing-library/react'
-import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname, type ReadonlyURLSearchParams } from 'next/navigation'
 import { ArticleFilters } from '../ArticleFilters'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import type { Category, Tag } from '@/lib/schema'
@@ -12,6 +12,7 @@ import type { Category, Tag } from '@/lib/schema'
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
   useSearchParams: vi.fn(),
+  usePathname: vi.fn(),
 }))
 
 // ReadonlyURLSearchParamsのモック型
@@ -37,6 +38,7 @@ describe('ArticleFilters', () => {
       push: mockPush,
     } as unknown as ReturnType<typeof useRouter>)
     vi.mocked(useSearchParams).mockReturnValue(createMockSearchParams())
+    vi.mocked(usePathname).mockReturnValue('/media/articles')
   })
 
   it('フィルタオプションが正しく表示される', () => {

@@ -1,0 +1,43 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`RecruitPage > 採用情報ページが正しく表示される 1`] = `
+<main
+  className="container mx-auto px-4 py-8"
+>
+  <div
+    className="mx-auto max-w-4xl"
+  >
+    <h1
+      className="mb-8 text-3xl font-bold"
+    >
+      採用情報
+    </h1>
+    <spy
+      page={
+        {
+          "content": "<p>採用情報の内容</p>",
+          "createdAt": "2024-01-01T00:00:00Z",
+          "description": "当社の採用情報をご紹介します",
+          "id": "1",
+          "metadata": {
+            "keywords": [
+              "採用",
+              "キャリア",
+            ],
+            "ogImage": {
+              "height": 630,
+              "url": "https://example.com/og-image.jpg",
+              "width": 1200,
+            },
+          },
+          "publishedAt": "2024-01-01T00:00:00Z",
+          "revisedAt": "2024-01-01T00:00:00Z",
+          "slug": "recruit",
+          "title": "採用情報",
+          "updatedAt": "2024-01-01T00:00:00Z",
+        }
+      }
+    />
+  </div>
+</main>
+`;

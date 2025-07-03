@@ -5,7 +5,7 @@
  */
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { type Category, type Tag } from '@/lib/schema'
 
 interface ArticleFiltersProps {
@@ -30,6 +30,7 @@ export function ArticleFilters({
 }: ArticleFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
 
   /**
    * フィルタ変更時の処理
@@ -48,14 +49,16 @@ export function ArticleFilters({
     // ページ番号をリセット
     params.delete('page')
     
-    router.push(`/media/articles?${params.toString()}`)
+    // 現在のパスを維持してクエリパラメータのみ更新
+    router.push(`${pathname}?${params.toString()}`)
   }
 
   /**
    * すべてのフィルタをクリア
    */
   const clearFilters = () => {
-    router.push('/media/articles')
+    // 現在のパスを維持してクエリパラメータをクリア
+    router.push(pathname)
   }
 
   const hasActiveFilters = selectedCategory || selectedTag

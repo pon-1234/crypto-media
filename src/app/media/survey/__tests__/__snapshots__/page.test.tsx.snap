@@ -1,0 +1,289 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SurveyReportsPage > ページネーションが正しく動作する 1`] = `
+<div
+  className="min-h-screen bg-gray-50"
+>
+  <div
+    className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8"
+  >
+    <div
+      className="mb-8 sm:mb-12"
+    >
+      <h1
+        className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl"
+      >
+        調査レポート
+      </h1>
+      <p
+        className="max-w-3xl text-base text-gray-600 sm:text-lg"
+      >
+        暗号資産・ブロックチェーン市場の詳細な調査レポートと分析をお届けします。
+      </p>
+    </div>
+    <div
+      className="mb-8 lg:mb-12"
+    >
+      <spy
+        categories={
+          [
+            {
+              "createdAt": "2024-01-01T00:00:00Z",
+              "id": "cat1",
+              "name": "Market Analysis",
+              "slug": "market-analysis",
+              "updatedAt": "2024-01-01T00:00:00Z",
+            },
+          ]
+        }
+        tags={
+          [
+            {
+              "createdAt": "2024-01-01T00:00:00Z",
+              "id": "tag1",
+              "name": "Research",
+              "slug": "research",
+              "updatedAt": "2024-01-01T00:00:00Z",
+            },
+          ]
+        }
+      />
+    </div>
+    <React.Fragment>
+      <div
+        className="mb-8 grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3"
+      >
+        <spy
+          article={
+            {
+              "content": "調査内容1",
+              "createdAt": "2024-01-01T00:00:00Z",
+              "heroImage": {
+                "height": 630,
+                "url": "https://example.com/image1.jpg",
+                "width": 1200,
+              },
+              "id": "1",
+              "membershipLevel": "public",
+              "publishedAt": "2024-01-01T00:00:00Z",
+              "revisedAt": "2024-01-01T00:00:00Z",
+              "slug": "survey-1",
+              "title": "市場調査レポート1",
+              "type": "survey_report",
+              "updatedAt": "2024-01-01T00:00:00Z",
+            }
+          }
+        />
+        <spy
+          article={
+            {
+              "content": "調査内容2",
+              "createdAt": "2024-01-02T00:00:00Z",
+              "heroImage": {
+                "height": 630,
+                "url": "https://example.com/image2.jpg",
+                "width": 1200,
+              },
+              "id": "2",
+              "membershipLevel": "paid",
+              "publishedAt": "2024-01-02T00:00:00Z",
+              "revisedAt": "2024-01-02T00:00:00Z",
+              "slug": "survey-2",
+              "title": "市場調査レポート2",
+              "type": "survey_report",
+              "updatedAt": "2024-01-02T00:00:00Z",
+            }
+          }
+        />
+      </div>
+      <div
+        className="mt-8"
+      >
+        <div
+          className="mb-4 text-center"
+        >
+          <p
+            className="text-sm text-gray-600 sm:text-base"
+          >
+            全
+            30
+            件中
+            13
+            -
+            14
+            件を表示
+          </p>
+        </div>
+        <spy
+          className="mt-8"
+          currentPage={2}
+          totalPages={3}
+        />
+      </div>
+    </React.Fragment>
+  </div>
+</div>
+`;
+
+exports[`SurveyReportsPage > 記事が0件の場合、メッセージを表示する 1`] = `
+<div
+  className="min-h-screen bg-gray-50"
+>
+  <div
+    className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8"
+  >
+    <div
+      className="mb-8 sm:mb-12"
+    >
+      <h1
+        className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl"
+      >
+        調査レポート
+      </h1>
+      <p
+        className="max-w-3xl text-base text-gray-600 sm:text-lg"
+      >
+        暗号資産・ブロックチェーン市場の詳細な調査レポートと分析をお届けします。
+      </p>
+    </div>
+    <div
+      className="mb-8 lg:mb-12"
+    >
+      <spy
+        categories={
+          [
+            {
+              "createdAt": "2024-01-01T00:00:00Z",
+              "id": "cat1",
+              "name": "Market Analysis",
+              "slug": "market-analysis",
+              "updatedAt": "2024-01-01T00:00:00Z",
+            },
+          ]
+        }
+        tags={
+          [
+            {
+              "createdAt": "2024-01-01T00:00:00Z",
+              "id": "tag1",
+              "name": "Research",
+              "slug": "research",
+              "updatedAt": "2024-01-01T00:00:00Z",
+            },
+          ]
+        }
+      />
+    </div>
+    <div
+      className="py-16 text-center sm:py-24"
+    >
+      <p
+        className="text-gray-600"
+      >
+        調査レポートがありません。
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SurveyReportsPage > 調査レポート一覧を正しく表示する 1`] = `
+<div
+  className="min-h-screen bg-gray-50"
+>
+  <div
+    className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8"
+  >
+    <div
+      className="mb-8 sm:mb-12"
+    >
+      <h1
+        className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl"
+      >
+        調査レポート
+      </h1>
+      <p
+        className="max-w-3xl text-base text-gray-600 sm:text-lg"
+      >
+        暗号資産・ブロックチェーン市場の詳細な調査レポートと分析をお届けします。
+      </p>
+    </div>
+    <div
+      className="mb-8 lg:mb-12"
+    >
+      <spy
+        categories={
+          [
+            {
+              "createdAt": "2024-01-01T00:00:00Z",
+              "id": "cat1",
+              "name": "Market Analysis",
+              "slug": "market-analysis",
+              "updatedAt": "2024-01-01T00:00:00Z",
+            },
+          ]
+        }
+        tags={
+          [
+            {
+              "createdAt": "2024-01-01T00:00:00Z",
+              "id": "tag1",
+              "name": "Research",
+              "slug": "research",
+              "updatedAt": "2024-01-01T00:00:00Z",
+            },
+          ]
+        }
+      />
+    </div>
+    <React.Fragment>
+      <div
+        className="mb-8 grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3"
+      >
+        <spy
+          article={
+            {
+              "content": "調査内容1",
+              "createdAt": "2024-01-01T00:00:00Z",
+              "heroImage": {
+                "height": 630,
+                "url": "https://example.com/image1.jpg",
+                "width": 1200,
+              },
+              "id": "1",
+              "membershipLevel": "public",
+              "publishedAt": "2024-01-01T00:00:00Z",
+              "revisedAt": "2024-01-01T00:00:00Z",
+              "slug": "survey-1",
+              "title": "市場調査レポート1",
+              "type": "survey_report",
+              "updatedAt": "2024-01-01T00:00:00Z",
+            }
+          }
+        />
+        <spy
+          article={
+            {
+              "content": "調査内容2",
+              "createdAt": "2024-01-02T00:00:00Z",
+              "heroImage": {
+                "height": 630,
+                "url": "https://example.com/image2.jpg",
+                "width": 1200,
+              },
+              "id": "2",
+              "membershipLevel": "paid",
+              "publishedAt": "2024-01-02T00:00:00Z",
+              "revisedAt": "2024-01-02T00:00:00Z",
+              "slug": "survey-2",
+              "title": "市場調査レポート2",
+              "type": "survey_report",
+              "updatedAt": "2024-01-02T00:00:00Z",
+            }
+          }
+        />
+      </div>
+    </React.Fragment>
+  </div>
+</div>
+`;
