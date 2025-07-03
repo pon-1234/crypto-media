@@ -17,6 +17,8 @@ import {
   getMediaArticlesByAuthor,
   getMediaArticlesBySupervisor,
   getMediaArticlesByFeature,
+  getMediaArticlesByType,
+  getMediaArticlesByMembershipLevel,
 } from '../media-articles'
 import type { MediaArticle } from '@/lib/schema'
 
@@ -415,6 +417,50 @@ describe('media-articles API', () => {
         endpoint: 'media_articles',
         queries: {
           filters: 'features[contains]feature-1',
+          limit: 100,
+          orders: '-publishedAt',
+        },
+      })
+      expect(result).toEqual(mockResponse)
+    })
+  })
+
+  describe('getMediaArticlesByType', () => {
+    it('記事タイプ別の記事一覧を取得できる', async () => {
+      const mockResponse = {
+        contents: [createMockArticle({ type: 'survey_report' })],
+        totalCount: 1,
+        offset: 0,
+        limit: 100,
+      }
+      vi.mocked(client.getList).mockResolvedValueOnce(mockResponse)
+      const result = await getMediaArticlesByType('survey_report')
+      expect(client.getList).toHaveBeenCalledWith({
+        endpoint: 'media_articles',
+        queries: {
+          filters: 'type[equals]survey_report',
+          limit: 100,
+          orders: '-publishedAt',
+        },
+      })
+      expect(result).toEqual(mockResponse)
+    })
+  })
+
+  describe('getMediaArticlesByMembershipLevel', () => {
+    it('会員レベル別の記事一覧を取得できる', async () => {
+      const mockResponse = {
+        contents: [createMockArticle({ membershipLevel: 'paid' })],
+        totalCount: 1,
+        offset: 0,
+        limit: 100,
+      }
+      vi.mocked(client.getList).mockResolvedValueOnce(mockResponse)
+      const result = await getMediaArticlesByMembershipLevel('paid')
+      expect(client.getList).toHaveBeenCalledWith({
+        endpoint: 'media_articles',
+        queries: {
+          filters: 'membershipLevel[equals]paid',
           limit: 100,
           orders: '-publishedAt',
         },
