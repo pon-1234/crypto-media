@@ -114,7 +114,6 @@ describe('sendEmail', () => {
   })
 
   it('開発環境でSendGridが設定されていない場合、メール内容をコンソールに出力してエラーをスローする', async () => {
-    const originalNodeEnv = process.env.NODE_ENV
     // テストのためのNODE_ENV変更
     vi.stubEnv('NODE_ENV', 'development')
 
@@ -139,7 +138,6 @@ describe('sendEmail', () => {
   })
 
   it('本番環境でSendGridが設定されていない場合、メール内容をコンソールに出力せずエラーをスローする', async () => {
-    const originalNodeEnv = process.env.NODE_ENV
     // テストのためのNODE_ENV変更
     vi.stubEnv('NODE_ENV', 'production')
 

@@ -162,7 +162,6 @@ describe('POST /api/auth/forgot-password', () => {
   })
 
   it('開発環境ではリセットURLも返す', async () => {
-    const originalNodeEnv = process.env.NODE_ENV
     vi.stubEnv('NODE_ENV', 'development')
 
     const mockEmail = 'test@example.com'
