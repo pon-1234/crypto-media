@@ -98,7 +98,7 @@ describe('PremiumArticlesPage', () => {
       limit: 12,
       offset: 0,
       orders: '-publishedAt',
-      filters: undefined,
+      filters: 'membershipLevel[equals]paid',
     })
     expect(page).toMatchSnapshot()
   })
@@ -129,7 +129,7 @@ describe('PremiumArticlesPage', () => {
       limit: 12,
       offset: 12,
       orders: '-publishedAt',
-      filters: undefined,
+      filters: 'membershipLevel[equals]paid',
     })
     expect(page).toMatchSnapshot()
   })
@@ -170,6 +170,52 @@ describe('PremiumArticlesPage', () => {
       offset: 0,
       orders: '-publishedAt',
       filters: 'membershipLevel[equals]paid[and]category[equals]cat1',
+    })
+  })
+
+  it('指定されたカテゴリが存在しない場合、カテゴリフィルタは適用されない', async () => {
+    vi.mocked(getCategories)
+      .mockResolvedValueOnce({ contents: [], totalCount: 0, offset: 0, limit: 1 }) // No category found
+      .mockResolvedValueOnce({ contents: mockCategories, totalCount: 1, offset: 0, limit: 100 }) // For filters
+    
+    vi.mocked(getMediaArticlesByMembershipLevel).mockResolvedValue({
+      contents: mockArticles,
+      totalCount: 2,
+      offset: 0,
+      limit: 12,
+    })
+    vi.mocked(getTags).mockResolvedValue({ contents: mockTags, totalCount: 1, offset: 0, limit: 100 })
+
+    await PremiumArticlesPage({ searchParams: { category: 'unknown' } })
+
+    expect(getMediaArticlesByMembershipLevel).toHaveBeenCalledWith('paid', {
+      limit: 12,
+      offset: 0,
+      orders: '-publishedAt',
+      filters: 'membershipLevel[equals]paid',
+    })
+  })
+
+  it('指定されたタグが存在しない場合、タグフィルタは適用されない', async () => {
+    vi.mocked(getTags)
+      .mockResolvedValueOnce({ contents: [], totalCount: 0, offset: 0, limit: 1 }) // No tag found
+      .mockResolvedValueOnce({ contents: mockTags, totalCount: 1, offset: 0, limit: 100 }) // For filters
+
+    vi.mocked(getMediaArticlesByMembershipLevel).mockResolvedValue({
+      contents: mockArticles,
+      totalCount: 2,
+      offset: 0,
+      limit: 12,
+    })
+    vi.mocked(getCategories).mockResolvedValue({ contents: mockCategories, totalCount: 1, offset: 0, limit: 100 })
+
+    await PremiumArticlesPage({ searchParams: { tag: 'unknown' } })
+
+    expect(getMediaArticlesByMembershipLevel).toHaveBeenCalledWith('paid', {
+      limit: 12,
+      offset: 0,
+      orders: '-publishedAt',
+      filters: 'membershipLevel[equals]paid',
     })
   })
 

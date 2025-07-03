@@ -87,7 +87,7 @@ export default async function SurveyReportsPage({ searchParams }: SurveyReportsP
         limit,
         offset,
         orders: '-publishedAt',
-        filters: filters.length > 1 ? filters.join('[and]') : undefined,
+        filters: filters.length > 0 ? filters.join('[and]') : undefined,
       }),
       getCategories({ limit: 100 }),
       getTags({ limit: 100 }),
@@ -129,7 +129,7 @@ export default async function SurveyReportsPage({ searchParams }: SurveyReportsP
           <>
             <div className="mb-8 grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
               {articlesResponse.contents.map((article) => (
-                <ArticleCard key={article.id} article={article as any} />
+                <ArticleCard key={article.id} article={article} />
               ))}
             </div>
 

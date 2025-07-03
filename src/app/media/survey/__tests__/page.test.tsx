@@ -98,7 +98,7 @@ describe('SurveyReportsPage', () => {
       limit: 12,
       offset: 0,
       orders: '-publishedAt',
-      filters: undefined,
+      filters: 'type[equals]survey_report',
     })
     expect(page).toMatchSnapshot()
   })
@@ -129,7 +129,7 @@ describe('SurveyReportsPage', () => {
       limit: 12,
       offset: 12,
       orders: '-publishedAt',
-      filters: undefined,
+      filters: 'type[equals]survey_report',
     })
     expect(page).toMatchSnapshot()
   })
@@ -170,6 +170,52 @@ describe('SurveyReportsPage', () => {
       offset: 0,
       orders: '-publishedAt',
       filters: 'type[equals]survey_report[and]tags[contains]tag1',
+    })
+  })
+
+  it('指定されたカテゴリが存在しない場合、カテゴリフィルタは適用されない', async () => {
+    vi.mocked(getCategories)
+      .mockResolvedValueOnce({ contents: [], totalCount: 0, offset: 0, limit: 1 }) // No category found
+      .mockResolvedValueOnce({ contents: mockCategories, totalCount: 1, offset: 0, limit: 100 }) // For filters
+
+    vi.mocked(getMediaArticlesByType).mockResolvedValue({
+      contents: mockArticles,
+      totalCount: 2,
+      offset: 0,
+      limit: 12,
+    })
+    vi.mocked(getTags).mockResolvedValue({ contents: mockTags, totalCount: 1, offset: 0, limit: 100 })
+
+    await SurveyReportsPage({ searchParams: { category: 'unknown' } })
+
+    expect(getMediaArticlesByType).toHaveBeenCalledWith('survey_report', {
+      limit: 12,
+      offset: 0,
+      orders: '-publishedAt',
+      filters: 'type[equals]survey_report',
+    })
+  })
+
+  it('指定されたタグが存在しない場合、タグフィルタは適用されない', async () => {
+    vi.mocked(getTags)
+      .mockResolvedValueOnce({ contents: [], totalCount: 0, offset: 0, limit: 1 }) // No tag found
+      .mockResolvedValueOnce({ contents: mockTags, totalCount: 1, offset: 0, limit: 100 }) // For filters
+
+    vi.mocked(getMediaArticlesByType).mockResolvedValue({
+      contents: mockArticles,
+      totalCount: 2,
+      offset: 0,
+      limit: 12,
+    })
+    vi.mocked(getCategories).mockResolvedValue({ contents: mockCategories, totalCount: 1, offset: 0, limit: 100 })
+
+    await SurveyReportsPage({ searchParams: { tag: 'unknown' } })
+
+    expect(getMediaArticlesByType).toHaveBeenCalledWith('survey_report', {
+      limit: 12,
+      offset: 0,
+      orders: '-publishedAt',
+      filters: 'type[equals]survey_report',
     })
   })
 

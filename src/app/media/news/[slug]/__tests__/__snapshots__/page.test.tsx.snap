@@ -1,5 +1,204 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`MediaNewsDetailPage > supervisorとtagsを持つ記事を正しく表示する 1`] = `
+<article
+  className="min-h-screen bg-white"
+>
+  <div
+    className="relative aspect-[16/9] w-full"
+  >
+    <ForwardRef
+      alt="メディアニュース記事"
+      className="object-cover"
+      fill={true}
+      priority={true}
+      sizes="100vw"
+      src="https://example.com/image.jpg"
+    />
+  </div>
+  <div
+    className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8"
+  >
+    <header
+      className="mb-8"
+    >
+      <ForwardRef(LinkComponent)
+        className="mb-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700"
+        href="/media/category/announcement"
+      >
+        お知らせ
+      </ForwardRef(LinkComponent)>
+      <h1
+        className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl"
+      >
+        メディアニュース記事
+      </h1>
+      <div
+        className="flex flex-wrap items-center gap-4 text-sm text-gray-600"
+      >
+        <time
+          dateTime="2024-01-01T00:00:00Z"
+        >
+          2024年01月01日
+        </time>
+        <ForwardRef(LinkComponent)
+          className="hover:text-gray-900"
+          href="/media/experts/author"
+        >
+          執筆: 
+          執筆者
+        </ForwardRef(LinkComponent)>
+        <ForwardRef(LinkComponent)
+          className="hover:text-gray-900"
+          href="/media/experts/supervisor"
+        >
+          監修: 
+          監修者
+        </ForwardRef(LinkComponent)>
+      </div>
+      <div
+        className="mt-4 flex flex-wrap gap-2"
+      >
+        <ForwardRef(LinkComponent)
+          className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200"
+          href="/media/tag/update"
+        >
+          #
+          Update
+        </ForwardRef(LinkComponent)>
+      </div>
+    </header>
+    <div
+      className="prose prose-lg max-w-none"
+      dangerouslySetInnerHTML={
+        {
+          "__html": "<p>記事の内容</p>",
+        }
+      }
+    />
+    <section
+      className="mt-12 border-t pt-8"
+    >
+      <h2
+        className="mb-6 text-xl font-bold text-gray-900 sm:text-2xl"
+      >
+        関連記事
+      </h2>
+      <div
+        className="grid grid-cols-1 gap-6 md:grid-cols-3"
+      >
+        <spy
+          article={
+            {
+              "author": {
+                "avatar": {
+                  "height": 100,
+                  "url": "",
+                  "width": 100,
+                },
+                "createdAt": "2024-01-01T00:00:00Z",
+                "id": "author1",
+                "name": "執筆者",
+                "profile": "",
+                "role": [
+                  "執筆者",
+                ],
+                "slug": "author",
+                "updatedAt": "2024-01-01T00:00:00Z",
+              },
+              "category": {
+                "createdAt": "2024-01-01T00:00:00Z",
+                "id": "cat1",
+                "name": "お知らせ",
+                "slug": "announcement",
+                "updatedAt": "2024-01-01T00:00:00Z",
+              },
+              "content": "<p>記事の内容</p>",
+              "createdAt": "2024-01-01T00:00:00Z",
+              "heroImage": {
+                "height": 630,
+                "url": "https://example.com/image.jpg",
+                "width": 1200,
+              },
+              "id": "2",
+              "membershipLevel": "public",
+              "publishedAt": "2024-01-01T00:00:00Z",
+              "revisedAt": "2024-01-01T00:00:00Z",
+              "slug": "related-1",
+              "tags": [
+                {
+                  "createdAt": "2024-01-01T00:00:00Z",
+                  "id": "tag1",
+                  "name": "Update",
+                  "slug": "update",
+                  "updatedAt": "2024-01-01T00:00:00Z",
+                },
+              ],
+              "title": "関連記事1",
+              "type": "media_news",
+              "updatedAt": "2024-01-01T00:00:00Z",
+            }
+          }
+        />
+        <spy
+          article={
+            {
+              "author": {
+                "avatar": {
+                  "height": 100,
+                  "url": "",
+                  "width": 100,
+                },
+                "createdAt": "2024-01-01T00:00:00Z",
+                "id": "author1",
+                "name": "執筆者",
+                "profile": "",
+                "role": [
+                  "執筆者",
+                ],
+                "slug": "author",
+                "updatedAt": "2024-01-01T00:00:00Z",
+              },
+              "category": {
+                "createdAt": "2024-01-01T00:00:00Z",
+                "id": "cat1",
+                "name": "お知らせ",
+                "slug": "announcement",
+                "updatedAt": "2024-01-01T00:00:00Z",
+              },
+              "content": "<p>記事の内容</p>",
+              "createdAt": "2024-01-01T00:00:00Z",
+              "heroImage": {
+                "height": 630,
+                "url": "https://example.com/image.jpg",
+                "width": 1200,
+              },
+              "id": "3",
+              "membershipLevel": "public",
+              "publishedAt": "2024-01-01T00:00:00Z",
+              "revisedAt": "2024-01-01T00:00:00Z",
+              "slug": "related-2",
+              "tags": [
+                {
+                  "createdAt": "2024-01-01T00:00:00Z",
+                  "id": "tag1",
+                  "name": "Update",
+                  "slug": "update",
+                  "updatedAt": "2024-01-01T00:00:00Z",
+                },
+              ],
+              "title": "関連記事2",
+              "type": "media_news",
+              "updatedAt": "2024-01-01T00:00:00Z",
+            }
+          }
+        />
+      </div>
+    </section>
+  </div>
+</article>
+`;
+
 exports[`MediaNewsDetailPage > アクセス権限がない場合は Paywall を表示する 1`] = `
 <article
   className="min-h-screen bg-white"
@@ -262,6 +461,79 @@ exports[`MediaNewsDetailPage > メディアニュース記事を正しく表示�
         />
       </div>
     </section>
+  </div>
+</article>
+`;
+
+exports[`MediaNewsDetailPage > 関連記事の取得に失敗してもページが正常に表示される 1`] = `
+<article
+  className="min-h-screen bg-white"
+>
+  <div
+    className="relative aspect-[16/9] w-full"
+  >
+    <ForwardRef
+      alt="メディアニュース記事"
+      className="object-cover"
+      fill={true}
+      priority={true}
+      sizes="100vw"
+      src="https://example.com/image.jpg"
+    />
+  </div>
+  <div
+    className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8"
+  >
+    <header
+      className="mb-8"
+    >
+      <ForwardRef(LinkComponent)
+        className="mb-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700"
+        href="/media/category/announcement"
+      >
+        お知らせ
+      </ForwardRef(LinkComponent)>
+      <h1
+        className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl"
+      >
+        メディアニュース記事
+      </h1>
+      <div
+        className="flex flex-wrap items-center gap-4 text-sm text-gray-600"
+      >
+        <time
+          dateTime="2024-01-01T00:00:00Z"
+        >
+          2024年01月01日
+        </time>
+        <ForwardRef(LinkComponent)
+          className="hover:text-gray-900"
+          href="/media/experts/author"
+        >
+          執筆: 
+          執筆者
+        </ForwardRef(LinkComponent)>
+      </div>
+      <div
+        className="mt-4 flex flex-wrap gap-2"
+      >
+        <ForwardRef(LinkComponent)
+          className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200"
+          href="/media/tag/update"
+        >
+          #
+          Update
+        </ForwardRef(LinkComponent)>
+      </div>
+    </header>
+    <div
+      className="prose prose-lg max-w-none"
+      dangerouslySetInnerHTML={
+        {
+          "__html": "<p>記事の内容</p>",
+        }
+      }
+    />
   </div>
 </article>
 `;

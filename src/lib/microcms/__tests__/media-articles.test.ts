@@ -505,6 +505,11 @@ describe('media-articles API', () => {
 
       expect(result).toHaveLength(3)
       expect(client.getList).toHaveBeenCalledTimes(2)
+      expect(result.map((r) => r.id)).toEqual([
+        'related-1',
+        'latest-1',
+        'latest-2',
+      ])
     })
 
     it('カテゴリがない場合は最新記事を取得する', async () => {

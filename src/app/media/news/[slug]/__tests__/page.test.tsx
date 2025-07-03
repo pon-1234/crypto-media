@@ -17,7 +17,11 @@ vi.mock('next/navigation', () => ({
 }))
 
 vi.mock('next/headers', () => ({
-  draftMode: vi.fn(() => ({ isEnabled: false })),
+  draftMode: vi.fn(() => ({
+    isEnabled: false,
+    enable: vi.fn(),
+    disable: vi.fn(),
+  })),
 }))
 
 vi.mock('@/lib/microcms', () => ({
@@ -66,6 +70,20 @@ describe('MediaNewsDetailPage', () => {
     revisedAt: '2024-01-01T00:00:00Z',
   }
 
+  const mockArticleWithSupervisor: MediaArticle = {
+    ...mockArticle,
+    supervisor: {
+      id: 'supervisor1',
+      name: '監修者',
+      slug: 'supervisor',
+      role: ['監修者'],
+      profile: '',
+      avatar: { url: '', width: 100, height: 100 },
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+    },
+  }
+
   const mockRelatedArticles: MediaArticle[] = [
     { ...mockArticle, id: '2', title: '関連記事1', slug: 'related-1' },
     { ...mockArticle, id: '3', title: '関連記事2', slug: 'related-2' },
@@ -83,6 +101,38 @@ describe('MediaNewsDetailPage', () => {
 
     expect(getMediaArticleBySlug).toHaveBeenCalledWith('media-news-article', undefined)
     expect(page).toMatchSnapshot()
+  })
+
+  it('supervisorとtagsを持つ記事を正しく表示する', async () => {
+    vi.mocked(getMediaArticleBySlug).mockResolvedValue(mockArticleWithSupervisor)
+    vi.mocked(getRelatedArticles).mockResolvedValue(mockRelatedArticles)
+    vi.mocked(hasAccess).mockResolvedValue(true)
+
+    const page = await MediaNewsDetailPage({
+      params: { slug: 'media-news-article-with-supervisor' },
+      searchParams: {},
+    })
+
+    expect(page).toMatchSnapshot()
+  })
+
+  it('関連記事の取得に失敗してもページが正常に表示される', async () => {
+    vi.mocked(getMediaArticleBySlug).mockResolvedValue(mockArticle)
+    vi.mocked(getRelatedArticles).mockRejectedValue(new Error('API Error'))
+    vi.mocked(hasAccess).mockResolvedValue(true)
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    const page = await MediaNewsDetailPage({
+      params: { slug: 'media-news-article' },
+      searchParams: {},
+    })
+
+    expect(page).toMatchSnapshot()
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Failed to fetch related articles:',
+      expect.any(Error)
+    )
+    consoleErrorSpy.mockRestore()
   })
 
   it('type が media_news でない場合は notFound を呼ぶ', async () => {
@@ -128,7 +178,11 @@ describe('MediaNewsDetailPage', () => {
   })
 
   it('プレビューモードで記事を表示する', async () => {
-    vi.mocked(draftMode).mockResolvedValue({ isEnabled: true, enable: vi.fn(), disable: vi.fn() } as any)
+    vi.mocked(draftMode).mockReturnValue({
+      isEnabled: true,
+      enable: vi.fn(),
+      disable: vi.fn(),
+    })
     vi.mocked(getMediaArticleBySlug).mockResolvedValue(mockArticle)
     vi.mocked(getRelatedArticles).mockResolvedValue([])
     vi.mocked(hasAccess).mockResolvedValue(true)
@@ -157,12 +211,26 @@ describe('MediaNewsDetailPage', () => {
         openGraph: expect.objectContaining({
           title: 'メディアニュース記事',
           type: 'article',
+          authors: ['執筆者'],
         }),
         twitter: expect.objectContaining({
           card: 'summary_large_image',
           title: 'メディアニュース記事',
         }),
       })
+    })
+
+    it('authorがいない記事のメタデータを正しく生成する', async () => {
+      const articleWithoutAuthor = { ...mockArticle, author: undefined }
+      vi.mocked(getMediaArticleBySlug).mockResolvedValue(articleWithoutAuthor)
+
+      const metadata = await generateMetadata({
+        params: { slug: 'media-news-article' },
+        searchParams: {},
+      })
+
+      // @ts-expect-error: `authors` is a valid property but may not be in the current type definition
+      expect(metadata.openGraph?.authors).toBeUndefined()
     })
 
     it('type が media_news でない場合はエラーメタデータを返す', async () => {
