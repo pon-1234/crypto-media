@@ -195,4 +195,21 @@ describe('ArticleFilters', () => {
     expect(screen.queryByText('すべてクリア')).not.toBeInTheDocument()
     expect(screen.queryByText('適用中のフィルタ:')).not.toBeInTheDocument()
   })
+
+  it('存在しないフィルタが選択されてもエラーにならない', () => {
+    render(
+      <ArticleFilters
+        categories={mockCategories}
+        tags={mockTags}
+        selectedCategory="invalid-category"
+        selectedTag="invalid-tag"
+      />
+    )
+
+    expect(screen.getByText('適用中のフィルタ:')).toBeInTheDocument()
+    // カテゴリ名が表示されないことを確認
+    expect(screen.queryByText('カテゴリ: ')).toBeNull()
+    // タグ名が表示されないことを確認
+    expect(screen.queryByText('タグ: ')).toBeNull()
+  })
 })
