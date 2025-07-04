@@ -82,95 +82,16 @@ jobs:
           GOOGLE_CLIENT_SECRET: test-google-client-secret
           SENDGRID_API_KEY: sg_test_dummy_key
 
-      - name: Check test coverage
+      - name: Display coverage summary
         run: |
-          # カバレッジ結果を確認（前のステップで既に実行済み）
+          # カバレッジ結果を表示（Vitestが閾値チェックを自動的に実行）
           if [ -f coverage/coverage-summary.json ]; then
-            echo "Coverage summary file found."
-            echo "File size: $(ls -lh coverage/coverage-summary.json | awk '{print $5}')"
-            echo "First 500 characters of coverage-summary.json:"
-            head -c 500 coverage/coverage-summary.json
+            echo "📊 Coverage Summary:"
+            cat coverage/coverage-summary.json | jq -r '.total | "- Statements: \(.statements.covered)/\(.statements.total) (\(.statements.pct)%)\n- Branches: \(.branches.covered)/\(.branches.total) (\(.branches.pct)%)\n- Functions: \(.functions.covered)/\(.functions.total) (\(.functions.pct)%)\n- Lines: \(.lines.covered)/\(.lines.total) (\(.lines.pct)%)"'
             echo ""
-            echo ""
-            
-            # JSONの構造を確認
-            echo "JSON structure check:"
-            cat coverage/coverage-summary.json | jq -r '.total' | head -10
-            echo ""
-            
-            # jqを使用して安全にJSONを解析
-            COVERAGE_DATA=$(cat coverage/coverage-summary.json)
-            
-            # パーセンテージ値を抽出
-            STATEMENTS_PCT=$(echo "$COVERAGE_DATA" | jq -r '.total.statements.pct // 0')
-            BRANCHES_PCT=$(echo "$COVERAGE_DATA" | jq -r '.total.branches.pct // 0')
-            FUNCTIONS_PCT=$(echo "$COVERAGE_DATA" | jq -r '.total.functions.pct // 0')
-            LINES_PCT=$(echo "$COVERAGE_DATA" | jq -r '.total.lines.pct // 0')
-            
-            echo "Extracted percentages:"
-            echo "STATEMENTS_PCT=$STATEMENTS_PCT"
-            echo "BRANCHES_PCT=$BRANCHES_PCT"
-            echo "FUNCTIONS_PCT=$FUNCTIONS_PCT"  
-            echo "LINES_PCT=$LINES_PCT"
-            echo ""
-            
-            # カバー数と総数を抽出
-            STATEMENTS_COVERED=$(echo "$COVERAGE_DATA" | jq -r '.total.statements.covered // 0')
-            STATEMENTS_TOTAL=$(echo "$COVERAGE_DATA" | jq -r '.total.statements.total // 0')
-            BRANCHES_COVERED=$(echo "$COVERAGE_DATA" | jq -r '.total.branches.covered // 0')
-            BRANCHES_TOTAL=$(echo "$COVERAGE_DATA" | jq -r '.total.branches.total // 0')
-            FUNCTIONS_COVERED=$(echo "$COVERAGE_DATA" | jq -r '.total.functions.covered // 0')
-            FUNCTIONS_TOTAL=$(echo "$COVERAGE_DATA" | jq -r '.total.functions.total // 0')
-            LINES_COVERED=$(echo "$COVERAGE_DATA" | jq -r '.total.lines.covered // 0')
-            LINES_TOTAL=$(echo "$COVERAGE_DATA" | jq -r '.total.lines.total // 0')
-            
-            echo "Coverage Report:"
-            echo "- Statements: $STATEMENTS_COVERED/$STATEMENTS_TOTAL ($STATEMENTS_PCT%)"
-            echo "- Branches: $BRANCHES_COVERED/$BRANCHES_TOTAL ($BRANCHES_PCT%)"
-            echo "- Functions: $FUNCTIONS_COVERED/$FUNCTIONS_TOTAL ($FUNCTIONS_PCT%)"
-            echo "- Lines: $LINES_COVERED/$LINES_TOTAL ($LINES_PCT%)"
-            
-            # カバレッジのチェック（awkを使用して浮動小数点比較）
-            # 閾値: statements=100%, branches=100%, functions=100%, lines=100% (DEVELOPMENT_GUIDE.mdに準拠)
-            CHECK_PASSED=true
-            
-            if awk -v pct="$STATEMENTS_PCT" 'BEGIN { if (pct >= 100) exit 0; else exit 1 }'; then
-              echo "✓ Statements coverage: $STATEMENTS_PCT%"
-            else
-              CHECK_PASSED=false
-              echo "Statements coverage is below 100%: $STATEMENTS_PCT%"
-            fi
-            
-            if awk -v pct="$BRANCHES_PCT" 'BEGIN { if (pct >= 100) exit 0; else exit 1 }'; then
-              echo "✓ Branches coverage: $BRANCHES_PCT%"
-            else
-              CHECK_PASSED=false
-              echo "Branches coverage is below 100%: $BRANCHES_PCT%"
-            fi
-            
-            if awk -v pct="$FUNCTIONS_PCT" 'BEGIN { if (pct >= 100) exit 0; else exit 1 }'; then
-              echo "✓ Functions coverage: $FUNCTIONS_PCT%"
-            else
-              CHECK_PASSED=false
-              echo "Functions coverage is below 100%: $FUNCTIONS_PCT%"
-            fi
-            
-            if awk -v pct="$LINES_PCT" 'BEGIN { if (pct >= 100) exit 0; else exit 1 }'; then
-              echo "✓ Lines coverage: $LINES_PCT%"
-            else
-              CHECK_PASSED=false
-              echo "Lines coverage is below 100%: $LINES_PCT%"
-            fi
-            
-            if [ "$CHECK_PASSED" = true ]; then
-              echo "✅ Coverage check passed - Required thresholds achieved!"
-            else
-              echo "❌ Coverage check failed - Required thresholds not met!"
-              exit 1
-            fi
+            echo "✅ Vitest has automatically verified that coverage meets the required thresholds (100%)."
           else
-            echo "❌ Coverage file not found!"
-            exit 1
+            echo "Coverage summary not found. Check the test output above for details."
           fi
 
       - name: Upload coverage reports

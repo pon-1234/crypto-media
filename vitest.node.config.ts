@@ -33,8 +33,14 @@ export default defineConfig({
     coverage: process.env.CI === 'true' ? {
       enabled: true,
       provider: 'v8',
-      reporter: ['json', 'json-summary'],
+      reporter: ['json', 'json-summary', 'text'],
       reportsDirectory: './coverage/node',
+      thresholds: {
+        statements: 100,
+        branches: 100,
+        functions: 100,
+        lines: 100,
+      },
     } : {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
