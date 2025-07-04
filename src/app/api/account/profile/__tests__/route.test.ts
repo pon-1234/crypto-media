@@ -1,3 +1,4 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { PATCH } from '../route'
 import { getServerSession, Session } from 'next-auth'
 import { adminDb } from '@/lib/firebase/admin'
@@ -6,13 +7,22 @@ import { WriteResult } from 'firebase-admin/firestore'
 
 // モックの設定
 vi.mock('next-auth')
-vi.mock('@/lib/firebase/admin', () => ({
-  adminDb: {
-    collection: vi.fn().mockReturnThis(),
-    doc: vi.fn().mockReturnThis(),
-    update: vi.fn(),
-  },
-}))
+vi.mock('@/lib/firebase/admin', () => {
+  const mockUpdate = vi.fn()
+  const mockDoc = vi.fn(() => ({
+    update: mockUpdate,
+  }))
+  const mockCollection = vi.fn(() => ({
+    doc: mockDoc,
+  }))
+  return {
+    adminDb: {
+      collection: mockCollection,
+      doc: mockDoc, // test内で collection('...').doc() を参照するため
+      update: mockUpdate, // test内で collection('...').doc().update() を参照するため
+    },
+  }
+})
 
 describe('PATCH /api/account/profile', () => {
   const mockSession: Session = {

@@ -37,7 +37,27 @@ jobs:
         run: pnpm typecheck
 
       - name: Run tests with coverage
-        run: pnpm test:run --coverage
+        run: |
+          # JSDOMテストとNodeテストを並列実行
+          pnpm test:ci:jsdom &
+          JSDOM_PID=$!
+          pnpm test:ci:node &
+          NODE_PID=$!
+          
+          # 両方のテストが完了するまで待機
+          wait $JSDOM_PID
+          JSDOM_EXIT=$?
+          wait $NODE_PID
+          NODE_EXIT=$?
+          
+          # いずれかのテストが失敗した場合はエラー
+          if [ $JSDOM_EXIT -ne 0 ] || [ $NODE_EXIT -ne 0 ]; then
+            echo "Tests failed"
+            exit 1
+          fi
+          
+          # カバレッジをマージ
+          pnpm test:ci:merge-coverage
         env:
           CI: true
           NODE_ENV: test
@@ -111,35 +131,35 @@ jobs:
             echo "- Lines: $LINES_COVERED/$LINES_TOTAL ($LINES_PCT%)"
             
             # カバレッジのチェック（awkを使用して浮動小数点比較）
-            # 閾値: statements=95%, branches=90%, functions=95%, lines=95% (変更後)
+            # 閾値: statements=100%, branches=100%, functions=100%, lines=100% (DEVELOPMENT_GUIDE.mdに準拠)
             CHECK_PASSED=true
             
-            if awk -v pct="$STATEMENTS_PCT" 'BEGIN { if (pct >= 95) exit 0; else exit 1 }'; then
+            if awk -v pct="$STATEMENTS_PCT" 'BEGIN { if (pct >= 100) exit 0; else exit 1 }'; then
               echo "✓ Statements coverage: $STATEMENTS_PCT%"
             else
               CHECK_PASSED=false
-              echo "Statements coverage is below 95%: $STATEMENTS_PCT%"
+              echo "Statements coverage is below 100%: $STATEMENTS_PCT%"
             fi
             
-            if awk -v pct="$BRANCHES_PCT" 'BEGIN { if (pct >= 90) exit 0; else exit 1 }'; then
+            if awk -v pct="$BRANCHES_PCT" 'BEGIN { if (pct >= 100) exit 0; else exit 1 }'; then
               echo "✓ Branches coverage: $BRANCHES_PCT%"
             else
               CHECK_PASSED=false
-              echo "Branches coverage is below 90%: $BRANCHES_PCT%"
+              echo "Branches coverage is below 100%: $BRANCHES_PCT%"
             fi
             
-            if awk -v pct="$FUNCTIONS_PCT" 'BEGIN { if (pct >= 95) exit 0; else exit 1 }'; then
+            if awk -v pct="$FUNCTIONS_PCT" 'BEGIN { if (pct >= 100) exit 0; else exit 1 }'; then
               echo "✓ Functions coverage: $FUNCTIONS_PCT%"
             else
               CHECK_PASSED=false
-              echo "Functions coverage is below 95%: $FUNCTIONS_PCT%"
+              echo "Functions coverage is below 100%: $FUNCTIONS_PCT%"
             fi
             
-            if awk -v pct="$LINES_PCT" 'BEGIN { if (pct >= 95) exit 0; else exit 1 }'; then
+            if awk -v pct="$LINES_PCT" 'BEGIN { if (pct >= 100) exit 0; else exit 1 }'; then
               echo "✓ Lines coverage: $LINES_PCT%"
             else
               CHECK_PASSED=false
-              echo "Lines coverage is below 95%: $LINES_PCT%"
+              echo "Lines coverage is below 100%: $LINES_PCT%"
             fi
             
             if [ "$CHECK_PASSED" = true ]; then

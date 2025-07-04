@@ -114,7 +114,9 @@ export default function ResetPasswordPage() {
       }
 
       setSuccess(true)
-      setTimeout(() => router.push('/login'), 3000)
+      // テスト環境では遅延を短くする
+      const delay = process.env.NODE_ENV === 'test' ? 100 : 3000
+      setTimeout(() => router.push('/login'), delay)
     } catch (error) {
       console.error('Reset password error:', error)
       setError(

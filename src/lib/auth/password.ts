@@ -10,9 +10,13 @@ import bcryptjs from 'bcryptjs'
  * パスワードをハッシュ化する
  * @param password プレーンテキストのパスワード
  * @returns ハッシュ化されたパスワード
+ * @security-note 本番環境では必ずsaltRounds=10を使用してセキュリティを確保
  */
 export async function hashPassword(password: string): Promise<string> {
-  const saltRounds = 10
+  // テスト環境では処理を高速化するためsaltRoundsを減らす
+  // 本番環境のセキュリティには影響しない
+  // @security-note: 本番環境では必ずsaltRounds=10を使用
+  const saltRounds = process.env.NODE_ENV === 'test' ? 1 : 10
   return bcryptjs.hash(password, saltRounds)
 }
 

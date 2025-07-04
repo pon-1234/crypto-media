@@ -15,11 +15,18 @@ const DEFAULT_CONFIG: RateLimitConfig = {
   keyPrefix: 'rate-limit',
 }
 
-// Redis クライアントの初期化
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-})
+// Redis クライアントの遅延初期化
+let redis: Redis | null = null
+
+function getRedisClient(): Redis {
+  if (!redis) {
+    redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    })
+  }
+  return redis
+}
 
 /**
  * IPアドレスまたはユーザーIDベースのレート制限
@@ -47,13 +54,14 @@ export async function rateLimit(
     const windowStart = now - finalConfig.windowMs
 
     // 時間窓内のリクエスト数を取得
-    const requests = await redis.zrange(key, windowStart, now)
+    const redisClient = getRedisClient()
+    const requests = await redisClient.zrange(key, windowStart, now)
     const requestCount = requests.length
 
     // レート制限チェック
     if (requestCount >= finalConfig.max) {
       // 最も古いリクエストの時刻を取得
-      const oldestRequest = (await redis.zrange(key, 0, 0, {
+      const oldestRequest = (await redisClient.zrange(key, 0, 0, {
         withScores: true,
       })) as Array<{ member: string; score: number }>
       const reset = oldestRequest[0]
@@ -68,13 +76,13 @@ export async function rateLimit(
     }
 
     // 新しいリクエストを記録
-    await redis.zadd(key, { score: now, member: `${now}-${Math.random()}` })
+    await redisClient.zadd(key, { score: now, member: `${now}-${Math.random()}` })
 
     // 古いエントリを削除
-    await redis.zremrangebyscore(key, 0, windowStart)
+    await redisClient.zremrangebyscore(key, 0, windowStart)
 
     // TTLを設定
-    await redis.expire(key, Math.ceil(finalConfig.windowMs / 1000))
+    await redisClient.expire(key, Math.ceil(finalConfig.windowMs / 1000))
 
     return {
       success: true,

@@ -215,23 +215,17 @@ describe('ResetPasswordPage', () => {
         })
       })
 
-      await waitFor(
-        () => {
-          expect(
-            screen.getByText(
-              'パスワードが正常にリセットされました。ログインページに移動します...'
-            )
-          ).toBeInTheDocument()
-        },
-        { timeout: 5000 }
-      )
+      await waitFor(() => {
+        expect(
+          screen.getByText(
+            'パスワードが正常にリセットされました。ログインページに移動します...'
+          )
+        ).toBeInTheDocument()
+      })
 
-      await waitFor(
-        () => {
-          expect(mockPush).toHaveBeenCalledWith('/login')
-        },
-        { timeout: 5000 }
-      )
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith('/login')
+      })
     })
 
     it('パスワードが一致しない場合、エラーが表示される', async () => {

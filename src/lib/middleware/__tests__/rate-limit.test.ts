@@ -1,15 +1,16 @@
-/**
- * @vitest-environment node
- */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
-import { rateLimit, rateLimitMiddleware } from '../rate-limit'
 
-let mockRedisInstance: {
-  zrange: ReturnType<typeof vi.fn>
-  zadd: ReturnType<typeof vi.fn>
-  zremrangebyscore: ReturnType<typeof vi.fn>
-  expire: ReturnType<typeof vi.fn>
+// 環境変数を設定
+process.env.UPSTASH_REDIS_REST_URL = 'https://test.upstash.io'
+process.env.UPSTASH_REDIS_REST_TOKEN = 'test-token'
+
+// モック設定を先に行う
+const mockRedisInstance = {
+  zrange: vi.fn(),
+  zadd: vi.fn(),
+  zremrangebyscore: vi.fn(),
+  expire: vi.fn(),
 }
 
 // Redisのモック
@@ -17,16 +18,16 @@ vi.mock('@upstash/redis', () => ({
   Redis: vi.fn(() => mockRedisInstance),
 }))
 
+// モック設定後にインポート
+import { rateLimit, rateLimitMiddleware } from '../rate-limit'
+
 describe('rate-limit', () => {
   beforeEach(() => {
-    // vi.clearAllMocks() だと vi.mock もクリアされてしまうため、
-    // メソッドごとのモックをクリアする
-    mockRedisInstance = {
-      zrange: vi.fn(),
-      zadd: vi.fn(),
-      zremrangebyscore: vi.fn(),
-      expire: vi.fn(),
-    }
+    // モックをリセット
+    mockRedisInstance.zrange.mockReset()
+    mockRedisInstance.zadd.mockReset()
+    mockRedisInstance.zremrangebyscore.mockReset()
+    mockRedisInstance.expire.mockReset()
   })
 
   describe('rateLimit', () => {

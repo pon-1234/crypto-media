@@ -15,10 +15,27 @@ export default defineConfig({
       '**/cypress/**',
       '**/.{idea,git,cache,output,temp}/**',
       'e2e/**',
+      // JSXファイルは除外（JSDOMテスト用）
+      '**/*.test.tsx',
+      '**/*.spec.tsx',
     ],
     environment: 'node',
     setupFiles: ['src/test/setup-node.ts'],
-    coverage: {
+    testTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒
+    hookTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        maxForks: process.env.CI ? 2 : 4, // CI環境では2つに制限
+        minForks: 1,
+      },
+    },
+    coverage: process.env.CI === 'true' ? {
+      enabled: true,
+      provider: 'v8',
+      reporter: ['json', 'json-summary'],
+      reportsDirectory: './coverage/node',
+    } : {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       all: true,

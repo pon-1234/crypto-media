@@ -8,7 +8,9 @@ import { client } from '../client'
 
 // clientをモック化
 vi.mock('../client', () => ({
-  getList: vi.fn(),
+  client: {
+    getList: vi.fn(),
+  },
 }))
 
 const mockedClient = vi.mocked(client)
