@@ -13,6 +13,7 @@ vi.mock('@/lib/microcms', () => ({
 
 // next/imageのモック
 vi.mock('next/image', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   default: vi.fn(({ src, alt, fill, priority, sizes, quality, placeholder, blurDataURL, ...props }) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img
