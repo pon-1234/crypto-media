@@ -15,6 +15,36 @@ export interface Membership {
   paymentStatus?: string
 }
 
+export type User = {
+  id: string
+  name?: string | null
+  email?: string | null
+  image?: string | null
+  membership?: 'free' | 'paid' | null
+  stripeCustomerId?: string | null
+  paymentStatus?: string | null
+}
+
+/**
+ * ユーザーの会員情報を取得する
+ * @returns {Promise<User | null>}
+ */
+export async function getUser(userId: string): Promise<User | null> {
+  if (!userId) {
+    return null
+  }
+  try {
+    const userDoc = await adminDb.collection('users').doc(userId).get()
+    if (!userDoc.exists) {
+      return null
+    }
+    return userDoc.data() as User
+  } catch (error) {
+    console.error('Error fetching user from Firestore:', error)
+    return null
+  }
+}
+
 /**
  * ユーザーの会員ステータスを取得するヘルパー関数
  *

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 import { ChevronLeft } from 'lucide-react'
 import { authOptions } from '@/lib/auth/authOptions'
-import { getUserMembership } from '@/lib/auth/membership'
+import { getUser } from '@/lib/auth/membership'
 import { ProfileSettingsForm } from '@/components/account/ProfileSettingsForm'
 import { PasswordChangeForm } from '@/components/account/PasswordChangeForm'
 
@@ -20,7 +20,13 @@ export default async function SettingsPage() {
     redirect('/login')
   }
 
-  const membership = await getUserMembership()
+  const user = await getUser(session.user.id)
+
+  if (!user) {
+    redirect('/login')
+  }
+
+  const isPasswordProvider = session.user.provider === 'credentials'
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
@@ -41,12 +47,12 @@ export default async function SettingsPage() {
           <div className="space-y-4">
             <div>
               <p className="text-sm text-gray-600">メールアドレス</p>
-              <p className="font-medium">{session.user.email}</p>
+              <p className="font-medium">{user.email}</p>
             </div>
             <div>
               <p className="text-sm text-gray-600">会員ステータス</p>
               <p className="font-medium">
-                {membership?.membership === 'paid' ? (
+                {user.membership === 'paid' ? (
                   <span className="text-green-600">有料会員</span>
                 ) : (
                   <span className="text-gray-600">無料会員</span>
@@ -60,16 +66,18 @@ export default async function SettingsPage() {
         <section className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-lg font-semibold mb-4">表示名の変更</h2>
           <ProfileSettingsForm 
-            currentName={session.user.name || ''} 
-            userId={session.user.id} 
+            currentName={user.name || ''} 
+            userId={user.id} 
           />
         </section>
 
         {/* パスワード変更フォーム */}
-        <section className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-lg font-semibold mb-4">パスワードの変更</h2>
-          <PasswordChangeForm userId={session.user.id} />
-        </section>
+        {isPasswordProvider && (
+          <section className="bg-white rounded-lg shadow-sm p-6">
+            <h2 className="text-lg font-semibold mb-4">パスワードの変更</h2>
+            <PasswordChangeForm userId={user.id} />
+          </section>
+        )}
       </div>
     </div>
   )

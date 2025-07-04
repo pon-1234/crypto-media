@@ -2,12 +2,20 @@
  * @file microCMS関連のユーティリティ関数のテスト
  * @doc DEVELOPMENT_GUIDE.md#microCMS
  */
-import { describe, it, expect, vi } from 'vitest'
 import { getAllContents, stripHtmlTags } from '../utils'
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeEach,
+} from 'vitest'
 import { client } from '../client'
 
 // clientをモック化
-vi.mock('../client')
+vi.mock('../client', () => ({
+  getList: vi.fn(),
+}))
 
 const mockedClient = vi.mocked(client)
 

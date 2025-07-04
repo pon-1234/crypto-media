@@ -254,7 +254,7 @@ describe('PasswordChangeForm', () => {
     fireEvent.submit(screen.getByRole('button', { name: '変更する' }))
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Network error')
+      expect(toast.error).toHaveBeenCalledWith('パスワードの変更に失敗しました')
     })
   })
 }) 

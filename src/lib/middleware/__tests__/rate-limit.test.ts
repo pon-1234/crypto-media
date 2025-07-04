@@ -5,11 +5,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 import { rateLimit, rateLimitMiddleware } from '../rate-limit'
 
-const mockRedisInstance = {
-  zrange: vi.fn(),
-  zadd: vi.fn(),
-  zremrangebyscore: vi.fn(),
-  expire: vi.fn(),
+let mockRedisInstance: {
+  zrange: ReturnType<typeof vi.fn>
+  zadd: ReturnType<typeof vi.fn>
+  zremrangebyscore: ReturnType<typeof vi.fn>
+  expire: ReturnType<typeof vi.fn>
 }
 
 // Redisのモック
@@ -21,10 +21,12 @@ describe('rate-limit', () => {
   beforeEach(() => {
     // vi.clearAllMocks() だと vi.mock もクリアされてしまうため、
     // メソッドごとのモックをクリアする
-    mockRedisInstance.zrange.mockClear()
-    mockRedisInstance.zadd.mockClear()
-    mockRedisInstance.zremrangebyscore.mockClear()
-    mockRedisInstance.expire.mockClear()
+    mockRedisInstance = {
+      zrange: vi.fn(),
+      zadd: vi.fn(),
+      zremrangebyscore: vi.fn(),
+      expire: vi.fn(),
+    }
   })
 
   describe('rateLimit', () => {

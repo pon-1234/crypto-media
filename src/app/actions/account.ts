@@ -82,7 +82,7 @@ export async function changePassword(
 
     // パスワードを更新
     await adminDb.collection('users').doc(userId).update({
-      password: hashedPassword,
+      passwordHash: hashedPassword,
       updatedAt: new Date(),
     })
     
