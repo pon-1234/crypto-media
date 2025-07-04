@@ -37,10 +37,12 @@ type ImageProps = {
 
 vi.mock('next/image', () => ({
   default: vi.fn((props: ImageProps) => {
-    const { src, alt, ...rest } = props
+    // next/image固有のpropsを除外
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { src, alt, fill, priority, sizes, quality, placeholder, blurDataURL, ...rest } = props
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src={src} alt={alt} {...rest} />
+      <img src={src as string} alt={alt as string} {...rest} />
     )
   }),
 }))

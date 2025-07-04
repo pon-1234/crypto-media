@@ -14,7 +14,7 @@ vi.mock('@/lib/microcms', () => ({
 
 // next/imageのモック
 vi.mock('next/image', () => ({
-  default: vi.fn(({ src, alt, ...props }) => (
+  default: vi.fn(({ src, alt, fill, priority, sizes, quality, placeholder, blurDataURL, ...props }) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img src={src} alt={alt} {...props} />
   )),

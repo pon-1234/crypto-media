@@ -50,12 +50,19 @@ vi.mock('next/headers', () => ({
 interface NextImageProps {
   src: string
   alt: string
+  fill?: boolean
+  priority?: boolean
+  sizes?: string
+  quality?: number
+  placeholder?: string
+  blurDataURL?: string
+  [key: string]: unknown
 }
 
 vi.mock('next/image', () => ({
-  default: vi.fn(({ src, alt }: NextImageProps) => {
+  default: vi.fn(({ src, alt, fill, priority, sizes, quality, placeholder, blurDataURL, ...props }: NextImageProps) => {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={alt} />
+    return <img src={src} alt={alt} {...props} />
   }),
 }))
 
