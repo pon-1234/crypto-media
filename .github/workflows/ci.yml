@@ -38,6 +38,9 @@ jobs:
 
       - name: Run tests with coverage
         run: |
+          # カバレッジディレクトリを事前に作成
+          mkdir -p coverage/jsdom coverage/node
+          
           # JSDOMテストとNodeテストを並列実行
           pnpm test:ci:jsdom &
           JSDOM_PID=$!

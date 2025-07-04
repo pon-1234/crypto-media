@@ -14,8 +14,8 @@
     "test:node": "vitest --config vitest.node.config.ts",
     "test:run": "vitest run",
     "test:ci": "CI=true pnpm test:ci:jsdom && CI=true pnpm test:ci:node && pnpm test:ci:merge-coverage",
-    "test:ci:jsdom": "vitest run --config vitest.config.ts --coverage --coverage.enabled --coverage.thresholds.statements=100 --coverage.thresholds.branches=100 --coverage.thresholds.functions=100 --coverage.thresholds.lines=100",
-    "test:ci:node": "vitest run --config vitest.node.config.ts --coverage --coverage.enabled --coverage.thresholds.statements=100 --coverage.thresholds.branches=100 --coverage.thresholds.functions=100 --coverage.thresholds.lines=100",
+    "test:ci:jsdom": "vitest run --config vitest.config.ts --coverage --coverage.enabled --coverage.provider=v8 --coverage.reportsDirectory=./coverage/jsdom --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.statements=100 --coverage.thresholds.branches=100 --coverage.thresholds.functions=100 --coverage.thresholds.lines=100",
+    "test:ci:node": "vitest run --config vitest.node.config.ts --coverage --coverage.enabled --coverage.provider=v8 --coverage.reportsDirectory=./coverage/node --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.statements=100 --coverage.thresholds.branches=100 --coverage.thresholds.functions=100 --coverage.thresholds.lines=100",
     "test:ci:merge-coverage": "node scripts/merge-coverage.js",
     "test:coverage": "pnpm test:jsdom --run --coverage && pnpm test:node --run --coverage",
     "playwright": "playwright test"
