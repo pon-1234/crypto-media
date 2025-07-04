@@ -68,4 +68,4 @@ describe('DeleteAccountPage', () => {
     ).toBeInTheDocument()
     expect(screen.getByTestId('delete-form')).toBeInTheDocument()
   })
-}) 
+})

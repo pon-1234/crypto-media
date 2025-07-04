@@ -9,7 +9,8 @@ import { getTags } from '@/lib/microcms'
 
 export const metadata: Metadata = {
   title: 'タグ一覧 | 暗号資産総合メディア',
-  description: '暗号資産・ブロックチェーンに関する記事をタグ別に探すことができます。',
+  description:
+    '暗号資産・ブロックチェーンに関する記事をタグ別に探すことができます。',
 }
 
 /**
@@ -25,23 +26,23 @@ export default async function TagIndexPage() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">タグ一覧</h1>
-        
+      <div className="mx-auto max-w-4xl">
+        <h1 className="mb-8 text-3xl font-bold">タグ一覧</h1>
+
         <div className="flex flex-wrap gap-3">
           {tags.map((tag) => (
             <Link
               key={tag.id}
               href={`/media/tag/${tag.slug}`}
-              className="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors duration-200"
+              className="inline-block rounded-full bg-gray-100 px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-200"
             >
               <span className="text-sm font-medium">{tag.name}</span>
             </Link>
           ))}
         </div>
-        
+
         {tags.length === 0 && (
-          <p className="text-center text-gray-600 py-12">
+          <p className="py-12 text-center text-gray-600">
             タグが登録されていません。
           </p>
         )}

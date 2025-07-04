@@ -61,7 +61,14 @@ describe('Pagination', () => {
   })
 
   it('ページ数が多い場合は省略記号を表示する（前後の省略）', () => {
-    render(<Pagination {...defaultProps} currentPage={5} totalPages={10} siblingCount={1} />)
+    render(
+      <Pagination
+        {...defaultProps}
+        currentPage={5}
+        totalPages={10}
+        siblingCount={1}
+      />
+    )
 
     // 最初のページ
     expect(screen.getByText('1')).toBeInTheDocument()
@@ -82,7 +89,14 @@ describe('Pagination', () => {
   })
 
   it('ページ数が多い場合は省略記号を表示する（後ろのみ省略）', () => {
-    render(<Pagination {...defaultProps} currentPage={3} totalPages={10} siblingCount={1}/>)
+    render(
+      <Pagination
+        {...defaultProps}
+        currentPage={3}
+        totalPages={10}
+        siblingCount={1}
+      />
+    )
 
     // 最初のページ付近
     expect(screen.getByText('1')).toBeInTheDocument()
@@ -99,7 +113,14 @@ describe('Pagination', () => {
   })
 
   it('ページ数が多い場合は省略記号を表示する（前のみ省略）', () => {
-    render(<Pagination {...defaultProps} currentPage={8} totalPages={10} siblingCount={1} />)
+    render(
+      <Pagination
+        {...defaultProps}
+        currentPage={8}
+        totalPages={10}
+        siblingCount={1}
+      />
+    )
 
     // 最初のページ
     expect(screen.getByText('1')).toBeInTheDocument()
@@ -196,7 +217,14 @@ describe('Pagination', () => {
   })
 
   it('複数の省略記号がある場合、それぞれユニークなキーを持つ', () => {
-    render(<Pagination {...defaultProps} currentPage={5} totalPages={10} siblingCount={1}/>)
+    render(
+      <Pagination
+        {...defaultProps}
+        currentPage={5}
+        totalPages={10}
+        siblingCount={1}
+      />
+    )
 
     // 省略記号の要素を取得
     const ellipses = screen.getAllByText('...')

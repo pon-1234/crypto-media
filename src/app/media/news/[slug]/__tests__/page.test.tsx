@@ -60,10 +60,37 @@ describe('MediaNewsDetailPage', () => {
     type: 'media_news',
     membershipLevel: 'public',
     content: '<p>記事の内容</p>',
-    heroImage: { url: 'https://example.com/image.jpg', width: 1200, height: 630 },
-    category: { id: 'cat1', name: 'お知らせ', slug: 'announcement', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
-    tags: [{ id: 'tag1', name: 'Update', slug: 'update', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' }],
-    author: { id: 'author1', name: '執筆者', slug: 'author', role: ['執筆者'], profile: '', avatar: { url: '', width: 100, height: 100 }, createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
+    heroImage: {
+      url: 'https://example.com/image.jpg',
+      width: 1200,
+      height: 630,
+    },
+    category: {
+      id: 'cat1',
+      name: 'お知らせ',
+      slug: 'announcement',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+    },
+    tags: [
+      {
+        id: 'tag1',
+        name: 'Update',
+        slug: 'update',
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-01T00:00:00Z',
+      },
+    ],
+    author: {
+      id: 'author1',
+      name: '執筆者',
+      slug: 'author',
+      role: ['執筆者'],
+      profile: '',
+      avatar: { url: '', width: 100, height: 100 },
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+    },
     createdAt: '2024-01-01T00:00:00Z',
     updatedAt: '2024-01-01T00:00:00Z',
     publishedAt: '2024-01-01T00:00:00Z',
@@ -99,12 +126,17 @@ describe('MediaNewsDetailPage', () => {
       searchParams: {},
     })
 
-    expect(getMediaArticleBySlug).toHaveBeenCalledWith('media-news-article', undefined)
+    expect(getMediaArticleBySlug).toHaveBeenCalledWith(
+      'media-news-article',
+      undefined
+    )
     expect(page).toMatchSnapshot()
   })
 
   it('supervisorとtagsを持つ記事を正しく表示する', async () => {
-    vi.mocked(getMediaArticleBySlug).mockResolvedValue(mockArticleWithSupervisor)
+    vi.mocked(getMediaArticleBySlug).mockResolvedValue(
+      mockArticleWithSupervisor
+    )
     vi.mocked(getRelatedArticles).mockResolvedValue(mockRelatedArticles)
     vi.mocked(hasAccess).mockResolvedValue(true)
 
@@ -120,7 +152,9 @@ describe('MediaNewsDetailPage', () => {
     vi.mocked(getMediaArticleBySlug).mockResolvedValue(mockArticle)
     vi.mocked(getRelatedArticles).mockRejectedValue(new Error('API Error'))
     vi.mocked(hasAccess).mockResolvedValue(true)
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const consoleErrorSpy = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {})
 
     const page = await MediaNewsDetailPage({
       params: { slug: 'media-news-article' },
@@ -192,7 +226,9 @@ describe('MediaNewsDetailPage', () => {
       searchParams: { draftKey: 'test-key' },
     })
 
-    expect(getMediaArticleBySlug).toHaveBeenCalledWith('preview-article', { draftKey: 'test-key' })
+    expect(getMediaArticleBySlug).toHaveBeenCalledWith('preview-article', {
+      draftKey: 'test-key',
+    })
   })
 
   describe('generateMetadata', () => {
@@ -268,7 +304,8 @@ describe('MediaNewsDetailPage', () => {
 
       expect(metadata).toEqual({
         title: 'メディアニュース | Crypto Media',
-        description: '暗号資産・ブロックチェーンに関するニュースの詳細をご覧いただけます。',
+        description:
+          '暗号資産・ブロックチェーンに関するニュースの詳細をご覧いただけます。',
       })
     })
   })

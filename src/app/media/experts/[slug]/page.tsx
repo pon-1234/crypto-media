@@ -25,7 +25,7 @@ export async function generateStaticParams() {
   if (process.env.CI === 'true' || !process.env.MICROCMS_API_KEY) {
     return []
   }
-  
+
   try {
     const slugs = await getAllExpertSlugs()
     return slugs.map((slug) => ({
@@ -103,10 +103,10 @@ export default async function ExpertDetailPage({ params }: Props) {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="mx-auto max-w-4xl">
         {/* プロフィールセクション */}
-        <div className="bg-white rounded-lg shadow-sm p-8 mb-8">
-          <div className="flex flex-col md:flex-row items-start gap-6">
+        <div className="mb-8 rounded-lg bg-white p-8 shadow-sm">
+          <div className="flex flex-col items-start gap-6 md:flex-row">
             {expert.avatar && (
               <div className="flex-shrink-0">
                 <Image
@@ -119,18 +119,18 @@ export default async function ExpertDetailPage({ params }: Props) {
               </div>
             )}
             <div className="flex-1">
-              <h1 className="text-3xl font-bold mb-2">{expert.name}</h1>
-              <div className="flex flex-wrap gap-2 mb-4">
+              <h1 className="mb-2 text-3xl font-bold">{expert.name}</h1>
+              <div className="mb-4 flex flex-wrap gap-2">
                 {expert.role.map((role) => (
                   <span
                     key={role}
-                    className="inline-block px-3 py-1 text-sm font-medium bg-blue-100 text-blue-800 rounded"
+                    className="inline-block rounded bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800"
                   >
                     {role}
                   </span>
                 ))}
               </div>
-              <p className="text-gray-700 whitespace-pre-wrap">
+              <p className="whitespace-pre-wrap text-gray-700">
                 {expert.profile}
               </p>
             </div>
@@ -139,10 +139,10 @@ export default async function ExpertDetailPage({ params }: Props) {
 
         {/* 記事一覧セクション */}
         <section>
-          <h2 className="text-2xl font-bold mb-6">
+          <h2 className="mb-6 text-2xl font-bold">
             {expert.name}の記事
             {allArticles.length > 0 && (
-              <span className="text-base font-normal text-gray-600 ml-2">
+              <span className="ml-2 text-base font-normal text-gray-600">
                 （{allArticles.length}件）
               </span>
             )}
@@ -155,7 +155,7 @@ export default async function ExpertDetailPage({ params }: Props) {
               ))}
             </div>
           ) : (
-            <p className="text-center text-gray-600 py-12">
+            <p className="py-12 text-center text-gray-600">
               まだ記事が投稿されていません。
             </p>
           )}

@@ -10,7 +10,8 @@ import { getExperts, stripHtmlTags } from '@/lib/microcms'
 
 export const metadata: Metadata = {
   title: '執筆者・監修者一覧 | 暗号資産総合メディア',
-  description: '暗号資産・ブロックチェーン分野の専門家による記事をお届けしています。',
+  description:
+    '暗号資産・ブロックチェーン分野の専門家による記事をお届けしています。',
 }
 
 /**
@@ -25,15 +26,15 @@ export default async function ExpertsIndexPage() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">執筆者・監修者一覧</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="mx-auto max-w-6xl">
+        <h1 className="mb-8 text-3xl font-bold">執筆者・監修者一覧</h1>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {experts.map((expert) => (
             <Link
               key={expert.id}
               href={`/media/experts/${expert.slug}`}
-              className="block bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 overflow-hidden"
+              className="block overflow-hidden rounded-lg bg-white shadow transition-shadow duration-200 hover:shadow-md"
             >
               <div className="p-6">
                 <div className="flex items-start space-x-4">
@@ -49,20 +50,20 @@ export default async function ExpertsIndexPage() {
                     </div>
                   )}
                   <div className="flex-1">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-1">
+                    <h2 className="mb-1 text-xl font-semibold text-gray-900">
                       {expert.name}
                     </h2>
-                    <div className="flex flex-wrap gap-1 mb-2">
+                    <div className="mb-2 flex flex-wrap gap-1">
                       {expert.role.map((role) => (
                         <span
                           key={role}
-                          className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded"
+                          className="inline-block rounded bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800"
                         >
                           {role}
                         </span>
                       ))}
                     </div>
-                    <p className="text-sm text-gray-600 line-clamp-3">
+                    <p className="line-clamp-3 text-sm text-gray-600">
                       {stripHtmlTags(expert.profile)}
                     </p>
                   </div>
@@ -71,9 +72,9 @@ export default async function ExpertsIndexPage() {
             </Link>
           ))}
         </div>
-        
+
         {experts.length === 0 && (
-          <p className="text-center text-gray-600 py-12">
+          <p className="py-12 text-center text-gray-600">
             執筆者・監修者が登録されていません。
           </p>
         )}

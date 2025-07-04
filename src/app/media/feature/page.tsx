@@ -25,15 +25,15 @@ export default async function FeatureIndexPage() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">特集一覧</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="mx-auto max-w-6xl">
+        <h1 className="mb-8 text-3xl font-bold">特集一覧</h1>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {features.map((feature) => (
             <Link
               key={feature.id}
               href={`/media/feature/${feature.slug}`}
-              className="block bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 overflow-hidden"
+              className="block overflow-hidden rounded-lg bg-white shadow transition-shadow duration-200 hover:shadow-md"
             >
               {feature.heroImage && (
                 <div className="aspect-w-16 aspect-h-9 relative h-48">
@@ -46,19 +46,19 @@ export default async function FeatureIndexPage() {
                 </div>
               )}
               <div className="p-6">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                <h2 className="mb-2 text-2xl font-semibold text-gray-900">
                   {feature.name}
                 </h2>
-                <p className="text-gray-600 line-clamp-3">
+                <p className="line-clamp-3 text-gray-600">
                   {feature.description}
                 </p>
               </div>
             </Link>
           ))}
         </div>
-        
+
         {features.length === 0 && (
-          <p className="text-center text-gray-600 py-12">
+          <p className="py-12 text-center text-gray-600">
             特集が登録されていません。
           </p>
         )}

@@ -33,26 +33,28 @@ describe('account actions', () => {
   describe('updateProfile', () => {
     it('認証されていない場合はエラーを返す', async () => {
       mockGetServerSession.mockResolvedValue(null)
-      
+
       const result = await updateProfile('user-id', { name: 'New Name' })
-      
+
       expect(result).toEqual({ error: '認証エラー' })
     })
 
     it('別のユーザーのプロフィールは更新できない', async () => {
       mockGetServerSession.mockResolvedValue({
         user: { id: 'different-user-id' },
-      } as ReturnType<typeof getServerSession>)
-      
+        expires: '2025-01-01T00:00:00.000Z',
+      })
+
       const result = await updateProfile('user-id', { name: 'New Name' })
-      
+
       expect(result).toEqual({ error: '認証エラー' })
     })
 
     it('プロフィールを正常に更新する', async () => {
       mockGetServerSession.mockResolvedValue({
         user: { id: 'user-id' },
-      } as ReturnType<typeof getServerSession>)
+        expires: '2025-01-01T00:00:00.000Z',
+      })
 
       const mockUpdate = vi.fn()
       mockAdminDb.collection = vi.fn().mockReturnValue({
@@ -74,62 +76,70 @@ describe('account actions', () => {
   describe('changePassword', () => {
     it('認証されていない場合はエラーを返す', async () => {
       mockGetServerSession.mockResolvedValue(null)
-      
+
       const result = await changePassword('user-id', {
         currentPassword: 'old',
         newPassword: 'newpassword123',
         confirmPassword: 'newpassword123',
       })
-      
+
       expect(result).toEqual({ error: '認証エラー' })
     })
 
     it('パスワードが短すぎる場合はエラーを返す', async () => {
       mockGetServerSession.mockResolvedValue({
         user: { id: 'user-id' },
-      } as ReturnType<typeof getServerSession>)
-      
+        expires: '2025-01-01T00:00:00.000Z',
+      })
+
       const result = await changePassword('user-id', {
         currentPassword: 'old',
         newPassword: 'short',
         confirmPassword: 'short',
       })
-      
-      expect(result).toEqual({ error: 'パスワードは8文字以上で入力してください' })
+
+      expect(result).toEqual({
+        error: 'パスワードは8文字以上で入力してください',
+      })
     })
 
     it('パスワードに英数字が含まれていない場合はエラーを返す', async () => {
       mockGetServerSession.mockResolvedValue({
         user: { id: 'user-id' },
-      } as ReturnType<typeof getServerSession>)
-      
+        expires: '2025-01-01T00:00:00.000Z',
+      })
+
       const result = await changePassword('user-id', {
         currentPassword: 'old',
         newPassword: 'onlyletters',
         confirmPassword: 'onlyletters',
       })
-      
-      expect(result).toEqual({ error: 'パスワードは英数字を含む必要があります' })
+
+      expect(result).toEqual({
+        error: 'パスワードは英数字を含む必要があります',
+      })
     })
 
     it('パスワードが一致しない場合はエラーを返す', async () => {
       mockGetServerSession.mockResolvedValue({
         user: { id: 'user-id' },
-      } as ReturnType<typeof getServerSession>)
-      
+        expires: '2025-01-01T00:00:00.000Z',
+      })
+
       const result = await changePassword('user-id', {
         currentPassword: 'old',
         newPassword: 'newpassword123',
         confirmPassword: 'different123',
       })
-      
+
       expect(result).toEqual({ error: 'パスワードが一致しません' })
     })
 
     it('現在のパスワードが正しくない場合はエラーを返す', async () => {
       mockGetServerSession.mockResolvedValue({
         user: { id: 'user-id' },
-      } as ReturnType<typeof getServerSession>)
+        expires: '2025-01-01T00:00:00.000Z',
+      })
 
       const mockGet = vi.fn().mockResolvedValue({
         data: () => ({ passwordHash: 'hashed_password' }),
@@ -152,7 +162,8 @@ describe('account actions', () => {
     it('パスワードを正常に変更する', async () => {
       mockGetServerSession.mockResolvedValue({
         user: { id: 'user-id' },
-      } as ReturnType<typeof getServerSession>)
+        expires: '2025-01-01T00:00:00.000Z',
+      })
 
       const mockUpdate = vi.fn()
       const mockGet = vi.fn().mockResolvedValue({
@@ -185,19 +196,20 @@ describe('account actions', () => {
   describe('deleteAccount', () => {
     it('認証されていない場合はエラーを返す', async () => {
       mockGetServerSession.mockResolvedValue(null)
-      
+
       const result = await deleteAccount('user-id', {
         password: 'password',
         hasPaidMembership: false,
       })
-      
+
       expect(result).toEqual({ error: '認証エラー' })
     })
 
     it('ユーザーが存在しない場合はエラーを返す', async () => {
       mockGetServerSession.mockResolvedValue({
         user: { id: 'user-id' },
-      } as ReturnType<typeof getServerSession>)
+        expires: '2025-01-01T00:00:00.000Z',
+      })
 
       const mockGet = vi.fn().mockResolvedValue({
         data: () => null,
@@ -217,7 +229,8 @@ describe('account actions', () => {
     it('パスワードが正しくない場合はエラーを返す', async () => {
       mockGetServerSession.mockResolvedValue({
         user: { id: 'user-id' },
-      } as ReturnType<typeof getServerSession>)
+        expires: '2025-01-01T00:00:00.000Z',
+      })
 
       const mockGet = vi.fn().mockResolvedValue({
         data: () => ({ passwordHash: 'hashed_password' }),
@@ -239,14 +252,15 @@ describe('account actions', () => {
     it('アカウントを正常に削除する', async () => {
       mockGetServerSession.mockResolvedValue({
         user: { id: 'user-id' },
-      } as ReturnType<typeof getServerSession>)
+        expires: '2025-01-01T00:00:00.000Z',
+      })
 
       const mockDelete = vi.fn()
       const mockGet = vi.fn().mockResolvedValue({
         data: () => ({ passwordHash: 'hashed_password' }),
       })
       const mockAdd = vi.fn()
-      
+
       mockAdminDb.collection = vi.fn().mockImplementation((collection) => {
         if (collection === 'deletion_reasons') {
           return { add: mockAdd }

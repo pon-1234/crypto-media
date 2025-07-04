@@ -50,7 +50,8 @@ describe('ExpertsIndexPage', () => {
           name: '鈴木花子',
           slug: 'suzuki-hanako',
           role: ['執筆者', '監修者'],
-          profile: '暗号資産アナリスト。金融業界での豊富な経験を活かした分析が得意。',
+          profile:
+            '暗号資産アナリスト。金融業界での豊富な経験を活かした分析が得意。',
           avatar: {
             url: 'https://example.com/avatar2.jpg',
             width: 200,

@@ -122,6 +122,6 @@ vi.mock('lucide-react', () => {
         Component.displayName = `Mock${String(prop)}`
         return Component
       },
-    },
+    }
   )
 })

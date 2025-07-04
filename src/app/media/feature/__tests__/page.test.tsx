@@ -15,11 +15,19 @@ vi.mock('@/lib/microcms', () => ({
 vi.mock('next/image', () => ({
   default: vi.fn(({ src, alt, fill, ...props }) => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img 
-      src={src} 
-      alt={alt} 
+    <img
+      src={src}
+      alt={alt}
       {...props}
-      style={fill ? { objectFit: props.className?.includes('object-cover') ? 'cover' : 'fill' } : {}}
+      style={
+        fill
+          ? {
+              objectFit: props.className?.includes('object-cover')
+                ? 'cover'
+                : 'fill',
+            }
+          : {}
+      }
     />
   )),
 }))
@@ -37,7 +45,8 @@ describe('FeatureIndexPage', () => {
           id: '1',
           name: '2025年の暗号資産トレンド',
           slug: '2025-crypto-trends',
-          description: '2025年に注目すべき暗号資産のトレンドを専門家が解説。DeFi、NFT、Web3の最新動向を網羅。',
+          description:
+            '2025年に注目すべき暗号資産のトレンドを専門家が解説。DeFi、NFT、Web3の最新動向を網羅。',
           heroImage: {
             url: 'https://example.com/feature1.jpg',
             width: 1200,
@@ -52,7 +61,8 @@ describe('FeatureIndexPage', () => {
           id: '2',
           name: 'ビットコイン完全ガイド',
           slug: 'bitcoin-complete-guide',
-          description: 'ビットコインの基礎から応用まで、初心者にもわかりやすく解説する完全ガイド。',
+          description:
+            'ビットコインの基礎から応用まで、初心者にもわかりやすく解説する完全ガイド。',
           heroImage: {
             url: 'https://example.com/feature2.jpg',
             width: 1200,
@@ -77,15 +87,29 @@ describe('FeatureIndexPage', () => {
     expect(screen.getByText('ビットコイン完全ガイド')).toBeInTheDocument()
 
     // 説明文の検証
-    expect(screen.getByText(/2025年に注目すべき暗号資産のトレンド/)).toBeInTheDocument()
-    expect(screen.getByText(/ビットコインの基礎から応用まで/)).toBeInTheDocument()
+    expect(
+      screen.getByText(/2025年に注目すべき暗号資産のトレンド/)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/ビットコインの基礎から応用まで/)
+    ).toBeInTheDocument()
 
     // リンクの検証
-    const trendLink = screen.getByRole('link', { name: /2025年の暗号資産トレンド/ })
-    expect(trendLink).toHaveAttribute('href', '/media/feature/2025-crypto-trends')
+    const trendLink = screen.getByRole('link', {
+      name: /2025年の暗号資産トレンド/,
+    })
+    expect(trendLink).toHaveAttribute(
+      'href',
+      '/media/feature/2025-crypto-trends'
+    )
 
-    const bitcoinLink = screen.getByRole('link', { name: /ビットコイン完全ガイド/ })
-    expect(bitcoinLink).toHaveAttribute('href', '/media/feature/bitcoin-complete-guide')
+    const bitcoinLink = screen.getByRole('link', {
+      name: /ビットコイン完全ガイド/,
+    })
+    expect(bitcoinLink).toHaveAttribute(
+      'href',
+      '/media/feature/bitcoin-complete-guide'
+    )
 
     // ヒーロー画像の検証
     const images = screen.getAllByRole('img')
@@ -136,9 +160,7 @@ describe('FeatureIndexPage', () => {
     render(Component)
 
     expect(screen.getByText('特集一覧')).toBeInTheDocument()
-    expect(
-      screen.getByText('特集が登録されていません。')
-    ).toBeInTheDocument()
+    expect(screen.getByText('特集が登録されていません。')).toBeInTheDocument()
   })
 
   it('正しいAPIパラメータで特集を取得する', async () => {

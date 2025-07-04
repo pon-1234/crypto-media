@@ -15,7 +15,11 @@ interface SearchResultGridProps {
  * @param props - 記事リストと検索キーワード
  * @returns 検索結果グリッド
  */
-export function SearchResultGrid({ articles, query, className = '' }: SearchResultGridProps) {
+export function SearchResultGrid({
+  articles,
+  query,
+  className = '',
+}: SearchResultGridProps) {
   return (
     <div className={`grid gap-6 md:grid-cols-2 lg:grid-cols-3 ${className}`}>
       {articles.map((article) => (

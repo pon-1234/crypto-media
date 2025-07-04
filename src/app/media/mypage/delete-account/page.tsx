@@ -23,37 +23,39 @@ export default async function DeleteAccountPage() {
   const hasPaidMembership = membership?.membership === 'paid'
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <Link 
-        href="/media/mypage" 
-        className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6"
+    <div className="container mx-auto max-w-3xl px-4 py-8">
+      <Link
+        href="/media/mypage"
+        className="mb-6 inline-flex items-center text-gray-600 hover:text-gray-900"
       >
-        <ChevronLeft className="w-4 h-4 mr-1" />
+        <ChevronLeft className="mr-1 h-4 w-4" />
         マイページに戻る
       </Link>
 
-      <h1 className="text-2xl font-bold mb-8">退会手続き</h1>
+      <h1 className="mb-8 text-2xl font-bold">退会手続き</h1>
 
       {/* 警告メッセージ */}
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+      <div className="mb-8 rounded-lg border border-red-200 bg-red-50 p-6">
         <div className="flex items-start">
-          <AlertTriangle className="w-6 h-6 text-red-600 mr-3 flex-shrink-0 mt-1" />
+          <AlertTriangle className="mr-3 mt-1 h-6 w-6 flex-shrink-0 text-red-600" />
           <div>
-            <h2 className="text-lg font-semibold text-red-900 mb-2">
+            <h2 className="mb-2 text-lg font-semibold text-red-900">
               退会前にご確認ください
             </h2>
-            <p className="text-red-700 mb-4">
+            <p className="mb-4 text-red-700">
               退会処理を行うと、以下の情報がすべて削除されます：
             </p>
-            <ul className="list-disc list-inside space-y-1 text-red-700 ml-4">
+            <ul className="ml-4 list-inside list-disc space-y-1 text-red-700">
               <li>アカウント情報（メールアドレス、パスワードなど）</li>
               <li>お気に入り記事の履歴</li>
               <li>閲覧履歴</li>
               {hasPaidMembership && (
-                <li className="font-semibold">有料会員のサブスクリプション（自動的に解約されます）</li>
+                <li className="font-semibold">
+                  有料会員のサブスクリプション（自動的に解約されます）
+                </li>
               )}
             </ul>
-            <p className="text-red-700 mt-4 font-semibold">
+            <p className="mt-4 font-semibold text-red-700">
               ※ 削除されたデータは復元できません
             </p>
           </div>
@@ -62,8 +64,8 @@ export default async function DeleteAccountPage() {
 
       {/* 有料会員の場合の追加情報 */}
       {hasPaidMembership && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-8">
-          <h3 className="font-semibold text-yellow-900 mb-2">
+        <div className="mb-8 rounded-lg border border-yellow-200 bg-yellow-50 p-6">
+          <h3 className="mb-2 font-semibold text-yellow-900">
             有料会員のお客様へ
           </h3>
           <p className="text-yellow-700">
@@ -75,41 +77,54 @@ export default async function DeleteAccountPage() {
       )}
 
       {/* 退会フォーム */}
-      <section className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-lg font-semibold mb-4">退会理由（任意）</h2>
-        <p className="text-sm text-gray-600 mb-6">
+      <section className="rounded-lg bg-white p-6 shadow-sm">
+        <h2 className="mb-4 text-lg font-semibold">退会理由（任意）</h2>
+        <p className="mb-6 text-sm text-gray-600">
           サービス改善のため、退会理由をお聞かせください。
         </p>
-        <DeleteAccountForm 
-          userId={session.user.id} 
+        <DeleteAccountForm
+          userId={session.user.id}
           userEmail={session.user.email || ''}
           hasPaidMembership={hasPaidMembership}
         />
       </section>
 
       {/* 代替案の提示 */}
-      <section className="mt-8 bg-gray-50 rounded-lg p-6">
-        <h3 className="font-semibold mb-3">退会の前に</h3>
-        <p className="text-gray-600 mb-4">
-          以下の選択肢もご検討ください：
-        </p>
+      <section className="mt-8 rounded-lg bg-gray-50 p-6">
+        <h3 className="mb-3 font-semibold">退会の前に</h3>
+        <p className="mb-4 text-gray-600">以下の選択肢もご検討ください：</p>
         <ul className="space-y-2 text-gray-600">
           {hasPaidMembership && (
             <li>
-              • <Link href="/media/mypage/subscription" className="text-blue-600 hover:underline">
+              •{' '}
+              <Link
+                href="/media/mypage/subscription"
+                className="text-blue-600 hover:underline"
+              >
                 有料会員の解約のみ
-              </Link>を行い、無料会員として継続する
+              </Link>
+              を行い、無料会員として継続する
             </li>
           )}
           <li>
-            • <Link href="/media/mypage/support" className="text-blue-600 hover:underline">
+            •{' '}
+            <Link
+              href="/media/mypage/support"
+              className="text-blue-600 hover:underline"
+            >
               サポート
-            </Link>に相談する
+            </Link>
+            に相談する
           </li>
           <li>
-            • メール配信の<Link href="/media/mypage/settings" className="text-blue-600 hover:underline">
+            • メール配信の
+            <Link
+              href="/media/mypage/settings"
+              className="text-blue-600 hover:underline"
+            >
               設定を変更
-            </Link>する
+            </Link>
+            する
           </li>
         </ul>
       </section>

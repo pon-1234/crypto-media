@@ -85,9 +85,7 @@ describe('TagIndexPage', () => {
     render(Component)
 
     expect(screen.getByText('タグ一覧')).toBeInTheDocument()
-    expect(
-      screen.getByText('タグが登録されていません。')
-    ).toBeInTheDocument()
+    expect(screen.getByText('タグが登録されていません。')).toBeInTheDocument()
   })
 
   it('正しいAPIパラメータでタグを取得する', async () => {

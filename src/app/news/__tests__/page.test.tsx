@@ -10,7 +10,13 @@ vi.mock('@/lib/microcms', () => ({
 
 // Mock Pagination component
 vi.mock('@/components/ui/Pagination', () => ({
-  Pagination: ({ currentPage, totalPages }: { currentPage: number; totalPages: number }) => (
+  Pagination: ({
+    currentPage,
+    totalPages,
+  }: {
+    currentPage: number
+    totalPages: number
+  }) => (
     <div data-testid="pagination">
       Page {currentPage} of {totalPages}
     </div>
@@ -77,7 +83,9 @@ describe('NewsListPage', () => {
   })
 
   it('2ページ目が正しく取得される', async () => {
-    const page = await NewsListPage({ searchParams: Promise.resolve({ page: '2' }) })
+    const page = await NewsListPage({
+      searchParams: Promise.resolve({ page: '2' }),
+    })
     render(page)
 
     expect(vi.mocked(getCorporateNewsList)).toHaveBeenCalledWith({
@@ -110,7 +118,9 @@ describe('NewsListPage', () => {
       totalCount: 21, // 3ページ目は1件のみ
     })
 
-    const page = await NewsListPage({ searchParams: Promise.resolve({ page: '3' }) })
+    const page = await NewsListPage({
+      searchParams: Promise.resolve({ page: '3' }),
+    })
     render(page)
 
     expect(vi.mocked(getCorporateNewsList)).toHaveBeenCalledWith({
@@ -123,7 +133,9 @@ describe('NewsListPage', () => {
   })
 
   it('無効なページ番号の場合は1ページ目として扱われる', async () => {
-    const page = await NewsListPage({ searchParams: Promise.resolve({ page: 'invalid' }) })
+    const page = await NewsListPage({
+      searchParams: Promise.resolve({ page: 'invalid' }),
+    })
     render(page)
 
     expect(vi.mocked(getCorporateNewsList)).toHaveBeenCalledWith({

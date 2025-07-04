@@ -25,7 +25,9 @@ describe('CorporateStaticPage', () => {
 
     render(<CorporateStaticPage page={mockPage} />)
 
-    expect(screen.getByRole('heading', { level: 1, name: 'テストタイトル' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'テストタイトル' })
+    ).toBeInTheDocument()
     expect(screen.getByTestId('corporate-page-content')).toBeInTheDocument()
     expect(screen.getByText('<p>テストコンテンツ</p>')).toBeInTheDocument()
   })

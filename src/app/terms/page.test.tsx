@@ -69,8 +69,10 @@ describe('TermsPage', () => {
 
 describe('generateMetadata', () => {
   it('generateStaticPageMetadataに正しいパラメータを渡す', async () => {
-    const { generateStaticPageMetadata } = await import('@/lib/corporate/generateStaticPageMetadata')
-    
+    const { generateStaticPageMetadata } = await import(
+      '@/lib/corporate/generateStaticPageMetadata'
+    )
+
     const metadata = await generateMetadata()
 
     expect(generateStaticPageMetadata).toHaveBeenCalledWith('terms', '/terms')

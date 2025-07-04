@@ -37,7 +37,6 @@ export {
 
 export { siteSettingsSchema, type SiteSettings } from './site-settings.schema'
 
-
 export {
   pageCorporateSchema,
   type PageCorporate,

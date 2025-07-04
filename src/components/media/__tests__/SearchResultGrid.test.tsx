@@ -5,7 +5,13 @@ import type { MediaArticle } from '@/lib/schema/article.schema'
 
 // Mock ArticleCardWithHighlight
 vi.mock('../ArticleCardWithHighlight', () => ({
-  ArticleCardWithHighlight: ({ article, query }: { article: MediaArticle; query: string }) => (
+  ArticleCardWithHighlight: ({
+    article,
+    query,
+  }: {
+    article: MediaArticle
+    query: string
+  }) => (
     <div data-testid={`article-${article.id}`}>
       <div>Title: {article.title}</div>
       <div>Query: {query}</div>
@@ -21,7 +27,11 @@ const mockArticles: MediaArticle[] = [
     slug: 'bitcoin-basics',
     content: 'コンテンツ1',
     membershipLevel: 'public',
-    heroImage: { url: 'https://example.com/image1.jpg', width: 800, height: 600 },
+    heroImage: {
+      url: 'https://example.com/image1.jpg',
+      width: 800,
+      height: 600,
+    },
     createdAt: '2024-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
   },
@@ -32,7 +42,11 @@ const mockArticles: MediaArticle[] = [
     slug: 'ethereum-future',
     content: 'コンテンツ2',
     membershipLevel: 'paid',
-    heroImage: { url: 'https://example.com/image2.jpg', width: 800, height: 600 },
+    heroImage: {
+      url: 'https://example.com/image2.jpg',
+      width: 800,
+      height: 600,
+    },
     createdAt: '2024-01-02T00:00:00.000Z',
     updatedAt: '2024-01-02T00:00:00.000Z',
   },
@@ -43,7 +57,11 @@ const mockArticles: MediaArticle[] = [
     slug: 'defi-explained',
     content: 'コンテンツ3',
     membershipLevel: 'public',
-    heroImage: { url: 'https://example.com/image3.jpg', width: 800, height: 600 },
+    heroImage: {
+      url: 'https://example.com/image3.jpg',
+      width: 800,
+      height: 600,
+    },
     createdAt: '2024-01-03T00:00:00.000Z',
     updatedAt: '2024-01-03T00:00:00.000Z',
   },
@@ -67,7 +85,11 @@ describe('SearchResultGrid', () => {
 
   it('カスタムクラス名が適用される', () => {
     const { container } = render(
-      <SearchResultGrid articles={mockArticles} query="DeFi" className="custom-grid" />
+      <SearchResultGrid
+        articles={mockArticles}
+        query="DeFi"
+        className="custom-grid"
+      />
     )
 
     const grid = container.firstChild
@@ -77,7 +99,9 @@ describe('SearchResultGrid', () => {
   })
 
   it('空の記事リストも正しく処理される', () => {
-    const { container } = render(<SearchResultGrid articles={[]} query="Web3" />)
+    const { container } = render(
+      <SearchResultGrid articles={[]} query="Web3" />
+    )
 
     const grid = container.firstChild
     expect(grid?.childNodes).toHaveLength(0)

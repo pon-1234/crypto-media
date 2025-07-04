@@ -40,25 +40,28 @@ export async function PATCH(request: NextRequest) {
       max: 5,
       keyPrefix: 'password-change',
     })
-    
+
     if (!rateLimitResult.success) {
       return NextResponse.json(
-        { 
+        {
           error: 'Too many requests',
-          message: 'パスワード変更の試行回数が制限を超えました。しばらく待ってから再試行してください。',
+          message:
+            'パスワード変更の試行回数が制限を超えました。しばらく待ってから再試行してください。',
         },
-        { 
+        {
           status: 429,
           headers: {
             'X-RateLimit-Limit': '5',
             'X-RateLimit-Remaining': String(rateLimitResult.remaining),
             'X-RateLimit-Reset': String(rateLimitResult.reset),
-            'Retry-After': String(rateLimitResult.reset - Math.floor(Date.now() / 1000)),
+            'Retry-After': String(
+              rateLimitResult.reset - Math.floor(Date.now() / 1000)
+            ),
           },
         }
       )
     }
-    
+
     // セッション確認
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
@@ -107,14 +110,17 @@ export async function PATCH(request: NextRequest) {
     await adminDb.collection('users').doc(session.user.id).update({
       passwordHash: newPasswordHash,
     })
-    
+
     // 監査ログを記録
     await adminDb.collection('audit_logs').add({
       action: 'password_change',
       userId: session.user.id,
       userEmail: session.user.email || 'unknown',
       timestamp: new Date().toISOString(),
-      ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
+      ip:
+        request.headers.get('x-forwarded-for') ||
+        request.headers.get('x-real-ip') ||
+        'unknown',
       userAgent: request.headers.get('user-agent') || 'unknown',
       success: true,
     })

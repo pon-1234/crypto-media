@@ -20,7 +20,13 @@ vi.mock('@/components/ui/Breadcrumbs', () => ({
 }))
 
 vi.mock('@/components/media/SearchResultGrid', () => ({
-  SearchResultGrid: ({ articles, query }: { articles: unknown[]; query: string }) => (
+  SearchResultGrid: ({
+    articles,
+    query,
+  }: {
+    articles: unknown[]
+    query: string
+  }) => (
     <div data-testid="search-result-grid">
       <div>Query: {query}</div>
       <div>Results: {articles.length}</div>
@@ -29,7 +35,13 @@ vi.mock('@/components/media/SearchResultGrid', () => ({
 }))
 
 vi.mock('@/components/ui/Pagination', () => ({
-  Pagination: ({ currentPage, totalPages }: { currentPage: number; totalPages: number }) => (
+  Pagination: ({
+    currentPage,
+    totalPages,
+  }: {
+    currentPage: number
+    totalPages: number
+  }) => (
     <div data-testid="pagination">
       Page {currentPage} of {totalPages}
     </div>
@@ -54,7 +66,11 @@ const mockArticles = {
       content: 'コンテンツ',
       publishedAt: '2024-01-01T00:00:00.000Z',
       membershipLevel: 'public' as const,
-      heroImage: { url: 'https://example.com/image.jpg', width: 1200, height: 630 },
+      heroImage: {
+        url: 'https://example.com/image.jpg',
+        width: 1200,
+        height: 630,
+      },
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     },
@@ -76,7 +92,9 @@ describe('SearchPage', () => {
       })
 
       expect(metadata.title).toBe('「ビットコイン」の検索結果 | Crypto Media')
-      expect(metadata.description).toBe('「ビットコイン」に関する記事の検索結果です。')
+      expect(metadata.description).toBe(
+        '「ビットコイン」に関する記事の検索結果です。'
+      )
       expect(metadata.robots).toBe('noindex, follow')
     })
 
@@ -86,7 +104,9 @@ describe('SearchPage', () => {
       })
 
       expect(metadata.title).toBe('検索 | Crypto Media')
-      expect(metadata.description).toBe('暗号資産・ブロックチェーンに関する記事を検索できます。')
+      expect(metadata.description).toBe(
+        '暗号資産・ブロックチェーンに関する記事を検索できます。'
+      )
     })
   })
 
@@ -97,8 +117,12 @@ describe('SearchPage', () => {
 
       expect(screen.getByText('記事を検索')).toBeInTheDocument()
       expect(screen.getByTestId('search-form')).toBeInTheDocument()
-      expect(screen.getByPlaceholderText('キーワードを入力してください')).toBeInTheDocument()
-      expect(screen.getByText('記事のタイトル、本文、タグなどから検索できます。')).toBeInTheDocument()
+      expect(
+        screen.getByPlaceholderText('キーワードを入力してください')
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText('記事のタイトル、本文、タグなどから検索できます。')
+      ).toBeInTheDocument()
     })
 
     it('検索結果を表示する', async () => {
@@ -140,20 +164,32 @@ describe('SearchPage', () => {
       })
       render(Component)
 
-      expect(screen.getByText('「存在しないキーワード」に一致する記事が見つかりませんでした。')).toBeInTheDocument()
-      expect(screen.getByText('別のキーワードで検索してみてください。')).toBeInTheDocument()
+      expect(
+        screen.getByText(
+          '「存在しないキーワード」に一致する記事が見つかりませんでした。'
+        )
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText('別のキーワードで検索してみてください。')
+      ).toBeInTheDocument()
     })
 
     it('エラー時はエラーメッセージを表示する', async () => {
-      vi.mocked(microCMS.searchMediaArticles).mockRejectedValue(new Error('API Error'))
+      vi.mocked(microCMS.searchMediaArticles).mockRejectedValue(
+        new Error('API Error')
+      )
 
       const Component = await SearchPage({
         searchParams: { q: 'エラーテスト' },
       })
       render(Component)
 
-      expect(screen.getByText('検索中にエラーが発生しました。')).toBeInTheDocument()
-      expect(screen.getByText('検索結果を表示できませんでした。')).toBeInTheDocument()
+      expect(
+        screen.getByText('検索中にエラーが発生しました。')
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText('検索結果を表示できませんでした。')
+      ).toBeInTheDocument()
     })
 
     it('ページネーションのoffsetが正しく計算される', async () => {

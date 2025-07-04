@@ -92,10 +92,12 @@ describe('ArticleCardWithHighlight', () => {
   })
 
   it('検索キーワードがハイライトされる', () => {
-    render(<ArticleCardWithHighlight article={mockArticle} query="ビットコイン" />)
+    render(
+      <ArticleCardWithHighlight article={mockArticle} query="ビットコイン" />
+    )
 
     const marks = screen.getAllByText('ビットコイン')
-    const highlightedElements = marks.filter(el => el.tagName === 'MARK')
+    const highlightedElements = marks.filter((el) => el.tagName === 'MARK')
     expect(highlightedElements.length).toBeGreaterThan(0)
   })
 

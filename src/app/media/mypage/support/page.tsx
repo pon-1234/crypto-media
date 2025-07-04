@@ -2,7 +2,14 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Metadata } from 'next'
-import { ChevronLeft, ChevronRight, HelpCircle, Book, MessageSquare, FileQuestion } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  HelpCircle,
+  Book,
+  MessageSquare,
+  FileQuestion,
+} from 'lucide-react'
 import { authOptions } from '@/lib/auth/authOptions'
 
 export const metadata: Metadata = {
@@ -53,38 +60,38 @@ export default async function SupportPage() {
   ]
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <Link 
-        href="/media/mypage" 
-        className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6"
+    <div className="container mx-auto max-w-4xl px-4 py-8">
+      <Link
+        href="/media/mypage"
+        className="mb-6 inline-flex items-center text-gray-600 hover:text-gray-900"
       >
-        <ChevronLeft className="w-4 h-4 mr-1" />
+        <ChevronLeft className="mr-1 h-4 w-4" />
         マイページに戻る
       </Link>
 
-      <h1 className="text-2xl font-bold mb-8">サポート</h1>
+      <h1 className="mb-8 text-2xl font-bold">サポート</h1>
 
       {/* サポートメニュー */}
       <section className="mb-12">
-        <h2 className="text-lg font-semibold mb-4">サポートメニュー</h2>
-        <div className="grid md:grid-cols-2 gap-4">
+        <h2 className="mb-4 text-lg font-semibold">サポートメニュー</h2>
+        <div className="grid gap-4 md:grid-cols-2">
           {supportItems.map((item) => {
             const Icon = item.icon
             return (
               <Link
                 key={item.title}
                 href={item.href}
-                className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow group"
+                className="group rounded-lg bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
               >
                 <div className="flex items-start">
-                  <Icon className="w-6 h-6 text-blue-600 mt-1 mr-4 flex-shrink-0" />
+                  <Icon className="mr-4 mt-1 h-6 w-6 flex-shrink-0 text-blue-600" />
                   <div className="flex-1">
-                    <h3 className="font-semibold mb-2 group-hover:text-blue-600">
+                    <h3 className="mb-2 font-semibold group-hover:text-blue-600">
                       {item.title}
                     </h3>
                     <p className="text-sm text-gray-600">{item.description}</p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 ml-4" />
+                  <ChevronRight className="ml-4 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
                 </div>
               </Link>
             )
@@ -93,16 +100,16 @@ export default async function SupportPage() {
       </section>
 
       {/* よくあるトピック */}
-      <section className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-lg font-semibold mb-4">よくあるトピック</h2>
+      <section className="rounded-lg bg-white p-6 shadow-sm">
+        <h2 className="mb-4 text-lg font-semibold">よくあるトピック</h2>
         <ul className="space-y-3">
           {popularTopics.map((topic) => (
             <li key={topic.title}>
               <Link
                 href={topic.href}
-                className="text-blue-600 hover:text-blue-800 hover:underline flex items-center"
+                className="flex items-center text-blue-600 hover:text-blue-800 hover:underline"
               >
-                <ChevronRight className="w-4 h-4 mr-2" />
+                <ChevronRight className="mr-2 h-4 w-4" />
                 {topic.title}
               </Link>
             </li>
@@ -111,9 +118,9 @@ export default async function SupportPage() {
       </section>
 
       {/* お問い合わせ情報 */}
-      <section className="mt-8 bg-gray-50 rounded-lg p-6">
-        <h2 className="text-lg font-semibold mb-4">お問い合わせについて</h2>
-        <p className="text-gray-600 mb-4">
+      <section className="mt-8 rounded-lg bg-gray-50 p-6">
+        <h2 className="mb-4 text-lg font-semibold">お問い合わせについて</h2>
+        <p className="mb-4 text-gray-600">
           FAQやガイドで解決しない場合は、お問い合わせフォームよりご連絡ください。
         </p>
         <p className="text-sm text-gray-500">
@@ -121,10 +128,10 @@ export default async function SupportPage() {
         </p>
         <Link
           href="/contact"
-          className="inline-flex items-center mt-4 text-blue-600 hover:text-blue-800"
+          className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800"
         >
           お問い合わせフォームへ
-          <ChevronRight className="w-4 h-4 ml-1" />
+          <ChevronRight className="ml-1 h-4 w-4" />
         </Link>
       </section>
     </div>

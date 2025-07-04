@@ -65,11 +65,16 @@ describe('PrivacyPolicyPage', () => {
 
 describe('generateMetadata', () => {
   it('generateStaticPageMetadataに正しいパラメータを渡す', async () => {
-    const { generateStaticPageMetadata } = await import('@/lib/corporate/generateStaticPageMetadata')
-    
+    const { generateStaticPageMetadata } = await import(
+      '@/lib/corporate/generateStaticPageMetadata'
+    )
+
     const metadata = await generateMetadata()
 
-    expect(generateStaticPageMetadata).toHaveBeenCalledWith('privacy-policy', '/privacy-policy')
+    expect(generateStaticPageMetadata).toHaveBeenCalledWith(
+      'privacy-policy',
+      '/privacy-policy'
+    )
     expect(metadata).toEqual({
       title: 'プライバシーポリシー | 暗号資産メディア',
       description: '当サイトのプライバシーポリシーです。',

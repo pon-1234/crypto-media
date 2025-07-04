@@ -26,7 +26,7 @@ test.describe('アカウント管理', () => {
     await page.getByRole('button', { name: 'プロフィールを更新' }).click()
 
     await expect(page.getByText('プロフィールを更新しました')).toBeVisible()
-    
+
     // ページがリフレッシュされ、新しい名前が表示されていることを確認
     await page.reload()
     await expect(page.getByLabel('名前')).toHaveValue(newName)
@@ -48,11 +48,15 @@ test.describe('アカウント管理', () => {
     // TODO: 新しいパスワードで再ログインできることを確認するテストを追加
   })
 
-  test('現在のパスワードが間違っている場合、エラーが表示される', async ({ page }) => {
+  test('現在のパスワードが間違っている場合、エラーが表示される', async ({
+    page,
+  }) => {
     await page.goto('/media/mypage/settings')
 
     await page.getByLabel('現在のパスワード').fill('wrong-password')
-    await page.getByLabel('新しいパスワード', { exact: true }).fill('new-password')
+    await page
+      .getByLabel('新しいパスワード', { exact: true })
+      .fill('new-password')
     await page.getByLabel('新しいパスワード（確認）').fill('new-password')
     await page.getByRole('button', { name: '変更する' }).click()
 
@@ -77,8 +81,6 @@ test.describe('アカウント管理', () => {
 
     // トップページにリダイレクトされることを確認
     await expect(page).toHaveURL('/')
-    await expect(
-      page.getByText('アカウントを削除しました')
-    ).toBeVisible()
+    await expect(page.getByText('アカウントを削除しました')).toBeVisible()
   })
-}) 
+})

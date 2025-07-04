@@ -60,10 +60,13 @@ describe('NewsCategoryPage', () => {
       searchParams: mockSearchParams,
     })
 
-    expect(getCorporateNewsListByCategory).toHaveBeenCalledWith('press-release', {
-      limit: 10,
-      offset: 0,
-    })
+    expect(getCorporateNewsListByCategory).toHaveBeenCalledWith(
+      'press-release',
+      {
+        limit: 10,
+        offset: 0,
+      }
+    )
     expect(page).toMatchSnapshot()
   })
 
@@ -114,10 +117,13 @@ describe('NewsCategoryPage', () => {
       searchParams: Promise.resolve({ page: '2' }),
     })
 
-    expect(getCorporateNewsListByCategory).toHaveBeenCalledWith('press-release', {
-      limit: 10,
-      offset: 10,
-    })
+    expect(getCorporateNewsListByCategory).toHaveBeenCalledWith(
+      'press-release',
+      {
+        limit: 10,
+        offset: 10,
+      }
+    )
     expect(page).toMatchSnapshot()
   })
 
@@ -167,7 +173,8 @@ describe('NewsCategoryPage', () => {
 
       expect(generatePageMetadata).toHaveBeenCalledWith({
         title: 'unknown-categoryのニュース一覧',
-        description: 'unknown-categoryに関する最新のニュースをご覧いただけます。',
+        description:
+          'unknown-categoryに関する最新のニュースをご覧いただけます。',
         path: '/news/category/unknown-category',
       })
     })

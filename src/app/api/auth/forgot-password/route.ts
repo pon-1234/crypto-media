@@ -7,7 +7,7 @@ import { env } from '@/config'
 
 /**
  * パスワードリセット要求API
- * 
+ *
  * @doc DEVELOPMENT_GUIDE.md#認証・会員DB - パスワードリセットフロー
  * @related src/lib/auth/reset-token.ts - トークン生成と管理
  * @issue #26 - 認証機能の拡張：メール/パスワード認証の追加
@@ -46,7 +46,8 @@ const createPasswordResetEmailHtml = (resetUrl: string): string => {
 }
 
 // 成功レスポンスのメッセージを定数化
-const SUCCESS_MESSAGE = 'パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）'
+const SUCCESS_MESSAGE =
+  'パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）'
 
 export async function POST(request: NextRequest) {
   try {
@@ -97,7 +98,7 @@ export async function POST(request: NextRequest) {
     // パスワードリセットメールを送信
     const appUrl = env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
     const resetUrl = `${appUrl}/reset-password?token=${token}`
-    
+
     try {
       await sendEmail({
         to: email,

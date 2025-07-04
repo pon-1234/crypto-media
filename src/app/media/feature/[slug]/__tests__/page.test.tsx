@@ -5,7 +5,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { notFound } from 'next/navigation'
-import FeatureDetailPage, { generateStaticParams, generateMetadata } from '../page'
+import FeatureDetailPage, {
+  generateStaticParams,
+  generateMetadata,
+} from '../page'
 import { getAllFeatureSlugs } from '@/lib/microcms'
 
 // モックの設定
@@ -65,7 +68,8 @@ describe('FeatureDetailPage', () => {
       id: '1',
       name: '2025年の暗号資産トレンド',
       slug: '2025-crypto-trends',
-      description: '2025年に注目すべき暗号資産のトレンドを専門家が解説。\nDeFi、NFT、Web3の最新動向を網羅。',
+      description:
+        '2025年に注目すべき暗号資産のトレンドを専門家が解説。\nDeFi、NFT、Web3の最新動向を網羅。',
       heroImage: {
         url: 'https://example.com/hero.jpg',
         width: 1200,
@@ -86,7 +90,11 @@ describe('FeatureDetailPage', () => {
           type: 'article' as const,
           membershipLevel: 'public' as const,
           content: '記事内容',
-          heroImage: { url: 'https://example.com/image1.jpg', width: 800, height: 600 },
+          heroImage: {
+            url: 'https://example.com/image1.jpg',
+            width: 800,
+            height: 600,
+          },
           features: [mockFeature],
           publishedAt: '2023-01-01T00:00:00.000Z',
           createdAt: '2023-01-01T00:00:00.000Z',
@@ -100,7 +108,11 @@ describe('FeatureDetailPage', () => {
           type: 'article' as const,
           membershipLevel: 'public' as const,
           content: '記事内容',
-          heroImage: { url: 'https://example.com/image2.jpg', width: 800, height: 600 },
+          heroImage: {
+            url: 'https://example.com/image2.jpg',
+            width: 800,
+            height: 600,
+          },
           features: [mockFeature],
           publishedAt: '2023-01-02T00:00:00.000Z',
           createdAt: '2023-01-02T00:00:00.000Z',
@@ -114,7 +126,11 @@ describe('FeatureDetailPage', () => {
           type: 'article' as const,
           membershipLevel: 'paid' as const,
           content: '記事内容',
-          heroImage: { url: 'https://example.com/image3.jpg', width: 800, height: 600 },
+          heroImage: {
+            url: 'https://example.com/image3.jpg',
+            width: 800,
+            height: 600,
+          },
           features: [mockFeature],
           publishedAt: '2023-01-03T00:00:00.000Z',
           createdAt: '2023-01-03T00:00:00.000Z',
@@ -127,20 +143,30 @@ describe('FeatureDetailPage', () => {
       limit: 50,
     }
 
-    const { getFeatureBySlug, getMediaArticlesByFeature } = await import('@/lib/microcms')
+    const { getFeatureBySlug, getMediaArticlesByFeature } = await import(
+      '@/lib/microcms'
+    )
     vi.mocked(getFeatureBySlug).mockResolvedValue(mockFeature)
     vi.mocked(getMediaArticlesByFeature).mockResolvedValue(mockArticles)
 
-    const Component = await FeatureDetailPage({ params: { slug: '2025-crypto-trends' } })
+    const Component = await FeatureDetailPage({
+      params: { slug: '2025-crypto-trends' },
+    })
     render(Component)
 
     // 特集情報の検証
     expect(screen.getByText('2025年の暗号資産トレンド')).toBeInTheDocument()
-    expect(screen.getByText(/2025年に注目すべき暗号資産のトレンドを専門家が解説/)).toBeInTheDocument()
-    expect(screen.getByText(/DeFi、NFT、Web3の最新動向を網羅/)).toBeInTheDocument()
+    expect(
+      screen.getByText(/2025年に注目すべき暗号資産のトレンドを専門家が解説/)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/DeFi、NFT、Web3の最新動向を網羅/)
+    ).toBeInTheDocument()
 
     // ヒーロー画像の検証
-    const heroImage = screen.getByRole('img', { name: '2025年の暗号資産トレンド' })
+    const heroImage = screen.getByRole('img', {
+      name: '2025年の暗号資産トレンド',
+    })
     expect(heroImage).toHaveAttribute('src', 'https://example.com/hero.jpg')
 
     // 記事一覧の検証
@@ -165,7 +191,9 @@ describe('FeatureDetailPage', () => {
       revisedAt: '2023-01-01T00:00:00.000Z',
     }
 
-    const { getFeatureBySlug, getMediaArticlesByFeature } = await import('@/lib/microcms')
+    const { getFeatureBySlug, getMediaArticlesByFeature } = await import(
+      '@/lib/microcms'
+    )
     vi.mocked(getFeatureBySlug).mockResolvedValue(mockFeature)
     vi.mocked(getMediaArticlesByFeature).mockResolvedValue({
       contents: [],
@@ -174,7 +202,9 @@ describe('FeatureDetailPage', () => {
       limit: 50,
     })
 
-    const Component = await FeatureDetailPage({ params: { slug: 'defi-introduction' } })
+    const Component = await FeatureDetailPage({
+      params: { slug: 'defi-introduction' },
+    })
     render(Component)
 
     expect(screen.getByText('DeFi入門')).toBeInTheDocument()
@@ -193,7 +223,9 @@ describe('FeatureDetailPage', () => {
       revisedAt: '2023-01-01T00:00:00.000Z',
     }
 
-    const { getFeatureBySlug, getMediaArticlesByFeature } = await import('@/lib/microcms')
+    const { getFeatureBySlug, getMediaArticlesByFeature } = await import(
+      '@/lib/microcms'
+    )
     vi.mocked(getFeatureBySlug).mockResolvedValue(mockFeature)
     vi.mocked(getMediaArticlesByFeature).mockResolvedValue({
       contents: [],
@@ -202,7 +234,9 @@ describe('FeatureDetailPage', () => {
       limit: 50,
     })
 
-    const Component = await FeatureDetailPage({ params: { slug: 'new-feature' } })
+    const Component = await FeatureDetailPage({
+      params: { slug: 'new-feature' },
+    })
     render(Component)
 
     expect(screen.getByText('関連記事')).toBeInTheDocument()
@@ -233,7 +267,9 @@ describe('FeatureDetailPage', () => {
       revisedAt: '2023-01-01T00:00:00.000Z',
     }
 
-    const { getFeatureBySlug, getMediaArticlesByFeature } = await import('@/lib/microcms')
+    const { getFeatureBySlug, getMediaArticlesByFeature } = await import(
+      '@/lib/microcms'
+    )
     vi.mocked(getFeatureBySlug).mockResolvedValue(mockFeature)
     vi.mocked(getMediaArticlesByFeature).mockResolvedValue({
       contents: [],
@@ -274,7 +310,9 @@ describe('FeatureDetailPage', () => {
     const { getFeatureBySlug } = await import('@/lib/microcms')
     vi.mocked(getFeatureBySlug).mockResolvedValue(mockFeature)
 
-    const metadata = await generateMetadata({ params: { slug: '2025-crypto-trends' } })
+    const metadata = await generateMetadata({
+      params: { slug: '2025-crypto-trends' },
+    })
 
     expect(metadata).toEqual({
       title: '2025年の暗号資産トレンド | 特集 | 暗号資産総合メディア',

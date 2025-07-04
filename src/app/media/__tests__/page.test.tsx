@@ -47,9 +47,7 @@ describe('MediaHomePage', () => {
     const Page = await MediaHomePage()
     render(Page)
 
-    expect(
-      screen.getByText('記事が見つかりませんでした。')
-    ).toBeInTheDocument()
+    expect(screen.getByText('記事が見つかりませんでした。')).toBeInTheDocument()
   })
 
   it('取得した記事がグリッド表示される', async () => {

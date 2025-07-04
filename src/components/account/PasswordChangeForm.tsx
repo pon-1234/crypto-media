@@ -74,7 +74,7 @@ export function PasswordChangeForm({ userId }: PasswordChangeFormProps) {
         }
 
         toast.success('パスワードを変更しました')
-        
+
         // フォームをリセット
         setCurrentPassword('')
         setNewPassword('')
@@ -89,8 +89,8 @@ export function PasswordChangeForm({ userId }: PasswordChangeFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label 
-          htmlFor="currentPassword" 
+        <label
+          htmlFor="currentPassword"
           className="block text-sm font-medium text-gray-700"
         >
           現在のパスワード
@@ -119,8 +119,8 @@ export function PasswordChangeForm({ userId }: PasswordChangeFormProps) {
       </div>
 
       <div>
-        <label 
-          htmlFor="newPassword" 
+        <label
+          htmlFor="newPassword"
           className="block text-sm font-medium text-gray-700"
         >
           新しいパスワード
@@ -152,8 +152,8 @@ export function PasswordChangeForm({ userId }: PasswordChangeFormProps) {
       </div>
 
       <div>
-        <label 
-          htmlFor="confirmPassword" 
+        <label
+          htmlFor="confirmPassword"
           className="block text-sm font-medium text-gray-700"
         >
           新しいパスワード（確認）
@@ -182,11 +182,7 @@ export function PasswordChangeForm({ userId }: PasswordChangeFormProps) {
       </div>
 
       <div className="flex justify-end">
-        <Button
-          type="submit"
-          disabled={isPending}
-          className="min-w-[120px]"
-        >
+        <Button type="submit" disabled={isPending} className="min-w-[120px]">
           {isPending ? '変更中...' : '変更する'}
         </Button>
       </div>

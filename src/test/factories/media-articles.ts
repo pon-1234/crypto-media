@@ -9,7 +9,8 @@ import type { MediaArticle } from '@/lib/schema'
 export const mockMediaArticle = (
   overrides: Partial<MediaArticle> = {}
 ): MediaArticle => {
-  const id = overrides.id || `article-${Math.random().toString(36).substring(7)}`
+  const id =
+    overrides.id || `article-${Math.random().toString(36).substring(7)}`
   return {
     id,
     slug: overrides.slug || `slug-${id}`,
@@ -51,4 +52,4 @@ export const mockMediaArticles = (
   return Array.from({ length: count }, (_, i) =>
     mockMediaArticle({ id: `article-${i}`, ...overrides })
   )
-} 
+}

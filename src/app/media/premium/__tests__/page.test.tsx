@@ -3,7 +3,11 @@
  */
 import { describe, it, expect, vi } from 'vitest'
 import PremiumArticlesPage from '../page'
-import { getMediaArticlesByMembershipLevel, getCategories, getTags } from '@/lib/microcms'
+import {
+  getMediaArticlesByMembershipLevel,
+  getCategories,
+  getTags,
+} from '@/lib/microcms'
 import type { MediaArticle, Category, Tag } from '@/lib/schema'
 
 vi.mock('@/lib/microcms', () => ({
@@ -43,7 +47,11 @@ describe('PremiumArticlesPage', () => {
       type: 'article',
       membershipLevel: 'paid',
       content: '有料コンテンツ1',
-      heroImage: { url: 'https://example.com/image1.jpg', width: 1200, height: 630 },
+      heroImage: {
+        url: 'https://example.com/image1.jpg',
+        width: 1200,
+        height: 630,
+      },
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       publishedAt: '2024-01-01T00:00:00Z',
@@ -56,7 +64,11 @@ describe('PremiumArticlesPage', () => {
       type: 'survey_report',
       membershipLevel: 'paid',
       content: '有料コンテンツ2',
-      heroImage: { url: 'https://example.com/image2.jpg', width: 1200, height: 630 },
+      heroImage: {
+        url: 'https://example.com/image2.jpg',
+        width: 1200,
+        height: 630,
+      },
       createdAt: '2024-01-02T00:00:00Z',
       updatedAt: '2024-01-02T00:00:00Z',
       publishedAt: '2024-01-02T00:00:00Z',
@@ -65,11 +77,23 @@ describe('PremiumArticlesPage', () => {
   ]
 
   const mockCategories: Category[] = [
-    { id: 'cat1', name: 'DeFi', slug: 'defi', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
+    {
+      id: 'cat1',
+      name: 'DeFi',
+      slug: 'defi',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+    },
   ]
 
   const mockTags: Tag[] = [
-    { id: 'tag1', name: 'Bitcoin', slug: 'bitcoin', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
+    {
+      id: 'tag1',
+      name: 'Bitcoin',
+      slug: 'bitcoin',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+    },
   ]
 
   it('有料記事一覧を正しく表示する', async () => {
@@ -148,7 +172,7 @@ describe('PremiumArticlesPage', () => {
         offset: 0,
         limit: 100,
       })
-    
+
     vi.mocked(getMediaArticlesByMembershipLevel).mockResolvedValue({
       contents: mockArticles,
       totalCount: 2,
@@ -175,16 +199,31 @@ describe('PremiumArticlesPage', () => {
 
   it('指定されたカテゴリが存在しない場合、カテゴリフィルタは適用されない', async () => {
     vi.mocked(getCategories)
-      .mockResolvedValueOnce({ contents: [], totalCount: 0, offset: 0, limit: 1 }) // No category found
-      .mockResolvedValueOnce({ contents: mockCategories, totalCount: 1, offset: 0, limit: 100 }) // For filters
-    
+      .mockResolvedValueOnce({
+        contents: [],
+        totalCount: 0,
+        offset: 0,
+        limit: 1,
+      }) // No category found
+      .mockResolvedValueOnce({
+        contents: mockCategories,
+        totalCount: 1,
+        offset: 0,
+        limit: 100,
+      }) // For filters
+
     vi.mocked(getMediaArticlesByMembershipLevel).mockResolvedValue({
       contents: mockArticles,
       totalCount: 2,
       offset: 0,
       limit: 12,
     })
-    vi.mocked(getTags).mockResolvedValue({ contents: mockTags, totalCount: 1, offset: 0, limit: 100 })
+    vi.mocked(getTags).mockResolvedValue({
+      contents: mockTags,
+      totalCount: 1,
+      offset: 0,
+      limit: 100,
+    })
 
     await PremiumArticlesPage({ searchParams: { category: 'unknown' } })
 
@@ -198,8 +237,18 @@ describe('PremiumArticlesPage', () => {
 
   it('指定されたタグが存在しない場合、タグフィルタは適用されない', async () => {
     vi.mocked(getTags)
-      .mockResolvedValueOnce({ contents: [], totalCount: 0, offset: 0, limit: 1 }) // No tag found
-      .mockResolvedValueOnce({ contents: mockTags, totalCount: 1, offset: 0, limit: 100 }) // For filters
+      .mockResolvedValueOnce({
+        contents: [],
+        totalCount: 0,
+        offset: 0,
+        limit: 1,
+      }) // No tag found
+      .mockResolvedValueOnce({
+        contents: mockTags,
+        totalCount: 1,
+        offset: 0,
+        limit: 100,
+      }) // For filters
 
     vi.mocked(getMediaArticlesByMembershipLevel).mockResolvedValue({
       contents: mockArticles,
@@ -207,7 +256,12 @@ describe('PremiumArticlesPage', () => {
       offset: 0,
       limit: 12,
     })
-    vi.mocked(getCategories).mockResolvedValue({ contents: mockCategories, totalCount: 1, offset: 0, limit: 100 })
+    vi.mocked(getCategories).mockResolvedValue({
+      contents: mockCategories,
+      totalCount: 1,
+      offset: 0,
+      limit: 100,
+    })
 
     await PremiumArticlesPage({ searchParams: { tag: 'unknown' } })
 
@@ -248,6 +302,8 @@ describe('PremiumArticlesPage', () => {
     const error = new Error('API Error')
     vi.mocked(getMediaArticlesByMembershipLevel).mockRejectedValue(error)
 
-    await expect(PremiumArticlesPage({ searchParams: {} })).rejects.toThrow('API Error')
+    await expect(PremiumArticlesPage({ searchParams: {} })).rejects.toThrow(
+      'API Error'
+    )
   })
 })

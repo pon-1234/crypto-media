@@ -57,7 +57,7 @@ const envSchema = z.object({
   // HubSpot設定（オプション）
   NEXT_PUBLIC_HUBSPOT_PORTAL_ID: z.string().optional(),
   NEXT_PUBLIC_HUBSPOT_FORM_ID: z.string().optional(),
-  
+
   // App URL設定（オプション）
   NEXT_PUBLIC_APP_URL: z.string().url().optional(),
 })

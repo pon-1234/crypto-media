@@ -9,7 +9,8 @@ import { getCategories } from '@/lib/microcms'
 
 export const metadata: Metadata = {
   title: 'カテゴリ一覧 | 暗号資産総合メディア',
-  description: '暗号資産・ブロックチェーンに関する記事をカテゴリ別に分類しています。',
+  description:
+    '暗号資産・ブロックチェーンに関する記事をカテゴリ別に分類しています。',
 }
 
 /**
@@ -24,15 +25,15 @@ export default async function CategoryIndexPage() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">カテゴリ一覧</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="mx-auto max-w-4xl">
+        <h1 className="mb-8 text-3xl font-bold">カテゴリ一覧</h1>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {categories.map((category) => (
             <Link
               key={category.id}
               href={`/media/category/${category.slug}`}
-              className="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200"
+              className="block rounded-lg bg-white p-6 shadow transition-shadow duration-200 hover:shadow-md"
             >
               <h2 className="text-xl font-semibold text-gray-900">
                 {category.name}
@@ -40,9 +41,9 @@ export default async function CategoryIndexPage() {
             </Link>
           ))}
         </div>
-        
+
         {categories.length === 0 && (
-          <p className="text-center text-gray-600 py-12">
+          <p className="py-12 text-center text-gray-600">
             カテゴリが登録されていません。
           </p>
         )}

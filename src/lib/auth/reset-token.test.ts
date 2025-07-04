@@ -73,7 +73,8 @@ describe('reset-token utilities', () => {
 
       // 有効期限が約1時間後であることを確認
       const savedData = mockSet.mock.calls[0][0]
-      const diffMs = savedData.expiresAt.getTime() - savedData.createdAt.getTime()
+      const diffMs =
+        savedData.expiresAt.getTime() - savedData.createdAt.getTime()
       expect(diffMs).toBeGreaterThan(59 * 60 * 1000)
       expect(diffMs).toBeLessThan(61 * 60 * 1000)
     })
@@ -93,7 +94,8 @@ describe('reset-token utilities', () => {
       await saveResetToken(email, token, customExpiry)
 
       const savedData = mockSet.mock.calls[0][0]
-      const diffMs = savedData.expiresAt.getTime() - savedData.createdAt.getTime()
+      const diffMs =
+        savedData.expiresAt.getTime() - savedData.createdAt.getTime()
       expect(diffMs).toBeGreaterThan(29 * 60 * 1000)
       expect(diffMs).toBeLessThan(31 * 60 * 1000)
     })
@@ -215,10 +217,7 @@ describe('reset-token utilities', () => {
 
   describe('cleanupExpiredTokens', () => {
     it('期限切れトークンを削除する', async () => {
-      const mockDocs = [
-        { ref: { id: 'token1' } },
-        { ref: { id: 'token2' } },
-      ]
+      const mockDocs = [{ ref: { id: 'token1' } }, { ref: { id: 'token2' } }]
       const mockGet = vi.fn().mockResolvedValue({
         docs: mockDocs,
         size: 2,

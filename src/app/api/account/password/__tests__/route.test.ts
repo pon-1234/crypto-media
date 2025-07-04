@@ -5,7 +5,6 @@ import { adminDb } from '@/lib/firebase/admin'
 import { verifyPassword, hashPassword } from '@/lib/auth/password'
 import type { NextRequest } from 'next/server'
 
-
 vi.mock('next-auth')
 vi.mock('@/lib/firebase/admin', () => {
   const mockCollection = vi.fn((collectionName: string) => {
@@ -81,7 +80,9 @@ describe('PATCH /api/account/password', () => {
       }
       return { add: vi.fn() }
     })
-    vi.mocked(adminDb.collection).mockImplementation(mockCollection as ReturnType<typeof vi.fn>)
+    vi.mocked(adminDb.collection).mockImplementation(
+      mockCollection as ReturnType<typeof vi.fn>
+    )
     vi.mocked(verifyPassword).mockResolvedValue(false)
     const req = new Request('http://localhost', {
       method: 'PATCH',
@@ -101,14 +102,18 @@ describe('PATCH /api/account/password', () => {
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
     const mockUpdate = vi.fn().mockResolvedValue({})
     const mockGet = vi.fn().mockResolvedValue(mockUserDoc)
-    const mockDoc = vi.fn().mockReturnValue({ get: mockGet, update: mockUpdate })
+    const mockDoc = vi
+      .fn()
+      .mockReturnValue({ get: mockGet, update: mockUpdate })
     const mockCollection = vi.fn((collectionName: string) => {
       if (collectionName === 'users') {
         return { doc: mockDoc }
       }
       return { add: vi.fn() }
     })
-    vi.mocked(adminDb.collection).mockImplementation(mockCollection as ReturnType<typeof vi.fn>)
+    vi.mocked(adminDb.collection).mockImplementation(
+      mockCollection as ReturnType<typeof vi.fn>
+    )
     vi.mocked(verifyPassword).mockResolvedValue(true)
     vi.mocked(hashPassword).mockResolvedValue('new_hashed_password')
 
@@ -132,8 +137,10 @@ describe('PATCH /api/account/password', () => {
     const mockGet = vi.fn().mockRejectedValue(new Error('DB Error'))
     const mockDoc = vi.fn().mockReturnValue({ get: mockGet, update: vi.fn() })
     const mockCollection = vi.fn().mockReturnValue({ doc: mockDoc })
-    vi.mocked(adminDb.collection).mockImplementation(mockCollection as ReturnType<typeof vi.fn>)
-     const req = new Request('http://localhost', {
+    vi.mocked(adminDb.collection).mockImplementation(
+      mockCollection as ReturnType<typeof vi.fn>
+    )
+    const req = new Request('http://localhost', {
       method: 'PATCH',
       body: JSON.stringify({
         currentPassword: 'currentPassword123',
@@ -144,4 +151,4 @@ describe('PATCH /api/account/password', () => {
     const res = await PATCH(req as NextRequest)
     expect(res.status).toBe(500)
   })
-}) 
+})

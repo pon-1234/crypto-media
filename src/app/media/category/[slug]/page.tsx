@@ -92,7 +92,10 @@ export async function generateStaticParams() {
  * @param props - Page props containing category slug
  * @returns Category page component
  */
-export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
+export default async function CategoryPage({
+  params,
+  searchParams,
+}: CategoryPageProps) {
   const currentPage = Number(searchParams?.page) || 1
   const limit = 12 // 1ページあたりの表示件数
   const offset = (currentPage - 1) * limit

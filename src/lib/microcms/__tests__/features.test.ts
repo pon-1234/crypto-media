@@ -72,7 +72,10 @@ describe('features.ts', () => {
   })
 
   it('getFeatureBySlug: slugで特集を取得する', async () => {
-    mockedClient.getList.mockResolvedValue({ ...mockFeatureList, contents: [mockFeature1] })
+    mockedClient.getList.mockResolvedValue({
+      ...mockFeatureList,
+      contents: [mockFeature1],
+    })
     const data = await getFeatureBySlug('feature-1')
     expect(data.name).toBe('特集1')
     expect(mockedClient.getList).toHaveBeenCalledWith({
@@ -98,7 +101,9 @@ describe('features.ts', () => {
     ])
     const ids = await getAllFeatureIds()
     expect(ids).toEqual(['feature-1', 'feature-2'])
-    expect(mockedGetAllContents).toHaveBeenCalledWith('features', { fields: 'id' })
+    expect(mockedGetAllContents).toHaveBeenCalledWith('features', {
+      fields: 'id',
+    })
   })
 
   it('getAllFeatureSlugs: すべてのslugを取得する', async () => {
@@ -109,6 +114,8 @@ describe('features.ts', () => {
     mockedGetAllContents.mockResolvedValue(mockSlugsData)
     const slugs = await getAllFeatureSlugs()
     expect(slugs).toEqual(['feature-1', 'feature-2'])
-    expect(mockedGetAllContents).toHaveBeenCalledWith('features', { fields: 'id,slug' })
+    expect(mockedGetAllContents).toHaveBeenCalledWith('features', {
+      fields: 'id,slug',
+    })
   })
-}) 
+})

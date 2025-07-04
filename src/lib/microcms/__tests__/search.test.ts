@@ -19,7 +19,11 @@ describe('searchMediaArticles', () => {
         slug: 'bitcoin-news',
         description: 'ビットコインに関する記事',
         content: 'コンテンツ',
-        heroImage: { url: 'https://example.com/image.jpg', width: 1200, height: 630 },
+        heroImage: {
+          url: 'https://example.com/image.jpg',
+          width: 1200,
+          height: 630,
+        },
         publishedAt: '2024-01-01T00:00:00.000Z',
         membershipLevel: 'public' as const,
         createdAt: '2024-01-01T00:00:00.000Z',
@@ -73,7 +77,9 @@ describe('searchMediaArticles', () => {
   it('エラー時は例外をスローする', async () => {
     vi.mocked(client.getList).mockRejectedValue(new Error('API Error'))
 
-    await expect(searchMediaArticles('DeFi')).rejects.toThrow('記事の検索に失敗しました')
+    await expect(searchMediaArticles('DeFi')).rejects.toThrow(
+      '記事の検索に失敗しました'
+    )
   })
 
   it('空の検索結果を正しく処理する', async () => {
@@ -96,9 +102,9 @@ describe('highlightSearchQuery', () => {
   it('検索キーワードがハイライトされる', () => {
     const text = 'ビットコインとイーサリアムの価格が上昇'
     const query = 'ビットコイン'
-    
+
     const result = highlightSearchQuery(text, query)
-    
+
     expect(result).toHaveLength(3)
     expect(result[0]).toBe('')
     expect(result[1]).toMatchObject({
@@ -112,9 +118,9 @@ describe('highlightSearchQuery', () => {
   it('大文字小文字を区別しない', () => {
     const text = 'Bitcoin and BITCOIN'
     const query = 'bitcoin'
-    
+
     const result = highlightSearchQuery(text, query)
-    
+
     expect(result).toHaveLength(5)
     expect(result[1]).toMatchObject({
       type: 'mark',
@@ -129,9 +135,9 @@ describe('highlightSearchQuery', () => {
   it('複数の一致箇所をハイライトする', () => {
     const text = 'DeFiの革新とDeFiプロトコル'
     const query = 'DeFi'
-    
+
     const result = highlightSearchQuery(text, query)
-    
+
     expect(result).toHaveLength(5)
     expect(result[1]).toMatchObject({
       type: 'mark',
@@ -146,9 +152,9 @@ describe('highlightSearchQuery', () => {
   it('正規表現の特殊文字をエスケープする', () => {
     const text = 'Web3.0の未来'
     const query = '3.0'
-    
+
     const result = highlightSearchQuery(text, query)
-    
+
     expect(result).toHaveLength(3)
     expect(result[1]).toMatchObject({
       type: 'mark',
@@ -159,18 +165,18 @@ describe('highlightSearchQuery', () => {
   it('空のクエリの場合は元のテキストを返す', () => {
     const text = 'ブロックチェーン技術'
     const query = ''
-    
+
     const result = highlightSearchQuery(text, query)
-    
+
     expect(result).toEqual(['ブロックチェーン技術'])
   })
 
   it('一致しない場合は元のテキストを返す', () => {
     const text = 'ブロックチェーン技術'
     const query = '人工知能'
-    
+
     const result = highlightSearchQuery(text, query)
-    
+
     expect(result).toEqual(['ブロックチェーン技術'])
   })
 })

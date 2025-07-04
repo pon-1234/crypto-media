@@ -28,32 +28,32 @@ export async function DELETE(request: NextRequest) {
       max: 3,
       keyPrefix: 'account-delete',
     })
-    
+
     if (!rateLimitResult.success) {
       return NextResponse.json(
-        { 
+        {
           error: 'Too many requests',
-          message: 'アカウント削除の試行回数が制限を超えました。しばらく待ってから再試行してください。',
+          message:
+            'アカウント削除の試行回数が制限を超えました。しばらく待ってから再試行してください。',
         },
-        { 
+        {
           status: 429,
           headers: {
             'X-RateLimit-Limit': '3',
             'X-RateLimit-Remaining': String(rateLimitResult.remaining),
             'X-RateLimit-Reset': String(rateLimitResult.reset),
-            'Retry-After': String(rateLimitResult.reset - Math.floor(Date.now() / 1000)),
+            'Retry-After': String(
+              rateLimitResult.reset - Math.floor(Date.now() / 1000)
+            ),
           },
         }
       )
     }
-    
+
     // セッション確認
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-      return NextResponse.json(
-        { message: '認証が必要です' },
-        { status: 401 }
-      )
+      return NextResponse.json({ message: '認証が必要です' }, { status: 401 })
     }
 
     // リクエストボディの検証
@@ -62,10 +62,7 @@ export async function DELETE(request: NextRequest) {
 
     // 自分のアカウントのみ削除可能
     if (session.user.id !== validatedData.userId) {
-      return NextResponse.json(
-        { message: '権限がありません' },
-        { status: 403 }
-      )
+      return NextResponse.json({ message: '権限がありません' }, { status: 403 })
     }
 
     // メールアドレスの確認
@@ -87,7 +84,7 @@ export async function DELETE(request: NextRequest) {
 
     if (memberDoc.exists) {
       const memberData = memberDoc.data()
-      
+
       // Stripeサブスクリプションがある場合はキャンセル
       if (memberData?.stripeSubscriptionId) {
         try {
@@ -137,14 +134,17 @@ export async function DELETE(request: NextRequest) {
 
     // バッチ処理を実行
     await batch.commit()
-    
+
     // 監査ログを記録
     await adminDb.collection('audit_logs').add({
       action: 'account_deletion',
       userId: validatedData.userId,
       userEmail: session.user.email,
       timestamp: new Date().toISOString(),
-      ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
+      ip:
+        request.headers.get('x-forwarded-for') ||
+        request.headers.get('x-real-ip') ||
+        'unknown',
       userAgent: request.headers.get('user-agent') || 'unknown',
       success: true,
     })

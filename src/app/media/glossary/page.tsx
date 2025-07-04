@@ -9,7 +9,7 @@ import { getCorporatePageBySlug } from '@/lib/microcms/corporate-pages'
  */
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getCorporatePageBySlug('glossary')
-  
+
   if (!page) {
     return {
       title: '用語集 | Crypto Media',
@@ -23,7 +23,8 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords: page.metadata?.keywords,
     openGraph: {
       title: `${page.title} | Crypto Media`,
-      description: page.description || '暗号資産・ブロックチェーンに関する用語集',
+      description:
+        page.description || '暗号資産・ブロックチェーンに関する用語集',
       images: page.metadata?.ogImage ? [page.metadata.ogImage.url] : undefined,
     },
   }
@@ -53,7 +54,7 @@ export default async function GlossaryPage() {
           </div>
         )}
 
-        <div 
+        <div
           className="prose prose-lg max-w-none"
           dangerouslySetInnerHTML={{ __html: page.content }}
         />
@@ -63,23 +64,23 @@ export default async function GlossaryPage() {
             {page.sections.map((section, index) => (
               <section key={index} className="border-t pt-8">
                 <h2 className="mb-4 text-2xl font-semibold">{section.title}</h2>
-                
+
                 {section.type === 'text' && (
-                  <div 
+                  <div
                     className="prose prose-lg max-w-none"
                     dangerouslySetInnerHTML={{ __html: section.content }}
                   />
                 )}
-                
+
                 {section.type === 'list' && (
-                  <div 
+                  <div
                     className="prose prose-lg max-w-none"
                     dangerouslySetInnerHTML={{ __html: section.content }}
                   />
                 )}
-                
+
                 {section.type === 'table' && (
-                  <div 
+                  <div
                     className="overflow-x-auto"
                     dangerouslySetInnerHTML={{ __html: section.content }}
                   />

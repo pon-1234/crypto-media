@@ -24,17 +24,20 @@ describe('FAQPage', () => {
     sections: [
       {
         title: '会員登録について',
-        content: '<ul><li>Q: 会員登録は無料ですか？<br>A: はい、無料で登録できます。</li></ul>',
+        content:
+          '<ul><li>Q: 会員登録は無料ですか？<br>A: はい、無料で登録できます。</li></ul>',
         type: 'list',
       },
       {
         title: '有料会員について',
-        content: '<p>有料会員になると、すべての記事が読み放題になります。月額1,980円（税込）です。</p>',
+        content:
+          '<p>有料会員になると、すべての記事が読み放題になります。月額1,980円（税込）です。</p>',
         type: 'text',
       },
       {
         title: '料金プラン比較',
-        content: '<table><tr><th>プラン</th><th>料金</th><th>特典</th></tr></table>',
+        content:
+          '<table><tr><th>プラン</th><th>料金</th><th>特典</th></tr></table>',
         type: 'table',
       },
     ],
@@ -63,9 +66,17 @@ describe('FAQPage', () => {
       const Page = await FAQPage()
       render(Page)
 
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('よくある質問')
-      expect(screen.getByText('Crypto Mediaのサービスに関するよくある質問をまとめました')).toBeInTheDocument()
-      expect(screen.getByText('よくある質問と回答をご紹介します')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        'よくある質問'
+      )
+      expect(
+        screen.getByText(
+          'Crypto Mediaのサービスに関するよくある質問をまとめました'
+        )
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText('よくある質問と回答をご紹介します')
+      ).toBeInTheDocument()
     })
 
     it('セクションが正しく表示される', async () => {
@@ -81,21 +92,33 @@ describe('FAQPage', () => {
 
       // リスト形式のコンテンツ
       expect(screen.getByText(/Q: 会員登録は無料ですか？/)).toBeInTheDocument()
-      expect(screen.getByText(/A: はい、無料で登録できます。/)).toBeInTheDocument()
-      
+      expect(
+        screen.getByText(/A: はい、無料で登録できます。/)
+      ).toBeInTheDocument()
+
       // テキスト形式のコンテンツ
-      expect(screen.getByText('有料会員になると、すべての記事が読み放題になります。月額1,980円（税込）です。')).toBeInTheDocument()
+      expect(
+        screen.getByText(
+          '有料会員になると、すべての記事が読み放題になります。月額1,980円（税込）です。'
+        )
+      ).toBeInTheDocument()
     })
 
     it('descriptionがない場合でも正常に表示される', async () => {
       const pageWithoutDescription = { ...mockPage, description: undefined }
-      vi.mocked(getCorporatePageBySlug).mockResolvedValue(pageWithoutDescription)
+      vi.mocked(getCorporatePageBySlug).mockResolvedValue(
+        pageWithoutDescription
+      )
 
       const Page = await FAQPage()
       render(Page)
 
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('よくある質問')
-      expect(screen.getByText('よくある質問と回答をご紹介します')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        'よくある質問'
+      )
+      expect(
+        screen.getByText('よくある質問と回答をご紹介します')
+      ).toBeInTheDocument()
     })
 
     it('sectionsがない場合でも正常に表示される', async () => {
@@ -105,8 +128,12 @@ describe('FAQPage', () => {
       const Page = await FAQPage()
       render(Page)
 
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('よくある質問')
-      expect(screen.getByText('よくある質問と回答をご紹介します')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        'よくある質問'
+      )
+      expect(
+        screen.getByText('よくある質問と回答をご紹介します')
+      ).toBeInTheDocument()
     })
 
     it('ページが見つからない場合は404エラーを表示', async () => {
@@ -134,7 +161,8 @@ describe('FAQPage', () => {
         keywords: ['FAQ', 'よくある質問', 'Crypto Media'],
         openGraph: {
           title: 'よくある質問 | Crypto Media',
-          description: 'Crypto Mediaのサービスに関するよくある質問をまとめました',
+          description:
+            'Crypto Mediaのサービスに関するよくある質問をまとめました',
           images: ['https://example.com/faq-og-image.jpg'],
         },
       })
@@ -153,12 +181,18 @@ describe('FAQPage', () => {
 
     it('descriptionがない場合、デフォルトの説明を使用する', async () => {
       const pageWithoutDescription = { ...mockPage, description: undefined }
-      vi.mocked(getCorporatePageBySlug).mockResolvedValue(pageWithoutDescription)
+      vi.mocked(getCorporatePageBySlug).mockResolvedValue(
+        pageWithoutDescription
+      )
 
       const metadata = await generateMetadata()
 
-      expect(metadata.description).toBe('Crypto Mediaに関するよくある質問と回答')
-      expect(metadata.openGraph?.description).toBe('Crypto Mediaに関するよくある質問と回答')
+      expect(metadata.description).toBe(
+        'Crypto Mediaに関するよくある質問と回答'
+      )
+      expect(metadata.openGraph?.description).toBe(
+        'Crypto Mediaに関するよくある質問と回答'
+      )
     })
 
     it('metadataがない場合でも正常に動作する', async () => {
@@ -173,7 +207,8 @@ describe('FAQPage', () => {
         keywords: undefined,
         openGraph: {
           title: 'よくある質問 | Crypto Media',
-          description: 'Crypto Mediaのサービスに関するよくある質問をまとめました',
+          description:
+            'Crypto Mediaのサービスに関するよくある質問をまとめました',
           images: undefined,
         },
       })

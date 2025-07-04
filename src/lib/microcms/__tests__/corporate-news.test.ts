@@ -137,4 +137,4 @@ describe('corporate-news API', () => {
       ).rejects.toThrow('API Error')
     })
   })
-}) 
+})

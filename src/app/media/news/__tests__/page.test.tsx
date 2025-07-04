@@ -43,7 +43,11 @@ describe('MediaNewsPage', () => {
       type: 'media_news',
       membershipLevel: 'public',
       content: 'ニュース内容1',
-      heroImage: { url: 'https://example.com/image1.jpg', width: 1200, height: 630 },
+      heroImage: {
+        url: 'https://example.com/image1.jpg',
+        width: 1200,
+        height: 630,
+      },
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
       publishedAt: '2024-01-01T00:00:00Z',
@@ -56,7 +60,11 @@ describe('MediaNewsPage', () => {
       type: 'media_news',
       membershipLevel: 'public',
       content: 'ニュース内容2',
-      heroImage: { url: 'https://example.com/image2.jpg', width: 1200, height: 630 },
+      heroImage: {
+        url: 'https://example.com/image2.jpg',
+        width: 1200,
+        height: 630,
+      },
       createdAt: '2024-01-02T00:00:00Z',
       updatedAt: '2024-01-02T00:00:00Z',
       publishedAt: '2024-01-02T00:00:00Z',
@@ -65,11 +73,23 @@ describe('MediaNewsPage', () => {
   ]
 
   const mockCategories: Category[] = [
-    { id: 'cat1', name: 'Announcement', slug: 'announcement', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
+    {
+      id: 'cat1',
+      name: 'Announcement',
+      slug: 'announcement',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+    },
   ]
 
   const mockTags: Tag[] = [
-    { id: 'tag1', name: 'Update', slug: 'update', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
+    {
+      id: 'tag1',
+      name: 'Update',
+      slug: 'update',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+    },
   ]
 
   it('メディアニュース一覧を正しく表示する', async () => {
@@ -148,7 +168,7 @@ describe('MediaNewsPage', () => {
         offset: 0,
         limit: 100,
       })
-    
+
     vi.mocked(getTags)
       .mockResolvedValueOnce({
         contents: [mockTags[0]],
@@ -162,7 +182,7 @@ describe('MediaNewsPage', () => {
         offset: 0,
         limit: 100,
       })
-    
+
     vi.mocked(getMediaArticlesByType).mockResolvedValue({
       contents: mockArticles,
       totalCount: 2,
@@ -170,15 +190,20 @@ describe('MediaNewsPage', () => {
       limit: 12,
     })
 
-    await MediaNewsPage({ searchParams: { category: 'announcement', tag: 'update' } })
+    await MediaNewsPage({
+      searchParams: { category: 'announcement', tag: 'update' },
+    })
 
-    expect(getCategories).toHaveBeenCalledWith({ filters: 'slug[equals]announcement' })
+    expect(getCategories).toHaveBeenCalledWith({
+      filters: 'slug[equals]announcement',
+    })
     expect(getTags).toHaveBeenCalledWith({ filters: 'slug[equals]update' })
     expect(getMediaArticlesByType).toHaveBeenCalledWith('media_news', {
       limit: 12,
       offset: 0,
       orders: '-publishedAt',
-      filters: 'type[equals]media_news[and]category[equals]cat1[and]tags[contains]tag1',
+      filters:
+        'type[equals]media_news[and]category[equals]cat1[and]tags[contains]tag1',
     })
   })
 
@@ -211,6 +236,8 @@ describe('MediaNewsPage', () => {
     const error = new Error('API Error')
     vi.mocked(getMediaArticlesByType).mockRejectedValue(error)
 
-    await expect(MediaNewsPage({ searchParams: {} })).rejects.toThrow('API Error')
+    await expect(MediaNewsPage({ searchParams: {} })).rejects.toThrow(
+      'API Error'
+    )
   })
 })

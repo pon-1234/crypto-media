@@ -42,14 +42,9 @@ export async function saveResetToken(
  * @param token リセットトークン
  * @returns トークンが有効な場合はメールアドレス、無効な場合はnull
  */
-export async function verifyResetToken(
-  token: string
-): Promise<string | null> {
+export async function verifyResetToken(token: string): Promise<string | null> {
   try {
-    const doc = await adminDb
-      .collection('passwordResetTokens')
-      .doc(token)
-      .get()
+    const doc = await adminDb.collection('passwordResetTokens').doc(token).get()
 
     if (!doc.exists) {
       return null

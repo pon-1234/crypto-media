@@ -24,7 +24,7 @@ export async function generateStaticParams() {
   if (process.env.CI === 'true' || !process.env.MICROCMS_API_KEY) {
     return []
   }
-  
+
   try {
     const slugs = await getAllFeatureSlugs()
     return slugs.map((slug) => ({
@@ -85,11 +85,11 @@ export default async function FeatureDetailPage({ params }: Props) {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto max-w-6xl">
         {/* 特集ヘッダー */}
         <div className="mb-12">
           {feature.heroImage && (
-            <div className="relative h-64 md:h-96 mb-8 rounded-lg overflow-hidden">
+            <div className="relative mb-8 h-64 overflow-hidden rounded-lg md:h-96">
               <Image
                 src={feature.heroImage.url}
                 alt={feature.name}
@@ -99,18 +99,18 @@ export default async function FeatureDetailPage({ params }: Props) {
               />
             </div>
           )}
-          <h1 className="text-4xl font-bold mb-4">{feature.name}</h1>
-          <p className="text-lg text-gray-700 whitespace-pre-wrap">
+          <h1 className="mb-4 text-4xl font-bold">{feature.name}</h1>
+          <p className="whitespace-pre-wrap text-lg text-gray-700">
             {feature.description}
           </p>
         </div>
 
         {/* 記事一覧セクション */}
         <section>
-          <h2 className="text-2xl font-bold mb-6">
+          <h2 className="mb-6 text-2xl font-bold">
             関連記事
             {articles.length > 0 && (
-              <span className="text-base font-normal text-gray-600 ml-2">
+              <span className="ml-2 text-base font-normal text-gray-600">
                 （{articles.length}件）
               </span>
             )}
@@ -123,7 +123,7 @@ export default async function FeatureDetailPage({ params }: Props) {
               ))}
             </div>
           ) : (
-            <p className="text-center text-gray-600 py-12">
+            <p className="py-12 text-center text-gray-600">
               この特集に関連する記事はまだありません。
             </p>
           )}

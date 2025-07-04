@@ -9,7 +9,7 @@ import { getCorporatePageBySlug } from '@/lib/microcms/corporate-pages'
  */
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getCorporatePageBySlug('faq')
-  
+
   if (!page) {
     return {
       title: 'よくある質問 | Crypto Media',
@@ -53,7 +53,7 @@ export default async function FAQPage() {
           </div>
         )}
 
-        <div 
+        <div
           className="prose prose-lg max-w-none"
           dangerouslySetInnerHTML={{ __html: page.content }}
         />
@@ -63,23 +63,23 @@ export default async function FAQPage() {
             {page.sections.map((section, index) => (
               <section key={index} className="border-t pt-8">
                 <h2 className="mb-4 text-2xl font-semibold">{section.title}</h2>
-                
+
                 {section.type === 'text' && (
-                  <div 
+                  <div
                     className="prose prose-lg max-w-none"
                     dangerouslySetInnerHTML={{ __html: section.content }}
                   />
                 )}
-                
+
                 {section.type === 'list' && (
-                  <div 
+                  <div
                     className="prose prose-lg max-w-none"
                     dangerouslySetInnerHTML={{ __html: section.content }}
                   />
                 )}
-                
+
                 {section.type === 'table' && (
-                  <div 
+                  <div
                     className="overflow-x-auto"
                     dangerouslySetInnerHTML={{ __html: section.content }}
                   />

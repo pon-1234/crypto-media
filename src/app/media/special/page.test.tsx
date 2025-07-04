@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
-import SpecialPage from './page';
+import { render, screen } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
+import SpecialPage from './page'
 
 /**
  * @doc ./page.tsx
@@ -8,10 +8,10 @@ import SpecialPage from './page';
  */
 describe('SpecialPage', () => {
   it('should render the heading', () => {
-    render(<SpecialPage />);
+    render(<SpecialPage />)
     const heading = screen.getByRole('heading', {
       name: /特集ページ/i,
-    });
-    expect(heading).toBeInTheDocument();
-  });
-}); 
+    })
+    expect(heading).toBeInTheDocument()
+  })
+})

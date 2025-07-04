@@ -11,7 +11,10 @@ import { toast } from 'sonner'
 import { updateProfile } from '@/app/actions/account'
 
 const profileSchema = z.object({
-  name: z.string().min(1, '表示名を入力してください').max(50, '表示名は50文字以内で入力してください'),
+  name: z
+    .string()
+    .min(1, '表示名を入力してください')
+    .max(50, '表示名は50文字以内で入力してください'),
 })
 
 type ProfileFormData = z.infer<typeof profileSchema>
@@ -21,10 +24,17 @@ interface ProfileSettingsFormProps {
   userId: string
 }
 
-export function ProfileSettingsForm({ currentName, userId }: ProfileSettingsFormProps) {
+export function ProfileSettingsForm({
+  currentName,
+  userId,
+}: ProfileSettingsFormProps) {
   const [isPending, startTransition] = useTransition()
-  
-  const { register, handleSubmit, formState: { errors } } = useForm<ProfileFormData>({
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: currentName,
@@ -35,7 +45,7 @@ export function ProfileSettingsForm({ currentName, userId }: ProfileSettingsForm
     startTransition(async () => {
       try {
         const result = await updateProfile(userId, data)
-        
+
         if (result.error) {
           toast.error(result.error)
           return
@@ -60,10 +70,10 @@ export function ProfileSettingsForm({ currentName, userId }: ProfileSettingsForm
           disabled={isPending}
         />
         {errors.name && (
-          <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
+          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
         )}
       </div>
-      
+
       <Button type="submit" disabled={isPending}>
         {isPending ? '更新中...' : '更新する'}
       </Button>

@@ -16,10 +16,13 @@ interface ArticleCardWithHighlightProps {
  * @param props - 記事データと検索キーワード
  * @returns 記事カードコンポーネント
  */
-export function ArticleCardWithHighlight({ article, query = '' }: ArticleCardWithHighlightProps) {
+export function ArticleCardWithHighlight({
+  article,
+  query = '',
+}: ArticleCardWithHighlightProps) {
   const renderHighlightedText = (text: string) => {
     const parts = query ? highlightSearchQuery(text, query) : [text]
-    
+
     return parts.map((part) => {
       if (typeof part === 'string') {
         return part
@@ -59,14 +62,16 @@ export function ArticleCardWithHighlight({ article, query = '' }: ArticleCardWit
               </span>
             )}
             <time dateTime={article.publishedAt}>
-              {new Date(article.publishedAt || article.createdAt).toLocaleDateString('ja-JP')}
+              {new Date(
+                article.publishedAt || article.createdAt
+              ).toLocaleDateString('ja-JP')}
             </time>
           </div>
-          
+
           <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">
             {renderHighlightedText(article.title)}
           </h3>
-          
+
           {article.tags && article.tags.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">
               {article.tags.map((tag) => (

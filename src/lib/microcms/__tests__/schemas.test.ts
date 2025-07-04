@@ -377,7 +377,6 @@ describe('microCMS Schemas', () => {
     })
   })
 
-
   describe('pageCorporateSchema', () => {
     it('有効な固定ページデータをパースできる', () => {
       const validData = {
@@ -498,7 +497,6 @@ describe('microCMS Schemas', () => {
         site_title: 'Site',
         site_description: 'Description',
       }
-
 
       const page: PageCorporate = {
         ...base,

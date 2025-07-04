@@ -23,7 +23,7 @@ const createMockBatch = () => {
   const mockCommit = vi.fn().mockResolvedValue([])
   const mockDelete = vi.fn()
   const mockUpdate = vi.fn()
-  
+
   return {
     delete: mockDelete,
     update: mockUpdate,
@@ -58,17 +58,21 @@ vi.mock('@/lib/firebase/admin', () => ({
       }
       return {
         doc: vi.fn(() => ({
-          get: vi.fn(() => Promise.resolve({
-            exists: true,
-            data: () => ({ stripeSubscriptionId: 'sub_test123' }),
-            ref: createMockDocumentReference(),
-            id: 'mock-doc-id',
-          })),
+          get: vi.fn(() =>
+            Promise.resolve({
+              exists: true,
+              data: () => ({ stripeSubscriptionId: 'sub_test123' }),
+              ref: createMockDocumentReference(),
+              id: 'mock-doc-id',
+            })
+          ),
         })),
         where: vi.fn(() => ({
-          get: vi.fn(() => Promise.resolve(
-            createMockQuerySnapshot([{ ref: createMockDocumentReference() }])
-          )),
+          get: vi.fn(() =>
+            Promise.resolve(
+              createMockQuerySnapshot([{ ref: createMockDocumentReference() }])
+            )
+          ),
         })),
       }
     }),
@@ -103,10 +107,16 @@ describe('DELETE /api/account/delete', () => {
   it('認証されていない場合は401を返す', async () => {
     vi.mocked(getServerSession).mockResolvedValueOnce(null)
 
-    const request = new NextRequest('http://localhost:3000/api/account/delete', {
-      method: 'DELETE',
-      body: JSON.stringify({ userId: 'user123', confirmEmail: 'test@example.com' }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/account/delete',
+      {
+        method: 'DELETE',
+        body: JSON.stringify({
+          userId: 'user123',
+          confirmEmail: 'test@example.com',
+        }),
+      }
+    )
     const response = await DELETE(request)
 
     expect(response.status).toBe(401)
@@ -117,10 +127,16 @@ describe('DELETE /api/account/delete', () => {
   it('成功時は200を返す', async () => {
     vi.mocked(getServerSession).mockResolvedValueOnce(mockSession)
 
-    const request = new NextRequest('http://localhost:3000/api/account/delete', {
-      method: 'DELETE',
-      body: JSON.stringify({ userId: 'user123', confirmEmail: 'test@example.com' }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/account/delete',
+      {
+        method: 'DELETE',
+        body: JSON.stringify({
+          userId: 'user123',
+          confirmEmail: 'test@example.com',
+        }),
+      }
+    )
     const response = await DELETE(request)
 
     // エラーの詳細を確認
@@ -137,10 +153,16 @@ describe('DELETE /api/account/delete', () => {
   it('Stripeサブスクリプションをキャンセルする', async () => {
     vi.mocked(getServerSession).mockResolvedValueOnce(mockSession)
 
-    const request = new NextRequest('http://localhost:3000/api/account/delete', {
-      method: 'DELETE',
-      body: JSON.stringify({ userId: 'user123', confirmEmail: 'test@example.com' }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/account/delete',
+      {
+        method: 'DELETE',
+        body: JSON.stringify({
+          userId: 'user123',
+          confirmEmail: 'test@example.com',
+        }),
+      }
+    )
     await DELETE(request)
 
     expect(stripe.subscriptions.cancel).toHaveBeenCalledWith('sub_test123', {
@@ -156,10 +178,16 @@ describe('DELETE /api/account/delete', () => {
     mockBatch.commit.mockRejectedValueOnce(new Error('Database error'))
     vi.mocked(adminDb.batch).mockReturnValueOnce(mockBatch)
 
-    const request = new NextRequest('http://localhost:3000/api/account/delete', {
-      method: 'DELETE',
-      body: JSON.stringify({ userId: 'user123', confirmEmail: 'test@example.com' }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/account/delete',
+      {
+        method: 'DELETE',
+        body: JSON.stringify({
+          userId: 'user123',
+          confirmEmail: 'test@example.com',
+        }),
+      }
+    )
     const response = await DELETE(request)
 
     expect(response.status).toBe(500)
@@ -170,10 +198,16 @@ describe('DELETE /api/account/delete', () => {
   it('メールアドレスが一致しない場合は400を返す', async () => {
     vi.mocked(getServerSession).mockResolvedValueOnce(mockSession)
 
-    const request = new NextRequest('http://localhost:3000/api/account/delete', {
-      method: 'DELETE',
-      body: JSON.stringify({ userId: 'user123', confirmEmail: 'wrong@example.com' }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/account/delete',
+      {
+        method: 'DELETE',
+        body: JSON.stringify({
+          userId: 'user123',
+          confirmEmail: 'wrong@example.com',
+        }),
+      }
+    )
     const response = await DELETE(request)
 
     expect(response.status).toBe(400)

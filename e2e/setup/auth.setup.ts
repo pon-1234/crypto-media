@@ -13,6 +13,6 @@ setup('prepare test environment', async () => {
   if (!process.env.CI) {
     console.log('Running E2E tests in local environment')
   }
-  
+
   // テストデータのクリーンアップなどが必要な場合はここに追加
 })

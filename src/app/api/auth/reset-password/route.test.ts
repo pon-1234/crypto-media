@@ -41,9 +41,11 @@ describe('POST /api/auth/reset-password', () => {
     const mockUpdate = vi.fn()
     const mockGet = vi.fn().mockResolvedValue({
       empty: false,
-      docs: [{
-        ref: { update: mockUpdate },
-      }],
+      docs: [
+        {
+          ref: { update: mockUpdate },
+        },
+      ],
     })
 
     vi.mocked(adminDb.collection).mockReturnValue({
@@ -54,21 +56,27 @@ describe('POST /api/auth/reset-password', () => {
       })),
     } as unknown as ReturnType<typeof adminDb.collection>)
 
-    vi.mocked(validatePasswordStrength).mockReturnValue({ isValid: true, errors: [] })
+    vi.mocked(validatePasswordStrength).mockReturnValue({
+      isValid: true,
+      errors: [],
+    })
     vi.mocked(verifyResetToken).mockResolvedValue('test@example.com')
     vi.mocked(hashPassword).mockResolvedValue('new-hashed-password')
     vi.mocked(markTokenAsUsed).mockResolvedValue(undefined)
 
-    const request = new NextRequest('http://localhost:3000/api/auth/reset-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: 'valid-reset-token',
-        password: 'NewTest123!@#',
-      }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/reset-password',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: 'valid-reset-token',
+          password: 'NewTest123!@#',
+        }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -85,19 +93,25 @@ describe('POST /api/auth/reset-password', () => {
   })
 
   it('トークンが無効な場合、400エラーを返す', async () => {
-    vi.mocked(validatePasswordStrength).mockReturnValue({ isValid: true, errors: [] })
+    vi.mocked(validatePasswordStrength).mockReturnValue({
+      isValid: true,
+      errors: [],
+    })
     vi.mocked(verifyResetToken).mockResolvedValue(null)
 
-    const request = new NextRequest('http://localhost:3000/api/auth/reset-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: 'invalid-token',
-        password: 'NewTest123!@#',
-      }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/reset-password',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: 'invalid-token',
+          password: 'NewTest123!@#',
+        }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -110,25 +124,33 @@ describe('POST /api/auth/reset-password', () => {
   it('パスワードが弱い場合、400エラーを返す', async () => {
     vi.mocked(validatePasswordStrength).mockReturnValue({
       isValid: false,
-      errors: ['大文字を1文字以上含めてください', '特殊文字を1文字以上含めてください'],
+      errors: [
+        '大文字を1文字以上含めてください',
+        '特殊文字を1文字以上含めてください',
+      ],
     })
 
-    const request = new NextRequest('http://localhost:3000/api/auth/reset-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: 'valid-token',
-        password: 'weakpassword123',
-      }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/reset-password',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: 'valid-token',
+          password: 'weakpassword123',
+        }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
 
     expect(response.status).toBe(400)
-    expect(data.error).toBe('大文字を1文字以上含めてください, 特殊文字を1文字以上含めてください')
+    expect(data.error).toBe(
+      '大文字を1文字以上含めてください, 特殊文字を1文字以上含めてください'
+    )
     expect(verifyResetToken).not.toHaveBeenCalled()
   })
 
@@ -145,19 +167,25 @@ describe('POST /api/auth/reset-password', () => {
       })),
     } as unknown as ReturnType<typeof adminDb.collection>)
 
-    vi.mocked(validatePasswordStrength).mockReturnValue({ isValid: true, errors: [] })
+    vi.mocked(validatePasswordStrength).mockReturnValue({
+      isValid: true,
+      errors: [],
+    })
     vi.mocked(verifyResetToken).mockResolvedValue('nonexistent@example.com')
 
-    const request = new NextRequest('http://localhost:3000/api/auth/reset-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: 'valid-token',
-        password: 'NewTest123!@#',
-      }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/reset-password',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: 'valid-token',
+          password: 'NewTest123!@#',
+        }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -168,16 +196,19 @@ describe('POST /api/auth/reset-password', () => {
   })
 
   it('トークンが空の場合、400エラーを返す', async () => {
-    const request = new NextRequest('http://localhost:3000/api/auth/reset-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: '',
-        password: 'NewTest123!@#',
-      }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/reset-password',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: '',
+          password: 'NewTest123!@#',
+        }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -187,16 +218,19 @@ describe('POST /api/auth/reset-password', () => {
   })
 
   it('パスワードが短すぎる場合、400エラーを返す', async () => {
-    const request = new NextRequest('http://localhost:3000/api/auth/reset-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: 'valid-token',
-        password: 'short',
-      }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/reset-password',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: 'valid-token',
+          password: 'short',
+        }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -206,19 +240,25 @@ describe('POST /api/auth/reset-password', () => {
   })
 
   it('Firestoreエラーの場合、500エラーを返す', async () => {
-    vi.mocked(validatePasswordStrength).mockReturnValue({ isValid: true, errors: [] })
+    vi.mocked(validatePasswordStrength).mockReturnValue({
+      isValid: true,
+      errors: [],
+    })
     vi.mocked(verifyResetToken).mockRejectedValue(new Error('Database error'))
 
-    const request = new NextRequest('http://localhost:3000/api/auth/reset-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        token: 'valid-token',
-        password: 'NewTest123!@#',
-      }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/reset-password',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token: 'valid-token',
+          password: 'NewTest123!@#',
+        }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()

@@ -14,7 +14,7 @@ import { getAllContents } from './utils'
  * @returns 執筆者・監修者一覧
  */
 export async function getExperts(queries?: MicroCMSQueries) {
-    const data = await client.getList({
+  const data = await client.getList({
     endpoint: 'experts',
     queries,
   })
@@ -31,7 +31,7 @@ export async function getExpertById(
   id: string,
   queries?: MicroCMSQueries
 ): Promise<Expert> {
-    const data = await client.get({
+  const data = await client.get({
     endpoint: 'experts',
     contentId: id,
     queries,
@@ -45,19 +45,19 @@ export async function getExpertById(
  * @returns 執筆者・監修者詳細
  */
 export async function getExpertBySlug(slug: string): Promise<Expert> {
-    const data = await client.getList({
+  const data = await client.getList({
     endpoint: 'experts',
     queries: {
       filters: `slug[equals]${slug}`,
       limit: 1,
     },
   })
-  
+
   const parsed = expertListSchema.parse(data)
   if (parsed.contents.length === 0) {
     throw new Error(`Expert not found: ${slug}`)
   }
-  
+
   return parsed.contents[0]
 }
 
@@ -69,7 +69,7 @@ export async function getAllExpertIds(): Promise<string[]> {
   const allExperts = await getAllContents<{ id: string }>('experts', {
     fields: 'id',
   })
-  
+
   return allExperts.map((item) => item.id)
 }
 
@@ -78,9 +78,12 @@ export async function getAllExpertIds(): Promise<string[]> {
  * @returns 執筆者・監修者slugの配列
  */
 export async function getAllExpertSlugs(): Promise<string[]> {
-  const allExperts = await getAllContents<{ id: string; slug: string }>('experts', {
-    fields: 'id,slug',
-  })
-  
+  const allExperts = await getAllContents<{ id: string; slug: string }>(
+    'experts',
+    {
+      fields: 'id,slug',
+    }
+  )
+
   return allExperts.map((item) => item.slug)
 }

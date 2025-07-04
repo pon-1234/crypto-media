@@ -131,9 +131,11 @@ describe('MediaHeader', () => {
 
     const searchForms = screen.getAllByTestId('search-form')
     expect(searchForms.length).toBeGreaterThan(0)
-    
+
     // デスクトップビューの検索フォームが特定のクラスを持つ
-    const desktopSearchForm = searchForms.find(form => form.classList.contains('w-64'))
+    const desktopSearchForm = searchForms.find((form) =>
+      form.classList.contains('w-64')
+    )
     expect(desktopSearchForm).toBeTruthy()
   })
 
@@ -152,7 +154,9 @@ describe('MediaHeader', () => {
 
     // モバイルメニューにも検索フォームが表示される
     const searchForms = screen.getAllByTestId('search-form')
-    const mobileSearchForm = searchForms.find(form => form.classList.contains('w-full'))
+    const mobileSearchForm = searchForms.find((form) =>
+      form.classList.contains('w-full')
+    )
     expect(mobileSearchForm).toBeTruthy()
 
     fireEvent.click(menuButton)

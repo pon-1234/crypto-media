@@ -3,7 +3,12 @@ import { render } from '@testing-library/react'
 import { notFound } from 'next/navigation'
 import CategoryPage, { generateMetadata, generateStaticParams } from '../page'
 import * as microCMS from '@/lib/microcms'
-import type { Category, MediaArticle, MicroCMSListResponse, MicroCMSImage } from '@/lib/microcms'
+import type {
+  Category,
+  MediaArticle,
+  MicroCMSListResponse,
+  MicroCMSImage,
+} from '@/lib/microcms'
 
 // Mock Next.js navigation
 vi.mock('next/navigation', () => ({
@@ -67,7 +72,13 @@ vi.mock('@/components/media/ArticleGrid', () => ({
 }))
 
 vi.mock('@/components/ui/Pagination', () => ({
-  Pagination: ({ currentPage, totalPages }: { currentPage: number; totalPages: number }) => (
+  Pagination: ({
+    currentPage,
+    totalPages,
+  }: {
+    currentPage: number
+    totalPages: number
+  }) => (
     <div data-testid="pagination">
       Page {currentPage} of {totalPages}
     </div>
@@ -171,9 +182,9 @@ describe('CategoryPage', () => {
         mockArticles
       )
 
-      const Component = await CategoryPage({ 
+      const Component = await CategoryPage({
         params: { slug: 'blockchain' },
-        searchParams: {}
+        searchParams: {},
       })
       const { getByTestId, getByText } = render(Component)
 
@@ -195,7 +206,10 @@ describe('CategoryPage', () => {
       )
       expect(scriptTag).toBeInTheDocument()
       if (scriptTag) {
-        const jsonLd = JSON.parse(scriptTag.textContent || '{}') as Record<string, unknown>
+        const jsonLd = JSON.parse(scriptTag.textContent || '{}') as Record<
+          string,
+          unknown
+        >
         expect(jsonLd['@type']).toBe('CollectionPage')
         expect(jsonLd.name).toBe('ブロックチェーンの記事一覧')
       }
@@ -204,9 +218,9 @@ describe('CategoryPage', () => {
     it('calls notFound for non-existent category', async () => {
       vi.mocked(microCMS.getCategoryBySlug).mockResolvedValue(null)
 
-      await CategoryPage({ 
+      await CategoryPage({
         params: { slug: 'non-existent' },
-        searchParams: {}
+        searchParams: {},
       })
 
       expect(notFound).toHaveBeenCalled()
@@ -223,9 +237,9 @@ describe('CategoryPage', () => {
         manyArticles
       )
 
-      const Component = await CategoryPage({ 
+      const Component = await CategoryPage({
         params: { slug: 'blockchain' },
-        searchParams: {}
+        searchParams: {},
       })
       const { getByTestId } = render(Component)
 
@@ -235,28 +249,35 @@ describe('CategoryPage', () => {
 
     it('handles page parameter correctly', async () => {
       vi.mocked(microCMS.getCategoryBySlug).mockResolvedValue(mockCategory)
-      vi.mocked(microCMS.getMediaArticlesByCategory).mockResolvedValue(mockArticles)
+      vi.mocked(microCMS.getMediaArticlesByCategory).mockResolvedValue(
+        mockArticles
+      )
 
-      const Component = await CategoryPage({ 
+      const Component = await CategoryPage({
         params: { slug: 'blockchain' },
-        searchParams: { page: '2' }
+        searchParams: { page: '2' },
       })
       render(Component)
 
-      expect(microCMS.getMediaArticlesByCategory).toHaveBeenCalledWith('blockchain', {
-        limit: 12,
-        offset: 12, // (2-1) * 12
-        orders: '-publishedAt',
-      })
+      expect(microCMS.getMediaArticlesByCategory).toHaveBeenCalledWith(
+        'blockchain',
+        {
+          limit: 12,
+          offset: 12, // (2-1) * 12
+          orders: '-publishedAt',
+        }
+      )
     })
 
     it('does not show pagination for single page', async () => {
       vi.mocked(microCMS.getCategoryBySlug).mockResolvedValue(mockCategory)
-      vi.mocked(microCMS.getMediaArticlesByCategory).mockResolvedValue(mockArticles)
+      vi.mocked(microCMS.getMediaArticlesByCategory).mockResolvedValue(
+        mockArticles
+      )
 
-      const Component = await CategoryPage({ 
+      const Component = await CategoryPage({
         params: { slug: 'blockchain' },
-        searchParams: {}
+        searchParams: {},
       })
       const { queryByTestId } = render(Component)
 
@@ -266,9 +287,9 @@ describe('CategoryPage', () => {
     it('renders dummy page in CI environment', async () => {
       process.env.CI = 'true'
 
-      const Component = await CategoryPage({ 
+      const Component = await CategoryPage({
         params: { slug: 'any-slug' },
-        searchParams: {}
+        searchParams: {},
       })
       const { getByText } = render(Component)
 

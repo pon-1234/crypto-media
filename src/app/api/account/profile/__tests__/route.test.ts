@@ -54,7 +54,7 @@ describe('PATCH /api/account/profile', () => {
   it('プロフィールの更新に成功した場合、200を返す', async () => {
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
     vi.mocked(adminDb.collection('users').doc().update).mockResolvedValue(
-      {} as WriteResult,
+      {} as WriteResult
     )
 
     const req = new Request('http://localhost', {
@@ -74,7 +74,7 @@ describe('PATCH /api/account/profile', () => {
   it('データベースの更新に失敗した場合、500エラーを返す', async () => {
     vi.mocked(getServerSession).mockResolvedValue(mockSession)
     vi.mocked(adminDb.collection('users').doc().update).mockRejectedValue(
-      new Error('DB error'),
+      new Error('DB error')
     )
 
     const req = new Request('http://localhost', {
@@ -84,4 +84,4 @@ describe('PATCH /api/account/profile', () => {
     const res = await PATCH(req as NextRequest)
     expect(res.status).toBe(500)
   })
-}) 
+})

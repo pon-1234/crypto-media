@@ -81,11 +81,11 @@ describe('SettingsPage', () => {
       membership: 'free',
     })
 
-    render(await SettingsPage())
+    const { container } = render(await SettingsPage())
 
     // タイトルが表示されていることを確認
     expect(
-      screen.getByRole('heading', { name: 'プロフィール設定' }),
+      screen.getByRole('heading', { name: 'プロフィール設定' })
     ).toBeInTheDocument()
 
     // フォームが表示されていることを確認
@@ -117,4 +117,4 @@ describe('SettingsPage', () => {
     // パスワードの変更フォームは表示されない
     expect(screen.queryByText('パスワードの変更')).not.toBeInTheDocument()
   })
-}) 
+})

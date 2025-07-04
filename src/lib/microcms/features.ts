@@ -14,7 +14,7 @@ import { getAllContents } from './utils'
  * @returns 特集一覧
  */
 export async function getFeatures(queries?: MicroCMSQueries) {
-    const data = await client.getList({
+  const data = await client.getList({
     endpoint: 'features',
     queries,
   })
@@ -31,7 +31,7 @@ export async function getFeatureById(
   id: string,
   queries?: MicroCMSQueries
 ): Promise<Feature> {
-    const data = await client.get({
+  const data = await client.get({
     endpoint: 'features',
     contentId: id,
     queries,
@@ -45,19 +45,19 @@ export async function getFeatureById(
  * @returns 特集詳細
  */
 export async function getFeatureBySlug(slug: string): Promise<Feature> {
-    const data = await client.getList({
+  const data = await client.getList({
     endpoint: 'features',
     queries: {
       filters: `slug[equals]${slug}`,
       limit: 1,
     },
   })
-  
+
   const parsed = featureListSchema.parse(data)
   if (parsed.contents.length === 0) {
     throw new Error(`Feature not found: ${slug}`)
   }
-  
+
   return parsed.contents[0]
 }
 
@@ -69,7 +69,7 @@ export async function getAllFeatureIds(): Promise<string[]> {
   const allFeatures = await getAllContents<{ id: string }>('features', {
     fields: 'id',
   })
-  
+
   return allFeatures.map((item) => item.id)
 }
 
@@ -78,9 +78,12 @@ export async function getAllFeatureIds(): Promise<string[]> {
  * @returns 特集slugの配列
  */
 export async function getAllFeatureSlugs(): Promise<string[]> {
-  const allFeatures = await getAllContents<{ id: string; slug: string }>('features', {
-    fields: 'id,slug',
-  })
-  
+  const allFeatures = await getAllContents<{ id: string; slug: string }>(
+    'features',
+    {
+      fields: 'id,slug',
+    }
+  )
+
   return allFeatures.map((item) => item.slug)
 }

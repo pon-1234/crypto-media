@@ -22,13 +22,16 @@ const getCategoryName = (slug: string): string => {
   const categoryMap: Record<string, string> = {
     'press-release': 'プレスリリース',
     'media-coverage': 'メディア掲載',
-    'events': 'イベント情報',
-    'announcements': 'お知らせ',
+    events: 'イベント情報',
+    announcements: 'お知らせ',
   }
   return categoryMap[slug] || slug
 }
 
-export default async function NewsCategoryPage({ params, searchParams }: Props) {
+export default async function NewsCategoryPage({
+  params,
+  searchParams,
+}: Props) {
   const { slug } = await params
   const { page = '1' } = await searchParams
 
@@ -36,10 +39,13 @@ export default async function NewsCategoryPage({ params, searchParams }: Props) 
   const offset = (currentPage - 1) * ITEMS_PER_PAGE
 
   try {
-    const { contents, totalCount } = await getCorporateNewsListByCategory(slug, {
-      limit: ITEMS_PER_PAGE,
-      offset,
-    })
+    const { contents, totalCount } = await getCorporateNewsListByCategory(
+      slug,
+      {
+        limit: ITEMS_PER_PAGE,
+        offset,
+      }
+    )
 
     if (contents.length === 0 && currentPage === 1) {
       notFound()
@@ -76,7 +82,9 @@ export default async function NewsCategoryPage({ params, searchParams }: Props) 
                           dateTime={news.publishedAt}
                           className="mt-2 block text-sm text-gray-500"
                         >
-                          {new Date(news.publishedAt || news.createdAt).toLocaleDateString('ja-JP')}
+                          {new Date(
+                            news.publishedAt || news.createdAt
+                          ).toLocaleDateString('ja-JP')}
                         </time>
                       </div>
                     </Link>
@@ -95,19 +103,21 @@ export default async function NewsCategoryPage({ params, searchParams }: Props) 
                     </Link>
                   )}
 
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                    <Link
-                      key={pageNum}
-                      href={`/news/category/${slug}?page=${pageNum}`}
-                      className={`rounded px-3 py-2 text-sm ${
-                        pageNum === currentPage
-                          ? 'bg-blue-500 text-white'
-                          : 'border border-gray-300 hover:bg-gray-100'
-                      }`}
-                    >
-                      {pageNum}
-                    </Link>
-                  ))}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (pageNum) => (
+                      <Link
+                        key={pageNum}
+                        href={`/news/category/${slug}?page=${pageNum}`}
+                        className={`rounded px-3 py-2 text-sm ${
+                          pageNum === currentPage
+                            ? 'bg-blue-500 text-white'
+                            : 'border border-gray-300 hover:bg-gray-100'
+                        }`}
+                      >
+                        {pageNum}
+                      </Link>
+                    )
+                  )}
 
                   {currentPage < totalPages && (
                     <Link

@@ -24,7 +24,8 @@ describe('EditorialPolicyPage', () => {
     sections: [
       {
         title: '基本方針',
-        content: '<ul><li>正確性: 事実確認を徹底します</li><li>中立性: 偏りのない報道を心がけます</li></ul>',
+        content:
+          '<ul><li>正確性: 事実確認を徹底します</li><li>中立性: 偏りのない報道を心がけます</li></ul>',
         type: 'list',
       },
       {
@@ -34,7 +35,8 @@ describe('EditorialPolicyPage', () => {
       },
       {
         title: '編集体制',
-        content: '<table><tr><th>役割</th><th>責任</th></tr><tr><td>編集長</td><td>最終確認</td></tr></table>',
+        content:
+          '<table><tr><th>役割</th><th>責任</th></tr><tr><td>編集長</td><td>最終確認</td></tr></table>',
         type: 'table',
       },
     ],
@@ -63,9 +65,15 @@ describe('EditorialPolicyPage', () => {
       const Page = await EditorialPolicyPage()
       render(Page)
 
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('編集方針')
-      expect(screen.getByText('Crypto Mediaは信頼性の高い情報提供を目指しています')).toBeInTheDocument()
-      expect(screen.getByText('私たちの編集方針をご説明します')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        '編集方針'
+      )
+      expect(
+        screen.getByText('Crypto Mediaは信頼性の高い情報提供を目指しています')
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText('私たちの編集方針をご説明します')
+      ).toBeInTheDocument()
     })
 
     it('セクションが正しく表示される', async () => {
@@ -80,12 +88,18 @@ describe('EditorialPolicyPage', () => {
       expect(screen.getByText('編集体制')).toBeInTheDocument()
 
       // リスト形式のコンテンツ
-      expect(screen.getByText('正確性: 事実確認を徹底します')).toBeInTheDocument()
-      expect(screen.getByText('中立性: 偏りのない報道を心がけます')).toBeInTheDocument()
-      
+      expect(
+        screen.getByText('正確性: 事実確認を徹底します')
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText('中立性: 偏りのない報道を心がけます')
+      ).toBeInTheDocument()
+
       // テキスト形式のコンテンツ
-      expect(screen.getByText('すべての記事は、専門家による監修を受けています。')).toBeInTheDocument()
-      
+      expect(
+        screen.getByText('すべての記事は、専門家による監修を受けています。')
+      ).toBeInTheDocument()
+
       // テーブル形式のコンテンツ
       expect(screen.getByText('編集長')).toBeInTheDocument()
       expect(screen.getByText('最終確認')).toBeInTheDocument()
@@ -93,13 +107,19 @@ describe('EditorialPolicyPage', () => {
 
     it('descriptionがない場合でも正常に表示される', async () => {
       const pageWithoutDescription = { ...mockPage, description: undefined }
-      vi.mocked(getCorporatePageBySlug).mockResolvedValue(pageWithoutDescription)
+      vi.mocked(getCorporatePageBySlug).mockResolvedValue(
+        pageWithoutDescription
+      )
 
       const Page = await EditorialPolicyPage()
       render(Page)
 
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('編集方針')
-      expect(screen.getByText('私たちの編集方針をご説明します')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        '編集方針'
+      )
+      expect(
+        screen.getByText('私たちの編集方針をご説明します')
+      ).toBeInTheDocument()
     })
 
     it('sectionsがない場合でも正常に表示される', async () => {
@@ -109,8 +129,12 @@ describe('EditorialPolicyPage', () => {
       const Page = await EditorialPolicyPage()
       render(Page)
 
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('編集方針')
-      expect(screen.getByText('私たちの編集方針をご説明します')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        '編集方針'
+      )
+      expect(
+        screen.getByText('私たちの編集方針をご説明します')
+      ).toBeInTheDocument()
     })
 
     it('ページが見つからない場合は404エラーを表示', async () => {
@@ -157,12 +181,18 @@ describe('EditorialPolicyPage', () => {
 
     it('descriptionがない場合、デフォルトの説明を使用する', async () => {
       const pageWithoutDescription = { ...mockPage, description: undefined }
-      vi.mocked(getCorporatePageBySlug).mockResolvedValue(pageWithoutDescription)
+      vi.mocked(getCorporatePageBySlug).mockResolvedValue(
+        pageWithoutDescription
+      )
 
       const metadata = await generateMetadata()
 
-      expect(metadata.description).toBe('Crypto Mediaの編集方針と記事作成ガイドライン')
-      expect(metadata.openGraph?.description).toBe('Crypto Mediaの編集方針と記事作成ガイドライン')
+      expect(metadata.description).toBe(
+        'Crypto Mediaの編集方針と記事作成ガイドライン'
+      )
+      expect(metadata.openGraph?.description).toBe(
+        'Crypto Mediaの編集方針と記事作成ガイドライン'
+      )
     })
 
     it('metadataがない場合でも正常に動作する', async () => {

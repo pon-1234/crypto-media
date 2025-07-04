@@ -50,7 +50,10 @@ describe('generateStaticPageMetadata', () => {
   it('ページが存在しない場合、空のメタデータを返す', async () => {
     vi.mocked(getCorporatePageBySlug).mockResolvedValue(null)
 
-    const result = await generateStaticPageMetadata('non-existent', '/non-existent')
+    const result = await generateStaticPageMetadata(
+      'non-existent',
+      '/non-existent'
+    )
 
     expect(getCorporatePageBySlug).toHaveBeenCalledWith('non-existent')
     expect(generatePageMetadata).not.toHaveBeenCalled()

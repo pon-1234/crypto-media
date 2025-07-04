@@ -40,7 +40,11 @@ describe('RecruitPage', () => {
     publishedAt: '2024-01-01T00:00:00Z',
     revisedAt: '2024-01-01T00:00:00Z',
     metadata: {
-      ogImage: { url: 'https://example.com/og-image.jpg', width: 1200, height: 630 },
+      ogImage: {
+        url: 'https://example.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+      },
       keywords: ['採用', 'キャリア'],
     },
   }
@@ -95,7 +99,9 @@ describe('RecruitPage', () => {
 
     it('descriptionがない場合は空文字を渡す', async () => {
       const pageWithoutDescription = { ...mockPage, description: undefined }
-      vi.mocked(getCorporatePageBySlug).mockResolvedValue(pageWithoutDescription)
+      vi.mocked(getCorporatePageBySlug).mockResolvedValue(
+        pageWithoutDescription
+      )
 
       await generateMetadata()
 

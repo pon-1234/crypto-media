@@ -62,7 +62,9 @@ describe('DeleteAccountForm', () => {
     const textInput = screen.getByLabelText('「削除する」と入力してください')
     await userEvent.type(emailInput, defaultProps.userEmail)
     await userEvent.type(textInput, '削除する')
-    fireEvent.click(screen.getByRole('button', { name: 'アカウントを削除する' }))
+    fireEvent.click(
+      screen.getByRole('button', { name: 'アカウントを削除する' })
+    )
 
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith('/api/account/delete', {
@@ -82,7 +84,9 @@ describe('DeleteAccountForm', () => {
 
   it('アカウント削除に失敗した場合、エラーメッセージを表示する', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(
-      new Response(JSON.stringify({ message: 'カスタムエラー' }), { status: 500 })
+      new Response(JSON.stringify({ message: 'カスタムエラー' }), {
+        status: 500,
+      })
     )
     render(<DeleteAccountForm {...defaultProps} />)
 
@@ -92,7 +96,9 @@ describe('DeleteAccountForm', () => {
     const textInput = screen.getByLabelText('「削除する」と入力してください')
     await userEvent.type(emailInput, defaultProps.userEmail)
     await userEvent.type(textInput, '削除する')
-    fireEvent.click(screen.getByRole('button', { name: 'アカウントを削除する' }))
+    fireEvent.click(
+      screen.getByRole('button', { name: 'アカウントを削除する' })
+    )
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith('カスタムエラー')
@@ -101,9 +107,13 @@ describe('DeleteAccountForm', () => {
 
   it('有料会員の場合、警告メッセージが表示される', () => {
     render(<DeleteAccountForm {...defaultProps} hasPaidMembership={true} />)
-    
+
     // 警告メッセージが表示されることを確認
-    expect(screen.getByText('有料会員プランは自動的に解約され、日割り計算による返金は行われません')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        '有料会員プランは自動的に解約され、日割り計算による返金は行われません'
+      )
+    ).toBeInTheDocument()
   })
 
   it('ネットワークエラーの場合、エラーメッセージを表示する', async () => {
@@ -116,7 +126,9 @@ describe('DeleteAccountForm', () => {
     const textInput = screen.getByLabelText('「削除する」と入力してください')
     await userEvent.type(emailInput, defaultProps.userEmail)
     await userEvent.type(textInput, '削除する')
-    fireEvent.click(screen.getByRole('button', { name: 'アカウントを削除する' }))
+    fireEvent.click(
+      screen.getByRole('button', { name: 'アカウントを削除する' })
+    )
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith('Network error')
@@ -129,25 +141,29 @@ describe('DeleteAccountForm', () => {
       resolvePromise = resolve
     })
     vi.mocked(fetch).mockReturnValueOnce(fetchPromise)
-    
+
     render(<DeleteAccountForm {...defaultProps} />)
-    
+
     const emailInput = screen.getByLabelText(
       '確認のため、登録メールアドレスを入力してください'
     )
     const textInput = screen.getByLabelText('「削除する」と入力してください')
     await userEvent.type(emailInput, defaultProps.userEmail)
     await userEvent.type(textInput, '削除する')
-    
-    const deleteButton = screen.getByRole('button', { name: 'アカウントを削除する' })
+
+    const deleteButton = screen.getByRole('button', {
+      name: 'アカウントを削除する',
+    })
     await userEvent.click(deleteButton)
-    
+
     // 送信中にボタンが無効になることを確認
     await waitFor(() => {
       expect(deleteButton).toBeDisabled()
     })
-    
+
     // レスポンスを解決
-    resolvePromise!(new Response(JSON.stringify({ success: true }), { status: 200 }))
+    resolvePromise!(
+      new Response(JSON.stringify({ success: true }), { status: 200 })
+    )
   })
-}) 
+})

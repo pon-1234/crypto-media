@@ -19,10 +19,10 @@ interface DeleteAccountFormProps {
  * @related /api/account/delete - アカウント削除API
  * @issue #38 - マイページ機能の拡張
  */
-export function DeleteAccountForm({ 
-  userId, 
+export function DeleteAccountForm({
+  userId,
   userEmail,
-  hasPaidMembership 
+  hasPaidMembership,
 }: DeleteAccountFormProps) {
   const [confirmEmail, setConfirmEmail] = useState('')
   const [confirmText, setConfirmText] = useState('')
@@ -30,9 +30,7 @@ export function DeleteAccountForm({
   const [reason, setReason] = useState('')
   const [isPending, startTransition] = useTransition()
 
-  const canDelete = 
-    confirmEmail === userEmail && 
-    confirmText === '削除する'
+  const canDelete = confirmEmail === userEmail && confirmText === '削除する'
 
   const handleDelete = async () => {
     if (!canDelete || !password) {
@@ -54,7 +52,7 @@ export function DeleteAccountForm({
         }
 
         toast.success('アカウントを削除しました')
-        
+
         // サインアウトしてトップページへリダイレクト
         await signOut({ callbackUrl: '/' })
       } catch (error) {
@@ -82,8 +80,8 @@ export function DeleteAccountForm({
       )}
 
       <div>
-        <label 
-          htmlFor="reason" 
+        <label
+          htmlFor="reason"
           className="block text-sm font-medium text-gray-700"
         >
           退会理由（任意）
@@ -100,8 +98,8 @@ export function DeleteAccountForm({
       </div>
 
       <div>
-        <label 
-          htmlFor="password" 
+        <label
+          htmlFor="password"
           className="block text-sm font-medium text-gray-700"
         >
           パスワード <span className="text-red-600">*</span>
@@ -119,11 +117,12 @@ export function DeleteAccountForm({
       </div>
 
       <div>
-        <label 
-          htmlFor="confirmEmail" 
+        <label
+          htmlFor="confirmEmail"
           className="block text-sm font-medium text-gray-700"
         >
-          確認のため、登録メールアドレスを入力してください <span className="text-red-600">*</span>
+          確認のため、登録メールアドレスを入力してください{' '}
+          <span className="text-red-600">*</span>
         </label>
         <input
           type="email"
@@ -137,8 +136,8 @@ export function DeleteAccountForm({
       </div>
 
       <div>
-        <label 
-          htmlFor="confirmText" 
+        <label
+          htmlFor="confirmText"
           className="block text-sm font-medium text-gray-700"
         >
           「削除する」と入力してください <span className="text-red-600">*</span>
@@ -162,7 +161,7 @@ export function DeleteAccountForm({
         >
           {isPending ? '削除中...' : 'アカウントを削除する'}
         </Button>
-        
+
         <p className="mt-4 text-center text-sm text-gray-500">
           この操作は取り消すことができません
         </p>

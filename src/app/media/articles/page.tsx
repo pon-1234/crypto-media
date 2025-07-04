@@ -51,7 +51,9 @@ interface MediaArticlesPageProps {
  * @param searchParams URLクエリパラメータ
  * @returns 記事一覧ページのJSX要素
  */
-export default async function MediaArticlesPage({ searchParams }: MediaArticlesPageProps) {
+export default async function MediaArticlesPage({
+  searchParams,
+}: MediaArticlesPageProps) {
   const currentPage = Number(searchParams?.page) || 1
   const limit = 12 // 1ページあたりの表示件数
   const offset = (currentPage - 1) * limit
@@ -67,7 +69,9 @@ export default async function MediaArticlesPage({ searchParams }: MediaArticlesP
     const filters: string[] = []
     if (selectedCategory) {
       // カテゴリでフィルタ
-      const categoryData = await getCategories({ filters: `slug[equals]${selectedCategory}` })
+      const categoryData = await getCategories({
+        filters: `slug[equals]${selectedCategory}`,
+      })
       if (categoryData.contents.length > 0) {
         filters.push(`category[equals]${categoryData.contents[0].id}`)
       }
@@ -137,11 +141,16 @@ export default async function MediaArticlesPage({ searchParams }: MediaArticlesP
               <div className="mt-8">
                 <div className="mb-4 text-center">
                   <p className="text-sm text-gray-600 sm:text-base">
-                    全{articlesResponse.totalCount}件中 
-                    {offset + 1}-{Math.min(offset + articlesResponse.contents.length, articlesResponse.totalCount)}件を表示
+                    全{articlesResponse.totalCount}件中
+                    {offset + 1}-
+                    {Math.min(
+                      offset + articlesResponse.contents.length,
+                      articlesResponse.totalCount
+                    )}
+                    件を表示
                   </p>
                 </div>
-                <Pagination 
+                <Pagination
                   currentPage={currentPage}
                   totalPages={Math.ceil(articlesResponse.totalCount / limit)}
                   className="mt-8"

@@ -191,9 +191,13 @@ export default async function MediaNewsDetailPage({
           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
             {/* 公開日 */}
             <time dateTime={article.publishedAt}>
-              {format(new Date(article.publishedAt || article.createdAt), 'yyyy年MM月dd日', {
-                locale: ja,
-              })}
+              {format(
+                new Date(article.publishedAt || article.createdAt),
+                'yyyy年MM月dd日',
+                {
+                  locale: ja,
+                }
+              )}
             </time>
 
             {/* 執筆者 */}
@@ -251,7 +255,9 @@ export default async function MediaNewsDetailPage({
         ) : (
           <Paywall
             title={article.title}
-            preview={DOMPurify.sanitize(article.content.substring(0, 300) + '...')}
+            preview={DOMPurify.sanitize(
+              article.content.substring(0, 300) + '...'
+            )}
           />
         )}
 

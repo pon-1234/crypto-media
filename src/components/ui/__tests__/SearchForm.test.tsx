@@ -30,7 +30,9 @@ describe('SearchForm', () => {
   it('カスタムプレースホルダーが設定できる', () => {
     render(<SearchForm placeholder="キーワードを入力..." />)
 
-    expect(screen.getByPlaceholderText('キーワードを入力...')).toBeInTheDocument()
+    expect(
+      screen.getByPlaceholderText('キーワードを入力...')
+    ).toBeInTheDocument()
   })
 
   it('カスタムクラス名が適用される', () => {
@@ -64,11 +66,13 @@ describe('SearchForm', () => {
 
     const input = screen.getByPlaceholderText('記事を検索...')
     await user.type(input, 'ブロックチェーン')
-    
+
     const form = input.closest('form')!
     fireEvent.submit(form)
 
-    expect(mockPush).toHaveBeenCalledWith('/media/search?q=%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%83%81%E3%82%A7%E3%83%BC%E3%83%B3')
+    expect(mockPush).toHaveBeenCalledWith(
+      '/media/search?q=%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%83%81%E3%82%A7%E3%83%BC%E3%83%B3'
+    )
   })
 
   it('空白のみの検索は実行されない', async () => {
@@ -77,7 +81,7 @@ describe('SearchForm', () => {
 
     const input = screen.getByPlaceholderText('記事を検索...')
     await user.type(input, '   ')
-    
+
     const form = input.closest('form')!
     fireEvent.submit(form)
 
@@ -90,11 +94,13 @@ describe('SearchForm', () => {
 
     const input = screen.getByPlaceholderText('記事を検索...')
     await user.type(input, '  イーサリアム  ')
-    
+
     const form = input.closest('form')!
     fireEvent.submit(form)
 
-    expect(mockPush).toHaveBeenCalledWith('/media/search?q=%E3%82%A4%E3%83%BC%E3%82%B5%E3%83%AA%E3%82%A2%E3%83%A0')
+    expect(mockPush).toHaveBeenCalledWith(
+      '/media/search?q=%E3%82%A4%E3%83%BC%E3%82%B5%E3%83%AA%E3%82%A2%E3%83%A0'
+    )
   })
 
   it('特殊文字が正しくエンコードされる', async () => {
@@ -103,7 +109,7 @@ describe('SearchForm', () => {
 
     const input = screen.getByPlaceholderText('記事を検索...')
     await user.type(input, 'DeFi & NFT')
-    
+
     const form = input.closest('form')!
     fireEvent.submit(form)
 

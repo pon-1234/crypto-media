@@ -4,7 +4,11 @@
  * @issue #36 - メディアサイトの主要な一覧ページ実装
  */
 import { Metadata } from 'next'
-import { getMediaArticlesByMembershipLevel, getCategories, getTags } from '@/lib/microcms'
+import {
+  getMediaArticlesByMembershipLevel,
+  getCategories,
+  getTags,
+} from '@/lib/microcms'
 import { ArticleCard } from '@/components/media/ArticleCard'
 import { Pagination } from '@/components/ui/Pagination'
 import { ArticleFilters } from '@/components/media/ArticleFilters'
@@ -20,20 +24,17 @@ export const revalidate = 3600
  */
 export const metadata: Metadata = {
   title: 'プレミアム記事 | Crypto Media',
-  description:
-    '有料会員限定の深掘り記事や詳細な分析レポートをお届けします。',
+  description: '有料会員限定の深掘り記事や詳細な分析レポートをお届けします。',
   openGraph: {
     title: 'プレミアム記事 | Crypto Media',
-    description:
-      '有料会員限定の深掘り記事や詳細な分析レポートをお届けします。',
+    description: '有料会員限定の深掘り記事や詳細な分析レポートをお届けします。',
     type: 'website',
     url: '/media/premium',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'プレミアム記事 | Crypto Media',
-    description:
-      '有料会員限定の深掘り記事や詳細な分析レポートをお届けします。',
+    description: '有料会員限定の深掘り記事や詳細な分析レポートをお届けします。',
   },
 }
 
@@ -50,7 +51,9 @@ interface PremiumArticlesPageProps {
  * @param searchParams URLクエリパラメータ
  * @returns 有料記事一覧ページのJSX要素
  */
-export default async function PremiumArticlesPage({ searchParams }: PremiumArticlesPageProps) {
+export default async function PremiumArticlesPage({
+  searchParams,
+}: PremiumArticlesPageProps) {
   const currentPage = Number(searchParams?.page) || 1
   const limit = 12 // 1ページあたりの表示件数
   const offset = (currentPage - 1) * limit
@@ -65,10 +68,12 @@ export default async function PremiumArticlesPage({ searchParams }: PremiumArtic
     // フィルタ条件を構築
     const filters: string[] = []
     filters.push('membershipLevel[equals]paid') // 有料記事のみ
-    
+
     if (selectedCategory) {
       // カテゴリでフィルタ
-      const categoryData = await getCategories({ filters: `slug[equals]${selectedCategory}` })
+      const categoryData = await getCategories({
+        filters: `slug[equals]${selectedCategory}`,
+      })
       if (categoryData.contents.length > 0) {
         filters.push(`category[equals]${categoryData.contents[0].id}`)
       }
@@ -138,11 +143,16 @@ export default async function PremiumArticlesPage({ searchParams }: PremiumArtic
               <div className="mt-8">
                 <div className="mb-4 text-center">
                   <p className="text-sm text-gray-600 sm:text-base">
-                    全{articlesResponse.totalCount}件中 
-                    {offset + 1}-{Math.min(offset + articlesResponse.contents.length, articlesResponse.totalCount)}件を表示
+                    全{articlesResponse.totalCount}件中
+                    {offset + 1}-
+                    {Math.min(
+                      offset + articlesResponse.contents.length,
+                      articlesResponse.totalCount
+                    )}
+                    件を表示
                   </p>
                 </div>
-                <Pagination 
+                <Pagination
                   currentPage={currentPage}
                   totalPages={Math.ceil(articlesResponse.totalCount / limit)}
                   className="mt-8"

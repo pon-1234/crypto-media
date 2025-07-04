@@ -63,9 +63,15 @@ describe('GlossaryPage', () => {
       const Page = await GlossaryPage()
       render(Page)
 
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('用語集')
-      expect(screen.getByText('暗号資産・ブロックチェーンの専門用語を解説します')).toBeInTheDocument()
-      expect(screen.getByText('ここに用語集の内容が表示されます')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        '用語集'
+      )
+      expect(
+        screen.getByText('暗号資産・ブロックチェーンの専門用語を解説します')
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText('ここに用語集の内容が表示されます')
+      ).toBeInTheDocument()
     })
 
     it('セクションが正しく表示される', async () => {
@@ -80,21 +86,31 @@ describe('GlossaryPage', () => {
       expect(screen.getByText('用語一覧表')).toBeInTheDocument()
 
       // リスト形式のコンテンツ
-      expect(screen.getByText('API: Application Programming Interface')).toBeInTheDocument()
-      
+      expect(
+        screen.getByText('API: Application Programming Interface')
+      ).toBeInTheDocument()
+
       // テキスト形式のコンテンツ
-      expect(screen.getByText('暗号資産（あんごうしさん）: デジタル通貨の一種')).toBeInTheDocument()
+      expect(
+        screen.getByText('暗号資産（あんごうしさん）: デジタル通貨の一種')
+      ).toBeInTheDocument()
     })
 
     it('descriptionがない場合でも正常に表示される', async () => {
       const pageWithoutDescription = { ...mockPage, description: undefined }
-      vi.mocked(getCorporatePageBySlug).mockResolvedValue(pageWithoutDescription)
+      vi.mocked(getCorporatePageBySlug).mockResolvedValue(
+        pageWithoutDescription
+      )
 
       const Page = await GlossaryPage()
       render(Page)
 
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('用語集')
-      expect(screen.getByText('ここに用語集の内容が表示されます')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        '用語集'
+      )
+      expect(
+        screen.getByText('ここに用語集の内容が表示されます')
+      ).toBeInTheDocument()
     })
 
     it('sectionsがない場合でも正常に表示される', async () => {
@@ -104,8 +120,12 @@ describe('GlossaryPage', () => {
       const Page = await GlossaryPage()
       render(Page)
 
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('用語集')
-      expect(screen.getByText('ここに用語集の内容が表示されます')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+        '用語集'
+      )
+      expect(
+        screen.getByText('ここに用語集の内容が表示されます')
+      ).toBeInTheDocument()
     })
 
     it('ページが見つからない場合は404エラーを表示', async () => {
@@ -152,12 +172,18 @@ describe('GlossaryPage', () => {
 
     it('descriptionがない場合、デフォルトの説明を使用する', async () => {
       const pageWithoutDescription = { ...mockPage, description: undefined }
-      vi.mocked(getCorporatePageBySlug).mockResolvedValue(pageWithoutDescription)
+      vi.mocked(getCorporatePageBySlug).mockResolvedValue(
+        pageWithoutDescription
+      )
 
       const metadata = await generateMetadata()
 
-      expect(metadata.description).toBe('暗号資産・ブロックチェーンに関する用語集')
-      expect(metadata.openGraph?.description).toBe('暗号資産・ブロックチェーンに関する用語集')
+      expect(metadata.description).toBe(
+        '暗号資産・ブロックチェーンに関する用語集'
+      )
+      expect(metadata.openGraph?.description).toBe(
+        '暗号資産・ブロックチェーンに関する用語集'
+      )
     })
 
     it('metadataがない場合でも正常に動作する', async () => {

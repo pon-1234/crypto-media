@@ -1,7 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import MediaArticleDetailPage from './page'
-import type { MediaArticle, Expert, Tag, Category, MicroCMSImage } from '@/lib/microcms'
+import type {
+  MediaArticle,
+  Expert,
+  Tag,
+  Category,
+  MicroCMSImage,
+} from '@/lib/microcms'
 
 // モックの設定
 vi.mock('@/lib/microcms', () => ({
@@ -263,7 +269,10 @@ describe('MediaArticleDetailPage', () => {
       )
       expect(scriptTag).toBeInTheDocument()
 
-      const jsonLd = JSON.parse(scriptTag?.textContent || '{}') as Record<string, unknown>
+      const jsonLd = JSON.parse(scriptTag?.textContent || '{}') as Record<
+        string,
+        unknown
+      >
       expect(jsonLd.isAccessibleForFree).toBe('False')
       expect(jsonLd.hasPart).toEqual([
         {
@@ -292,7 +301,10 @@ describe('MediaArticleDetailPage', () => {
       const scriptTag = container.querySelector(
         'script[type="application/ld+json"]'
       )
-      const jsonLd = JSON.parse(scriptTag?.textContent || '{}') as Record<string, unknown>
+      const jsonLd = JSON.parse(scriptTag?.textContent || '{}') as Record<
+        string,
+        unknown
+      >
 
       expect(jsonLd.isAccessibleForFree).toBeUndefined()
       expect(jsonLd.hasPart).toBeUndefined()

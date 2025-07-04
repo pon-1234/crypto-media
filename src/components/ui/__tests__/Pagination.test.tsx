@@ -16,7 +16,9 @@ vi.mock('next/navigation', () => ({
 describe('Pagination', () => {
   beforeEach(() => {
     vi.mocked(usePathname).mockReturnValue('/media/articles')
-    vi.mocked(useSearchParams).mockReturnValue(new URLSearchParams() as unknown as ReturnType<typeof useSearchParams>)
+    vi.mocked(useSearchParams).mockReturnValue(
+      new URLSearchParams() as unknown as ReturnType<typeof useSearchParams>
+    )
   })
 
   it('基本的なページネーションが正しく表示される', () => {
@@ -82,13 +84,18 @@ describe('Pagination', () => {
 
   it('既存のクエリパラメータが保持される', () => {
     const searchParams = new URLSearchParams('category=blockchain&sort=newest')
-    vi.mocked(useSearchParams).mockReturnValue(searchParams as unknown as ReturnType<typeof useSearchParams>)
+    vi.mocked(useSearchParams).mockReturnValue(
+      searchParams as unknown as ReturnType<typeof useSearchParams>
+    )
 
     render(<Pagination currentPage={1} totalPages={3} />)
 
     // 次へリンクのhrefを確認
     const nextLink = screen.getByText('次へ').closest('a')
-    expect(nextLink).toHaveAttribute('href', '/media/articles?category=blockchain&sort=newest&page=2')
+    expect(nextLink).toHaveAttribute(
+      'href',
+      '/media/articles?category=blockchain&sort=newest&page=2'
+    )
   })
 
   it('カスタムクラスが適用される', () => {

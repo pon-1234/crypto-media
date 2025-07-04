@@ -38,7 +38,6 @@ type MockSearchParamsType = {
   toString: ReturnType<typeof vi.fn>
 }
 
-
 describe('LoginPage', () => {
   const mockPush = vi.fn()
   const mockGet = vi.fn()
@@ -53,8 +52,10 @@ describe('LoginPage', () => {
       back: vi.fn(),
       forward: vi.fn(),
     }
-    vi.mocked(useRouter).mockReturnValue(mockRouter as unknown as ReturnType<typeof useRouter>)
-    
+    vi.mocked(useRouter).mockReturnValue(
+      mockRouter as unknown as ReturnType<typeof useRouter>
+    )
+
     const mockParams: MockSearchParamsType = {
       get: mockGet,
       getAll: vi.fn(),
@@ -65,7 +66,9 @@ describe('LoginPage', () => {
       forEach: vi.fn(),
       toString: vi.fn(),
     }
-    vi.mocked(useSearchParams).mockReturnValue(mockParams as unknown as ReturnType<typeof useSearchParams>)
+    vi.mocked(useSearchParams).mockReturnValue(
+      mockParams as unknown as ReturnType<typeof useSearchParams>
+    )
   })
 
   describe('未認証状態', () => {
@@ -81,7 +84,9 @@ describe('LoginPage', () => {
       mockGet.mockReturnValue(null)
       render(<LoginPage />)
 
-      expect(screen.getByRole('heading', { name: 'ログイン' })).toBeInTheDocument()
+      expect(
+        screen.getByRole('heading', { name: 'ログイン' })
+      ).toBeInTheDocument()
       expect(
         screen.getByText(
           '会員限定コンテンツへアクセスするにはログインが必要です'
@@ -193,7 +198,13 @@ describe('LoginPage', () => {
           () =>
             new Promise((resolve) =>
               setTimeout(
-                () => resolve({ ok: true, status: 200, url: '/', error: null } as unknown as SignInResponse | undefined),
+                () =>
+                  resolve({
+                    ok: true,
+                    status: 200,
+                    url: '/',
+                    error: null,
+                  } as unknown as SignInResponse | undefined),
                 100
               )
             )
@@ -241,7 +252,9 @@ describe('LoginPage', () => {
         status: 'unauthenticated',
         update: vi.fn(),
       } as ReturnType<typeof useSession>)
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {})
       const error = new Error('Network error')
       vi.mocked(signIn).mockRejectedValue(error)
 
@@ -256,7 +269,9 @@ describe('LoginPage', () => {
       fireEvent.click(screen.getByRole('button', { name: 'ログイン' }))
 
       await waitFor(() => {
-        expect(screen.getByText('ログイン中にエラーが発生しました')).toBeInTheDocument()
+        expect(
+          screen.getByText('ログイン中にエラーが発生しました')
+        ).toBeInTheDocument()
         expect(consoleErrorSpy).toHaveBeenCalledWith('Sign in error:', error)
       })
       consoleErrorSpy.mockRestore()
@@ -328,7 +343,9 @@ describe('LoginPage', () => {
         status: 'unauthenticated',
         update: vi.fn(),
       } as ReturnType<typeof useSession>)
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {})
       const error = new Error('Network error')
       vi.mocked(signIn).mockRejectedValue(error)
 
@@ -343,7 +360,9 @@ describe('LoginPage', () => {
       fireEvent.click(screen.getByRole('button', { name: 'ログイン' }))
 
       await waitFor(() => {
-        expect(screen.getByText('ログイン中にエラーが発生しました')).toBeInTheDocument()
+        expect(
+          screen.getByText('ログイン中にエラーが発生しました')
+        ).toBeInTheDocument()
         expect(consoleErrorSpy).toHaveBeenCalledWith('Sign in error:', error)
       })
       consoleErrorSpy.mockRestore()

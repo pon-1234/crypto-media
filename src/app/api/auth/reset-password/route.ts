@@ -6,7 +6,7 @@ import { z } from 'zod'
 
 /**
  * パスワードリセット実行API
- * 
+ *
  * @doc DEVELOPMENT_GUIDE.md#認証・会員DB - パスワードリセット機能
  * @related src/lib/auth/reset-token.ts - トークン検証
  * @issue #26 - 認証機能の拡張：メール/パスワード認証の追加

@@ -222,7 +222,13 @@ describe('media-articles API', () => {
 
     it('コンテンツが1ページに収まる場合は1回だけAPIを呼び出す', async () => {
       const mockResponse = {
-        contents: [{ id: 'id-1', createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-01T00:00:00.000Z' }],
+        contents: [
+          {
+            id: 'id-1',
+            createdAt: '2024-01-01T00:00:00.000Z',
+            updatedAt: '2024-01-01T00:00:00.000Z',
+          },
+        ],
         totalCount: 1,
         offset: 0,
         limit: 100,
@@ -234,7 +240,12 @@ describe('media-articles API', () => {
     })
 
     it('コンテンツが0件の場合は空配列を返す', async () => {
-      const mockResponse = { contents: [], totalCount: 0, offset: 0, limit: 100 }
+      const mockResponse = {
+        contents: [],
+        totalCount: 0,
+        offset: 0,
+        limit: 100,
+      }
       vi.mocked(client.getList).mockResolvedValueOnce(mockResponse)
       const result = await getAllMediaArticleIds()
       expect(result).toEqual([])
@@ -289,7 +300,14 @@ describe('media-articles API', () => {
 
     it('コンテンツが1ページに収まる場合は1回だけAPIを呼び出す', async () => {
       const mockResponse = {
-        contents: [{ id: 'id-1', slug: 'slug-1', createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-01T00:00:00.000Z' }],
+        contents: [
+          {
+            id: 'id-1',
+            slug: 'slug-1',
+            createdAt: '2024-01-01T00:00:00.000Z',
+            updatedAt: '2024-01-01T00:00:00.000Z',
+          },
+        ],
         totalCount: 1,
         offset: 0,
         limit: 100,
@@ -301,7 +319,12 @@ describe('media-articles API', () => {
     })
 
     it('コンテンツが0件の場合は空配列を返す', async () => {
-      const mockResponse = { contents: [], totalCount: 0, offset: 0, limit: 100 }
+      const mockResponse = {
+        contents: [],
+        totalCount: 0,
+        offset: 0,
+        limit: 100,
+      }
       vi.mocked(client.getList).mockResolvedValueOnce(mockResponse)
       const result = await getAllMediaArticleSlugs()
       expect(result).toEqual([])

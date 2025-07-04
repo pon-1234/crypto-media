@@ -56,15 +56,15 @@ describe('SupportPage', () => {
     render(ResolvedComponent)
 
     expect(
-      screen.getByRole('heading', { name: 'サポート', level: 1 }),
+      screen.getByRole('heading', { name: 'サポート', level: 1 })
     ).toBeInTheDocument()
     expect(
       screen.getByText(
-        'ご不明な点や問題がございましたら、下記よりお問い合わせください。',
-      ),
+        'ご不明な点や問題がございましたら、下記よりお問い合わせください。'
+      )
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('link', { name: 'お問い合わせフォーム' }),
+      screen.getByRole('link', { name: 'お問い合わせフォーム' })
     ).toHaveAttribute('href', '/media/contact')
   })
-}) 
+})

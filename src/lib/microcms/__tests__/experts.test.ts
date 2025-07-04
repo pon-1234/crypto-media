@@ -74,7 +74,10 @@ describe('experts.ts', () => {
   })
 
   it('getExpertBySlug: slugで執筆者・監修者を取得する', async () => {
-    mockedClient.getList.mockResolvedValue({ ...mockExpertList, contents: [mockExpert1] })
+    mockedClient.getList.mockResolvedValue({
+      ...mockExpertList,
+      contents: [mockExpert1],
+    })
     const data = await getExpertBySlug('yamada-taro')
     expect(data.name).toBe('山田 太郎')
     expect(mockedClient.getList).toHaveBeenCalledWith({
@@ -100,7 +103,9 @@ describe('experts.ts', () => {
     ])
     const ids = await getAllExpertIds()
     expect(ids).toEqual(['expert-1', 'expert-2'])
-    expect(mockedGetAllContents).toHaveBeenCalledWith('experts', { fields: 'id' })
+    expect(mockedGetAllContents).toHaveBeenCalledWith('experts', {
+      fields: 'id',
+    })
   })
 
   it('getAllExpertSlugs: すべてのslugを取得する', async () => {
@@ -111,6 +116,8 @@ describe('experts.ts', () => {
     mockedGetAllContents.mockResolvedValue(mockSlugsData)
     const slugs = await getAllExpertSlugs()
     expect(slugs).toEqual(['yamada-taro', 'suzuki-hanako'])
-    expect(mockedGetAllContents).toHaveBeenCalledWith('experts', { fields: 'id,slug' })
+    expect(mockedGetAllContents).toHaveBeenCalledWith('experts', {
+      fields: 'id,slug',
+    })
   })
-}) 
+})

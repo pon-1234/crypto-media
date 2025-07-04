@@ -47,15 +47,18 @@ export async function searchMediaArticles(
  * @param query - 検索キーワード
  * @returns ハイライト用の配列
  */
-export function highlightSearchQuery(text: string, query: string): Array<string | { type: 'mark'; key: number; text: string }> {
+export function highlightSearchQuery(
+  text: string,
+  query: string
+): Array<string | { type: 'mark'; key: number; text: string }> {
   if (!query) return [text]
 
   // 検索キーワードを正規表現エスケープ
   const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const regex = new RegExp(`(${escapedQuery})`, 'gi')
-  
+
   const parts = text.split(regex)
-  
+
   return parts.map((part, index) => {
     if (index % 2 === 1) {
       // マッチした部分をハイライト

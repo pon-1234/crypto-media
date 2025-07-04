@@ -56,16 +56,21 @@ describe('POST /api/auth/forgot-password', () => {
     vi.mocked(saveResetToken).mockResolvedValue()
     vi.mocked(sendEmail).mockResolvedValue()
 
-    const request = new NextRequest('http://localhost:3000/api/auth/forgot-password', {
-      method: 'POST',
-      body: JSON.stringify({ email: mockEmail }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/forgot-password',
+      {
+        method: 'POST',
+        body: JSON.stringify({ email: mockEmail }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
 
     expect(response.status).toBe(200)
-    expect(data.message).toBe('パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）')
+    expect(data.message).toBe(
+      'パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）'
+    )
     expect(mockCollection).toHaveBeenCalledWith('users')
     expect(mockWhere).toHaveBeenCalledWith('email', '==', mockEmail)
     expect(mockLimit).toHaveBeenCalledWith(1)
@@ -80,10 +85,13 @@ describe('POST /api/auth/forgot-password', () => {
   })
 
   it('無効なメールアドレスでエラーを返す', async () => {
-    const request = new NextRequest('http://localhost:3000/api/auth/forgot-password', {
-      method: 'POST',
-      body: JSON.stringify({ email: 'invalid-email' }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/forgot-password',
+      {
+        method: 'POST',
+        body: JSON.stringify({ email: 'invalid-email' }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
@@ -110,16 +118,21 @@ describe('POST /api/auth/forgot-password', () => {
     })
     vi.mocked(adminDb.collection).mockImplementation(mockCollection)
 
-    const request = new NextRequest('http://localhost:3000/api/auth/forgot-password', {
-      method: 'POST',
-      body: JSON.stringify({ email: mockEmail }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/forgot-password',
+      {
+        method: 'POST',
+        body: JSON.stringify({ email: mockEmail }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
 
     expect(response.status).toBe(200)
-    expect(data.message).toBe('パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）')
+    expect(data.message).toBe(
+      'パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）'
+    )
     expect(generateResetToken).not.toHaveBeenCalled()
     expect(saveResetToken).not.toHaveBeenCalled()
     expect(sendEmail).not.toHaveBeenCalled()
@@ -146,16 +159,21 @@ describe('POST /api/auth/forgot-password', () => {
     })
     vi.mocked(adminDb.collection).mockImplementation(mockCollection)
 
-    const request = new NextRequest('http://localhost:3000/api/auth/forgot-password', {
-      method: 'POST',
-      body: JSON.stringify({ email: mockEmail }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/forgot-password',
+      {
+        method: 'POST',
+        body: JSON.stringify({ email: mockEmail }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
 
     expect(response.status).toBe(200)
-    expect(data.message).toBe('パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）')
+    expect(data.message).toBe(
+      'パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）'
+    )
     expect(generateResetToken).not.toHaveBeenCalled()
     expect(saveResetToken).not.toHaveBeenCalled()
     expect(sendEmail).not.toHaveBeenCalled()
@@ -188,16 +206,21 @@ describe('POST /api/auth/forgot-password', () => {
     vi.mocked(saveResetToken).mockResolvedValue()
     vi.mocked(sendEmail).mockResolvedValue()
 
-    const request = new NextRequest('http://localhost:3000/api/auth/forgot-password', {
-      method: 'POST',
-      body: JSON.stringify({ email: mockEmail }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/forgot-password',
+      {
+        method: 'POST',
+        body: JSON.stringify({ email: mockEmail }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()
 
     expect(response.status).toBe(200)
-    expect(data.resetUrl).toBe(`http://localhost:3000/reset-password?token=${mockToken}`)
+    expect(data.resetUrl).toBe(
+      `http://localhost:3000/reset-password?token=${mockToken}`
+    )
 
     vi.unstubAllEnvs()
   })
@@ -211,10 +234,13 @@ describe('POST /api/auth/forgot-password', () => {
     })
     vi.mocked(adminDb.collection).mockImplementation(mockCollection)
 
-    const request = new NextRequest('http://localhost:3000/api/auth/forgot-password', {
-      method: 'POST',
-      body: JSON.stringify({ email: mockEmail }),
-    })
+    const request = new NextRequest(
+      'http://localhost:3000/api/auth/forgot-password',
+      {
+        method: 'POST',
+        body: JSON.stringify({ email: mockEmail }),
+      }
+    )
 
     const response = await POST(request)
     const data = await response.json()

@@ -9,14 +9,34 @@ import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 // Heroiconsの代わりにシンプルなSVGアイコンを使用
 const ChevronLeftIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M15 19l-7-7 7-7"
+    />
   </svg>
 )
 
 const ChevronRightIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M9 5l7 7-7 7"
+    />
   </svg>
 )
 
@@ -36,12 +56,12 @@ interface PaginationProps {
  * @param className 追加のCSSクラス
  * @param siblingCount 現在ページの前後に表示するページ数
  */
-export function Pagination({ 
-  currentPage, 
-  totalPages, 
+export function Pagination({
+  currentPage,
+  totalPages,
   basePath,
   className = '',
-  siblingCount = 2
+  siblingCount = 2,
 }: PaginationProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -56,7 +76,7 @@ export function Pagination({
     params.set('page', page.toString())
     const basePathWithQuery = basePath ? basePath.split('?')[0] : pathname
     const existingQuery = basePath ? basePath.split('?')[1] : ''
-    
+
     const newParams = new URLSearchParams(existingQuery)
     searchParams?.forEach((value, key) => {
       if (key !== 'page') {
@@ -66,10 +86,13 @@ export function Pagination({
     newParams.set('page', page.toString())
 
     // `q` パラメータが `basePath` に含まれている場合、それを優先する
-    if (basePath && new URLSearchParams(basePath.split('?')[1] || '').has('q')) {
-        const basePathParams = new URLSearchParams(basePath.split('?')[1] || '')
-        basePathParams.set('page', page.toString())
-        return `${basePath.split('?')[0]}?${basePathParams.toString()}`
+    if (
+      basePath &&
+      new URLSearchParams(basePath.split('?')[1] || '').has('q')
+    ) {
+      const basePathParams = new URLSearchParams(basePath.split('?')[1] || '')
+      basePathParams.set('page', page.toString())
+      return `${basePath.split('?')[0]}?${basePathParams.toString()}`
     }
 
     return `${basePathWithQuery}?${newParams.toString()}`
@@ -86,7 +109,11 @@ export function Pagination({
     let l: number | undefined
 
     for (let i = 1; i <= totalPages; i++) {
-      if (i === 1 || i === totalPages || (i >= currentPage - delta && i <= currentPage + delta)) {
+      if (
+        i === 1 ||
+        i === totalPages ||
+        (i >= currentPage - delta && i <= currentPage + delta)
+      ) {
         range.push(i)
       }
     }
@@ -113,7 +140,7 @@ export function Pagination({
   }
 
   return (
-    <nav 
+    <nav
       className={`flex items-center justify-between border-t border-gray-200 px-4 sm:px-0 ${className}`}
       aria-label="ページネーション"
     >
@@ -123,14 +150,17 @@ export function Pagination({
             href={createPageURL(currentPage - 1)}
             className="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
           >
-            <ChevronLeftIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+            <ChevronLeftIcon
+              className="mr-3 h-5 w-5 text-gray-400"
+              aria-hidden="true"
+            />
             前へ
           </Link>
         )}
       </div>
-      
+
       <div className="hidden md:-mt-px md:flex">
-        {pageNumbers.map((page, index) => (
+        {pageNumbers.map((page, index) =>
           typeof page === 'number' ? (
             <Link
               key={index}
@@ -152,9 +182,9 @@ export function Pagination({
               {page}
             </span>
           )
-        ))}
+        )}
       </div>
-      
+
       <div className="-mt-px flex w-0 flex-1 justify-end">
         {currentPage < totalPages && (
           <Link
@@ -162,7 +192,10 @@ export function Pagination({
             className="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
           >
             次へ
-            <ChevronRightIcon className="ml-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+            <ChevronRightIcon
+              className="ml-3 h-5 w-5 text-gray-400"
+              aria-hidden="true"
+            />
           </Link>
         )}
       </div>

@@ -3,13 +3,7 @@
  * @doc DEVELOPMENT_GUIDE.md#microCMS
  */
 import { getAllContents, stripHtmlTags } from '../utils'
-import {
-  describe,
-  it,
-  expect,
-  vi,
-  beforeEach,
-} from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { client } from '../client'
 
 // clientをモック化
@@ -29,7 +23,11 @@ describe('microCMS utils', () => {
       // 1回目のAPIレスポンス（1ページ目）
       mockedClient.getList
         .mockResolvedValueOnce({
-          contents: Array.from({ length: 100 }, (_, i) => ({ id: `item-${i}`, createdAt: '2023-01-01T00:00:00Z', updatedAt: '2023-01-01T00:00:00Z' })),
+          contents: Array.from({ length: 100 }, (_, i) => ({
+            id: `item-${i}`,
+            createdAt: '2023-01-01T00:00:00Z',
+            updatedAt: '2023-01-01T00:00:00Z',
+          })),
           totalCount: 150,
           offset: 0,
           limit: 100,
@@ -39,7 +37,7 @@ describe('microCMS utils', () => {
           contents: Array.from({ length: 50 }, (_, i) => ({
             id: `item-${100 + i}`,
             createdAt: '2023-01-01T00:00:00Z',
-            updatedAt: '2023-01-01T00:00:00Z'
+            updatedAt: '2023-01-01T00:00:00Z',
           })),
           totalCount: 150,
           offset: 100,
@@ -55,7 +53,11 @@ describe('microCMS utils', () => {
 
     it('コンテンツが1ページに収まる場合は1回だけAPIを呼び出す', async () => {
       mockedClient.getList.mockResolvedValue({
-        contents: Array.from({ length: 80 }, (_, i) => ({ id: `item-${i}`, createdAt: '2023-01-01T00:00:00Z', updatedAt: '2023-01-01T00:00:00Z' })),
+        contents: Array.from({ length: 80 }, (_, i) => ({
+          id: `item-${i}`,
+          createdAt: '2023-01-01T00:00:00Z',
+          updatedAt: '2023-01-01T00:00:00Z',
+        })),
         totalCount: 80,
         offset: 0,
         limit: 100,
@@ -111,4 +113,4 @@ describe('microCMS utils', () => {
       expect(stripHtmlTags(text)).toBe('これはプレーンテキストです。')
     })
   })
-}) 
+})

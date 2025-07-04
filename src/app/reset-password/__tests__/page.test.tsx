@@ -39,16 +39,21 @@ describe('ResetPasswordPage', () => {
       render(<ResetPasswordPage />)
 
       expect(screen.getByText('パスワードをリセット')).toBeInTheDocument()
-      expect(screen.getByText('登録したメールアドレスを入力してください')).toBeInTheDocument()
+      expect(
+        screen.getByText('登録したメールアドレスを入力してください')
+      ).toBeInTheDocument()
       expect(screen.getByLabelText('メールアドレス')).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: 'リセットメールを送信' })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: 'リセットメールを送信' })
+      ).toBeInTheDocument()
     })
 
     it('メールアドレスを入力してリセット要求を送信できる', async () => {
       vi.mocked(global.fetch).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          message: 'パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）',
+          message:
+            'パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）',
         }),
       } as unknown as Response)
 
@@ -57,7 +62,9 @@ describe('ResetPasswordPage', () => {
       const emailInput = screen.getByLabelText('メールアドレス')
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } })
 
-      const submitButton = screen.getByRole('button', { name: 'リセットメールを送信' })
+      const submitButton = screen.getByRole('button', {
+        name: 'リセットメールを送信',
+      })
       fireEvent.click(submitButton)
 
       await waitFor(() => {
@@ -71,7 +78,11 @@ describe('ResetPasswordPage', () => {
       })
 
       await waitFor(() => {
-        expect(screen.getByText('パスワードリセットのメールを送信しました。メールをご確認ください。')).toBeInTheDocument()
+        expect(
+          screen.getByText(
+            'パスワードリセットのメールを送信しました。メールをご確認ください。'
+          )
+        ).toBeInTheDocument()
       })
     })
 
@@ -89,11 +100,15 @@ describe('ResetPasswordPage', () => {
       const emailInput = screen.getByLabelText('メールアドレス')
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } })
 
-      const submitButton = screen.getByRole('button', { name: 'リセットメールを送信' })
+      const submitButton = screen.getByRole('button', {
+        name: 'リセットメールを送信',
+      })
       fireEvent.click(submitButton)
 
       await waitFor(() => {
-        expect(screen.getByText('予期しないエラーが発生しました')).toBeInTheDocument()
+        expect(
+          screen.getByText('予期しないエラーが発生しました')
+        ).toBeInTheDocument()
       })
 
       consoleSpy.mockRestore()
@@ -111,10 +126,14 @@ describe('ResetPasswordPage', () => {
       render(<ResetPasswordPage />)
 
       expect(screen.getByText('新しいパスワードを設定')).toBeInTheDocument()
-      expect(screen.getByText('新しいパスワードを入力してください')).toBeInTheDocument()
+      expect(
+        screen.getByText('新しいパスワードを入力してください')
+      ).toBeInTheDocument()
       expect(screen.getByLabelText('新しいパスワード')).toBeInTheDocument()
       expect(screen.getByLabelText('パスワード（確認）')).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: 'パスワードを更新' })).toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: 'パスワードを更新' })
+      ).toBeInTheDocument()
     })
 
     it('パスワード強度のリアルタイム検証が機能する', () => {
@@ -125,15 +144,25 @@ describe('ResetPasswordPage', () => {
       // 弱いパスワードを入力
       fireEvent.change(passwordInput, { target: { value: 'weak' } })
 
-      expect(screen.getByText('• パスワードは8文字以上で入力してください')).toBeInTheDocument()
-      expect(screen.getByText('• 大文字を1文字以上含めてください')).toBeInTheDocument()
-      expect(screen.getByText('• 数字を1文字以上含めてください')).toBeInTheDocument()
-      expect(screen.getByText('• 特殊文字を1文字以上含めてください')).toBeInTheDocument()
+      expect(
+        screen.getByText('• パスワードは8文字以上で入力してください')
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText('• 大文字を1文字以上含めてください')
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText('• 数字を1文字以上含めてください')
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText('• 特殊文字を1文字以上含めてください')
+      ).toBeInTheDocument()
 
       // 強いパスワードを入力
       fireEvent.change(passwordInput, { target: { value: 'Test123!@#' } })
 
-      expect(screen.getByText('✓ パスワードは要件を満たしています')).toBeInTheDocument()
+      expect(
+        screen.getByText('✓ パスワードは要件を満たしています')
+      ).toBeInTheDocument()
     })
 
     it('パスワード確認の一致チェックが機能する', () => {
@@ -143,7 +172,9 @@ describe('ResetPasswordPage', () => {
       const confirmPasswordInput = screen.getByLabelText('パスワード（確認）')
 
       fireEvent.change(passwordInput, { target: { value: 'Test123!@#' } })
-      fireEvent.change(confirmPasswordInput, { target: { value: 'Different123!@#' } })
+      fireEvent.change(confirmPasswordInput, {
+        target: { value: 'Different123!@#' },
+      })
 
       expect(screen.getByText('パスワードが一致しません')).toBeInTheDocument()
     })
@@ -162,9 +193,13 @@ describe('ResetPasswordPage', () => {
       const confirmPasswordInput = screen.getByLabelText('パスワード（確認）')
 
       fireEvent.change(passwordInput, { target: { value: 'NewTest123!@#' } })
-      fireEvent.change(confirmPasswordInput, { target: { value: 'NewTest123!@#' } })
+      fireEvent.change(confirmPasswordInput, {
+        target: { value: 'NewTest123!@#' },
+      })
 
-      const submitButton = screen.getByRole('button', { name: 'パスワードを更新' })
+      const submitButton = screen.getByRole('button', {
+        name: 'パスワードを更新',
+      })
       fireEvent.click(submitButton)
 
       await waitFor(() => {
@@ -180,13 +215,23 @@ describe('ResetPasswordPage', () => {
         })
       })
 
-      await waitFor(() => {
-        expect(screen.getByText('パスワードが正常にリセットされました。ログインページに移動します...')).toBeInTheDocument()
-      }, { timeout: 5000 })
-      
-      await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('/login')
-      }, { timeout: 5000 })
+      await waitFor(
+        () => {
+          expect(
+            screen.getByText(
+              'パスワードが正常にリセットされました。ログインページに移動します...'
+            )
+          ).toBeInTheDocument()
+        },
+        { timeout: 5000 }
+      )
+
+      await waitFor(
+        () => {
+          expect(mockPush).toHaveBeenCalledWith('/login')
+        },
+        { timeout: 5000 }
+      )
     })
 
     it('パスワードが一致しない場合、エラーが表示される', async () => {
@@ -196,14 +241,20 @@ describe('ResetPasswordPage', () => {
       const confirmPasswordInput = screen.getByLabelText('パスワード（確認）')
 
       fireEvent.change(passwordInput, { target: { value: 'NewTest123!@#' } })
-      fireEvent.change(confirmPasswordInput, { target: { value: 'Different123!@#' } })
+      fireEvent.change(confirmPasswordInput, {
+        target: { value: 'Different123!@#' },
+      })
 
-      const submitButton = screen.getByRole('button', { name: 'パスワードを更新' })
+      const submitButton = screen.getByRole('button', {
+        name: 'パスワードを更新',
+      })
       fireEvent.click(submitButton)
 
       // フォーム送信後のエラー表示を待つ
       await waitFor(() => {
-        expect(screen.getAllByText('パスワードが一致しません').length).toBeGreaterThan(0)
+        expect(
+          screen.getAllByText('パスワードが一致しません').length
+        ).toBeGreaterThan(0)
       })
 
       expect(global.fetch).not.toHaveBeenCalled()
@@ -219,9 +270,13 @@ describe('ResetPasswordPage', () => {
       const confirmPasswordInput = screen.getByLabelText('パスワード（確認）')
 
       fireEvent.change(passwordInput, { target: { value: 'NewTest123!@#' } })
-      fireEvent.change(confirmPasswordInput, { target: { value: 'NewTest123!@#' } })
+      fireEvent.change(confirmPasswordInput, {
+        target: { value: 'NewTest123!@#' },
+      })
 
-      const submitButton = screen.getByRole('button', { name: 'パスワードを更新' })
+      const submitButton = screen.getByRole('button', {
+        name: 'パスワードを更新',
+      })
       fireEvent.click(submitButton)
 
       await waitFor(() => {

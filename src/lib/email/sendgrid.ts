@@ -48,7 +48,9 @@ const logEmailContent = (options: MailOptions): void => {
  */
 export const sendEmail = async (options: MailOptions): Promise<void> => {
   if (!isSendGridConfigured()) {
-    const error = new Error('SendGrid is not configured. SENDGRID_API_KEY and SENDGRID_FROM_EMAIL must be set.')
+    const error = new Error(
+      'SendGrid is not configured. SENDGRID_API_KEY and SENDGRID_FROM_EMAIL must be set.'
+    )
     console.error(error.message)
     logEmailContent(options)
     throw error

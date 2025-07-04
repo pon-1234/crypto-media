@@ -80,9 +80,8 @@ describe('getOptimizedImageUrl', () => {
   beforeEach(async () => {
     vi.resetModules()
     // isTestOrCIのモックが影響しないように、実際のモジュールをインポート
-    const clientModule = await vi.importActual<typeof import('../client')>(
-      '../client'
-    )
+    const clientModule =
+      await vi.importActual<typeof import('../client')>('../client')
     getOptimizedImageUrl = clientModule.getOptimizedImageUrl
   })
 

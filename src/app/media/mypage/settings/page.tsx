@@ -29,21 +29,21 @@ export default async function SettingsPage() {
   const isPasswordProvider = session.user.provider === 'credentials'
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <Link 
-        href="/media/mypage" 
-        className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6"
+    <div className="container mx-auto max-w-3xl px-4 py-8">
+      <Link
+        href="/media/mypage"
+        className="mb-6 inline-flex items-center text-gray-600 hover:text-gray-900"
       >
-        <ChevronLeft className="w-4 h-4 mr-1" />
+        <ChevronLeft className="mr-1 h-4 w-4" />
         マイページに戻る
       </Link>
 
-      <h1 className="text-2xl font-bold mb-8">プロフィール設定</h1>
+      <h1 className="mb-8 text-2xl font-bold">プロフィール設定</h1>
 
       <div className="space-y-8">
         {/* アカウント情報 */}
-        <section className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-lg font-semibold mb-4">アカウント情報</h2>
+        <section className="rounded-lg bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold">アカウント情報</h2>
           <div className="space-y-4">
             <div>
               <p className="text-sm text-gray-600">メールアドレス</p>
@@ -63,18 +63,15 @@ export default async function SettingsPage() {
         </section>
 
         {/* プロフィール設定フォーム */}
-        <section className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-lg font-semibold mb-4">表示名の変更</h2>
-          <ProfileSettingsForm 
-            currentName={user.name || ''} 
-            userId={user.id} 
-          />
+        <section className="rounded-lg bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold">表示名の変更</h2>
+          <ProfileSettingsForm currentName={user.name || ''} userId={user.id} />
         </section>
 
         {/* パスワード変更フォーム */}
         {isPasswordProvider && (
-          <section className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-lg font-semibold mb-4">パスワードの変更</h2>
+          <section className="rounded-lg bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-lg font-semibold">パスワードの変更</h2>
             <PasswordChangeForm userId={user.id} />
           </section>
         )}

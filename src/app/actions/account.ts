@@ -28,7 +28,7 @@ export async function updateProfile(userId: string, data: { name: string }) {
 
     revalidatePath('/media/mypage')
     revalidatePath('/media/mypage/settings')
-    
+
     return { success: true }
   } catch (error) {
     console.error('Profile update error:', error)
@@ -43,8 +43,12 @@ export async function updateProfile(userId: string, data: { name: string }) {
  * @issue #38 - マイページ機能の拡張
  */
 export async function changePassword(
-  userId: string, 
-  data: { currentPassword: string; newPassword: string; confirmPassword: string }
+  userId: string,
+  data: {
+    currentPassword: string
+    newPassword: string
+    confirmPassword: string
+  }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -66,13 +70,16 @@ export async function changePassword(
     // ユーザー情報を取得
     const userDoc = await adminDb.collection('users').doc(userId).get()
     const userData = userDoc.data()
-    
+
     if (!userData?.passwordHash) {
       return { error: 'パスワード認証に対応していないアカウントです' }
     }
 
     // 現在のパスワードを確認
-    const isValidPassword = await bcrypt.compare(data.currentPassword, userData.passwordHash)
+    const isValidPassword = await bcrypt.compare(
+      data.currentPassword,
+      userData.passwordHash
+    )
     if (!isValidPassword) {
       return { error: '現在のパスワードが正しくありません' }
     }
@@ -85,7 +92,7 @@ export async function changePassword(
       passwordHash: hashedPassword,
       updatedAt: new Date(),
     })
-    
+
     return { success: true }
   } catch (error) {
     console.error('Password change error:', error)
@@ -112,21 +119,26 @@ export async function deleteAccount(
     // ユーザー情報を取得
     const userDoc = await adminDb.collection('users').doc(userId).get()
     const userData = userDoc.data()
-    
+
     if (!userData) {
       return { error: 'ユーザー情報が見つかりません' }
     }
 
     // パスワード認証を行う（Googleログインユーザーはパスワードがない場合がある）
     if (userData.passwordHash) {
-      const isValidPassword = await bcrypt.compare(data.password, userData.passwordHash)
+      const isValidPassword = await bcrypt.compare(
+        data.password,
+        userData.passwordHash
+      )
       if (!isValidPassword) {
         return { error: 'パスワードが正しくありません' }
       }
     } else {
       // Googleログインユーザーの場合は、セキュリティのため追加確認が必要
       // 現在はセッション確認のみで許可しているが、将来的にはメール確認等を実装予定
-      console.warn(`Password-less account deletion attempted for user: ${userId}`)
+      console.warn(
+        `Password-less account deletion attempted for user: ${userId}`
+      )
     }
 
     // 有料会員の場合はStripeサブスクリプションをキャンセル

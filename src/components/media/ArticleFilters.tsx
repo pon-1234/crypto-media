@@ -39,16 +39,16 @@ export function ArticleFilters({
    */
   const handleFilterChange = (type: 'category' | 'tag', value: string) => {
     const params = new URLSearchParams(searchParams)
-    
+
     if (value === '') {
       params.delete(type)
     } else {
       params.set(type, value)
     }
-    
+
     // ページ番号をリセット
     params.delete('page')
-    
+
     // 現在のパスを維持してクエリパラメータのみ更新
     router.push(`${pathname}?${params.toString()}`)
   }
@@ -79,7 +79,10 @@ export function ArticleFilters({
 
       {/* カテゴリフィルタ */}
       <div>
-        <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="category"
+          className="block text-sm font-medium text-gray-700"
+        >
           カテゴリ
         </label>
         <select
@@ -99,7 +102,10 @@ export function ArticleFilters({
 
       {/* タグフィルタ */}
       <div>
-        <label htmlFor="tag" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="tag"
+          className="block text-sm font-medium text-gray-700"
+        >
           タグ
         </label>
         <select
@@ -124,7 +130,8 @@ export function ArticleFilters({
           <div className="mt-2 flex flex-wrap gap-2">
             {selectedCategory && (
               <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
-                カテゴリ: {categories.find(c => c.slug === selectedCategory)?.name}
+                カテゴリ:{' '}
+                {categories.find((c) => c.slug === selectedCategory)?.name}
                 <button
                   onClick={() => handleFilterChange('category', '')}
                   className="ml-2 inline-flex h-4 w-4 items-center justify-center rounded-full text-blue-600 hover:bg-blue-200"
@@ -136,7 +143,7 @@ export function ArticleFilters({
             )}
             {selectedTag && (
               <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
-                タグ: {tags.find(t => t.slug === selectedTag)?.name}
+                タグ: {tags.find((t) => t.slug === selectedTag)?.name}
                 <button
                   onClick={() => handleFilterChange('tag', '')}
                   className="ml-2 inline-flex h-4 w-4 items-center justify-center rounded-full text-green-600 hover:bg-green-200"

@@ -5,7 +5,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { notFound } from 'next/navigation'
-import ExpertDetailPage, { generateStaticParams, generateMetadata } from '../page'
+import ExpertDetailPage, {
+  generateStaticParams,
+  generateMetadata,
+} from '../page'
 import { getAllExpertSlugs } from '@/lib/microcms'
 
 // モックの設定
@@ -78,8 +81,18 @@ describe('ExpertDetailPage', () => {
           type: 'article' as const,
           membershipLevel: 'public' as const,
           content: '記事内容',
-          heroImage: { url: 'https://example.com/image1.jpg', width: 800, height: 600 },
-          category: { id: '1', name: 'ビットコイン', slug: 'bitcoin', createdAt: '2023-01-01T00:00:00.000Z', updatedAt: '2023-01-01T00:00:00.000Z' },
+          heroImage: {
+            url: 'https://example.com/image1.jpg',
+            width: 800,
+            height: 600,
+          },
+          category: {
+            id: '1',
+            name: 'ビットコイン',
+            slug: 'bitcoin',
+            createdAt: '2023-01-01T00:00:00.000Z',
+            updatedAt: '2023-01-01T00:00:00.000Z',
+          },
           tags: [],
           author: mockExpert,
           publishedAt: '2023-01-01T00:00:00.000Z',
@@ -94,8 +107,18 @@ describe('ExpertDetailPage', () => {
           type: 'article' as const,
           membershipLevel: 'public' as const,
           content: '記事内容',
-          heroImage: { url: 'https://example.com/image2.jpg', width: 800, height: 600 },
-          category: { id: '2', name: 'DeFi', slug: 'defi', createdAt: '2023-01-01T00:00:00.000Z', updatedAt: '2023-01-01T00:00:00.000Z' },
+          heroImage: {
+            url: 'https://example.com/image2.jpg',
+            width: 800,
+            height: 600,
+          },
+          category: {
+            id: '2',
+            name: 'DeFi',
+            slug: 'defi',
+            createdAt: '2023-01-01T00:00:00.000Z',
+            updatedAt: '2023-01-01T00:00:00.000Z',
+          },
           tags: [],
           author: mockExpert,
           publishedAt: '2023-01-02T00:00:00.000Z',
@@ -109,7 +132,11 @@ describe('ExpertDetailPage', () => {
       limit: 20,
     }
 
-    const { getExpertBySlug, getMediaArticlesByAuthor, getMediaArticlesBySupervisor } = await import('@/lib/microcms')
+    const {
+      getExpertBySlug,
+      getMediaArticlesByAuthor,
+      getMediaArticlesBySupervisor,
+    } = await import('@/lib/microcms')
     vi.mocked(getExpertBySlug).mockResolvedValue(mockExpert)
     vi.mocked(getMediaArticlesByAuthor).mockResolvedValue(mockArticles)
     vi.mocked(getMediaArticlesBySupervisor).mockResolvedValue({
@@ -119,7 +146,9 @@ describe('ExpertDetailPage', () => {
       limit: 0,
     })
 
-    const Component = await ExpertDetailPage({ params: { slug: 'yamada-taro' } })
+    const Component = await ExpertDetailPage({
+      params: { slug: 'yamada-taro' },
+    })
     render(Component)
 
     // プロフィール情報の検証
@@ -162,7 +191,11 @@ describe('ExpertDetailPage', () => {
           type: 'article' as const,
           membershipLevel: 'public' as const,
           content: '内容',
-          heroImage: { url: 'https://example.com/image.jpg', width: 800, height: 600 },
+          heroImage: {
+            url: 'https://example.com/image.jpg',
+            width: 800,
+            height: 600,
+          },
           publishedAt: '2023-01-01T00:00:00.000Z',
           createdAt: '2023-01-01T00:00:00.000Z',
           updatedAt: '2023-01-01T00:00:00.000Z',
@@ -183,7 +216,11 @@ describe('ExpertDetailPage', () => {
           type: 'article' as const,
           membershipLevel: 'public' as const,
           content: '内容',
-          heroImage: { url: 'https://example.com/image.jpg', width: 800, height: 600 },
+          heroImage: {
+            url: 'https://example.com/image.jpg',
+            width: 800,
+            height: 600,
+          },
           publishedAt: '2023-01-01T00:00:00.000Z',
           createdAt: '2023-01-01T00:00:00.000Z',
           updatedAt: '2023-01-01T00:00:00.000Z',
@@ -195,12 +232,20 @@ describe('ExpertDetailPage', () => {
       limit: 20,
     }
 
-    const { getExpertBySlug, getMediaArticlesByAuthor, getMediaArticlesBySupervisor } = await import('@/lib/microcms')
+    const {
+      getExpertBySlug,
+      getMediaArticlesByAuthor,
+      getMediaArticlesBySupervisor,
+    } = await import('@/lib/microcms')
     vi.mocked(getExpertBySlug).mockResolvedValue(mockExpert)
     vi.mocked(getMediaArticlesByAuthor).mockResolvedValue(authorArticles)
-    vi.mocked(getMediaArticlesBySupervisor).mockResolvedValue(supervisorArticles)
+    vi.mocked(getMediaArticlesBySupervisor).mockResolvedValue(
+      supervisorArticles
+    )
 
-    const Component = await ExpertDetailPage({ params: { slug: 'suzuki-hanako' } })
+    const Component = await ExpertDetailPage({
+      params: { slug: 'suzuki-hanako' },
+    })
     render(Component)
 
     // 両方の役割が表示される
@@ -226,7 +271,11 @@ describe('ExpertDetailPage', () => {
       revisedAt: '2023-01-01T00:00:00.000Z',
     }
 
-    const { getExpertBySlug, getMediaArticlesByAuthor, getMediaArticlesBySupervisor } = await import('@/lib/microcms')
+    const {
+      getExpertBySlug,
+      getMediaArticlesByAuthor,
+      getMediaArticlesBySupervisor,
+    } = await import('@/lib/microcms')
     vi.mocked(getExpertBySlug).mockResolvedValue(mockExpert)
     vi.mocked(getMediaArticlesByAuthor).mockResolvedValue({
       contents: [],
@@ -241,12 +290,16 @@ describe('ExpertDetailPage', () => {
       limit: 0,
     })
 
-    const Component = await ExpertDetailPage({ params: { slug: 'tanaka-ichiro' } })
+    const Component = await ExpertDetailPage({
+      params: { slug: 'tanaka-ichiro' },
+    })
     render(Component)
 
     expect(screen.getByText('田中一郎の記事')).toBeInTheDocument()
     expect(screen.queryByText(/（\d+件）/)).not.toBeInTheDocument()
-    expect(screen.getByText('まだ記事が投稿されていません。')).toBeInTheDocument()
+    expect(
+      screen.getByText('まだ記事が投稿されていません。')
+    ).toBeInTheDocument()
   })
 
   it('存在しないスラッグの場合は404を返す', async () => {
@@ -261,10 +314,7 @@ describe('ExpertDetailPage', () => {
   it('generateStaticParamsが正しく動作する', async () => {
     const result = await generateStaticParams()
 
-    expect(result).toEqual([
-      { slug: 'yamada-taro' },
-      { slug: 'suzuki-hanako' },
-    ])
+    expect(result).toEqual([{ slug: 'yamada-taro' }, { slug: 'suzuki-hanako' }])
   })
 
   it('generateMetadataが正しくメタデータを生成する', async () => {

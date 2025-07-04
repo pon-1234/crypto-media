@@ -26,7 +26,9 @@ export async function generateMetadata({
   const query = searchParams?.q || ''
 
   return {
-    title: query ? `「${query}」の検索結果 | Crypto Media` : '検索 | Crypto Media',
+    title: query
+      ? `「${query}」の検索結果 | Crypto Media`
+      : '検索 | Crypto Media',
     description: query
       ? `「${query}」に関する記事の検索結果です。`
       : '暗号資産・ブロックチェーンに関する記事を検索できます。',
@@ -63,7 +65,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="mb-8 text-3xl font-bold">記事を検索</h1>
-          <SearchForm className="mx-auto max-w-lg" placeholder="キーワードを入力してください" />
+          <SearchForm
+            className="mx-auto max-w-lg"
+            placeholder="キーワードを入力してください"
+          />
           <p className="mt-4 text-gray-600 dark:text-gray-400">
             記事のタイトル、本文、タグなどから検索できます。
           </p>
@@ -93,9 +98,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <Breadcrumbs items={breadcrumbItems} className="mb-6" />
 
       <header className="mb-8">
-        <h1 className="mb-4 text-3xl font-bold">
-          「{query}」の検索結果
-        </h1>
+        <h1 className="mb-4 text-3xl font-bold">「{query}」の検索結果</h1>
         <div className="mb-4">
           <SearchForm className="max-w-lg" />
         </div>

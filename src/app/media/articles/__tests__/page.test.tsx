@@ -6,7 +6,12 @@ import { render, screen } from '@testing-library/react'
 import MediaArticlesPage from '../page'
 import { getMediaArticlesList, getCategories, getTags } from '@/lib/microcms'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import type { MediaArticle, Category, Tag, MicroCMSListResponse } from '@/lib/microcms'
+import type {
+  MediaArticle,
+  Category,
+  Tag,
+  MicroCMSListResponse,
+} from '@/lib/microcms'
 
 // モック
 vi.mock('@/lib/microcms', () => ({
@@ -22,7 +27,13 @@ vi.mock('@/components/media/ArticleCard', () => ({
 }))
 
 vi.mock('@/components/ui/Pagination', () => ({
-  Pagination: ({ currentPage, totalPages }: { currentPage: number; totalPages: number }) => (
+  Pagination: ({
+    currentPage,
+    totalPages,
+  }: {
+    currentPage: number
+    totalPages: number
+  }) => (
     <div data-testid="pagination">
       Page {currentPage} of {totalPages}
     </div>
@@ -30,7 +41,13 @@ vi.mock('@/components/ui/Pagination', () => ({
 }))
 
 vi.mock('@/components/media/ArticleFilters', () => ({
-  ArticleFilters: ({ selectedCategory, selectedTag }: { selectedCategory?: string; selectedTag?: string }) => (
+  ArticleFilters: ({
+    selectedCategory,
+    selectedTag,
+  }: {
+    selectedCategory?: string
+    selectedTag?: string
+  }) => (
     <div data-testid="filters">
       {selectedCategory && <span>Category: {selectedCategory}</span>}
       {selectedTag && <span>Tag: {selectedTag}</span>}
@@ -46,15 +63,19 @@ const mockArticles: MicroCMSListResponse<MediaArticle> = {
       title: 'Article 1',
       slug: 'article-1',
       content: 'Content 1',
-      heroImage: { url: 'https://example.com/image1.jpg', width: 1200, height: 630 },
-      category: { 
-        id: 'cat1', 
-        name: 'Category 1', 
-        slug: 'category-1', 
-        createdAt: '2024-01-01T00:00:00.000Z', 
+      heroImage: {
+        url: 'https://example.com/image1.jpg',
+        width: 1200,
+        height: 630,
+      },
+      category: {
+        id: 'cat1',
+        name: 'Category 1',
+        slug: 'category-1',
+        createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z',
         publishedAt: '2024-01-01T00:00:00.000Z',
-        revisedAt: '2024-01-01T00:00:00.000Z'
+        revisedAt: '2024-01-01T00:00:00.000Z',
       },
       tags: [],
       publishedAt: '2024-01-01T00:00:00.000Z',
@@ -69,15 +90,19 @@ const mockArticles: MicroCMSListResponse<MediaArticle> = {
       title: 'Article 2',
       slug: 'article-2',
       content: 'Content 2',
-      heroImage: { url: 'https://example.com/image2.jpg', width: 1200, height: 630 },
-      category: { 
-        id: 'cat2', 
-        name: 'Category 2', 
-        slug: 'category-2', 
-        createdAt: '2024-01-01T00:00:00.000Z', 
+      heroImage: {
+        url: 'https://example.com/image2.jpg',
+        width: 1200,
+        height: 630,
+      },
+      category: {
+        id: 'cat2',
+        name: 'Category 2',
+        slug: 'category-2',
+        createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z',
         publishedAt: '2024-01-01T00:00:00.000Z',
-        revisedAt: '2024-01-01T00:00:00.000Z'
+        revisedAt: '2024-01-01T00:00:00.000Z',
       },
       tags: [],
       publishedAt: '2024-01-02T00:00:00.000Z',
@@ -94,23 +119,23 @@ const mockArticles: MicroCMSListResponse<MediaArticle> = {
 
 const mockCategories: MicroCMSListResponse<Category> = {
   contents: [
-    { 
-      id: 'cat1', 
-      name: 'Category 1', 
-      slug: 'category-1', 
-      createdAt: '2024-01-01T00:00:00.000Z', 
+    {
+      id: 'cat1',
+      name: 'Category 1',
+      slug: 'category-1',
+      createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
       publishedAt: '2024-01-01T00:00:00.000Z',
-      revisedAt: '2024-01-01T00:00:00.000Z'
+      revisedAt: '2024-01-01T00:00:00.000Z',
     },
-    { 
-      id: 'cat2', 
-      name: 'Category 2', 
-      slug: 'category-2', 
-      createdAt: '2024-01-01T00:00:00.000Z', 
+    {
+      id: 'cat2',
+      name: 'Category 2',
+      slug: 'category-2',
+      createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
       publishedAt: '2024-01-01T00:00:00.000Z',
-      revisedAt: '2024-01-01T00:00:00.000Z'
+      revisedAt: '2024-01-01T00:00:00.000Z',
     },
   ],
   totalCount: 2,
@@ -120,23 +145,23 @@ const mockCategories: MicroCMSListResponse<Category> = {
 
 const mockTags: MicroCMSListResponse<Tag> = {
   contents: [
-    { 
-      id: 'tag1', 
-      name: 'Tag 1', 
-      slug: 'tag-1', 
-      createdAt: '2024-01-01T00:00:00.000Z', 
+    {
+      id: 'tag1',
+      name: 'Tag 1',
+      slug: 'tag-1',
+      createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
       publishedAt: '2024-01-01T00:00:00.000Z',
-      revisedAt: '2024-01-01T00:00:00.000Z'
+      revisedAt: '2024-01-01T00:00:00.000Z',
     },
-    { 
-      id: 'tag2', 
-      name: 'Tag 2', 
-      slug: 'tag-2', 
-      createdAt: '2024-01-01T00:00:00.000Z', 
+    {
+      id: 'tag2',
+      name: 'Tag 2',
+      slug: 'tag-2',
+      createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
       publishedAt: '2024-01-01T00:00:00.000Z',
-      revisedAt: '2024-01-01T00:00:00.000Z'
+      revisedAt: '2024-01-01T00:00:00.000Z',
     },
   ],
   totalCount: 2,
@@ -158,7 +183,11 @@ describe('MediaArticlesPage', () => {
 
     // ページタイトル
     expect(screen.getByText('記事一覧')).toBeInTheDocument()
-    expect(screen.getByText('暗号資産・ブロックチェーンに関する最新の記事、調査レポート、お知らせをお届けします。')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        '暗号資産・ブロックチェーンに関する最新の記事、調査レポート、お知らせをお届けします。'
+      )
+    ).toBeInTheDocument()
 
     // 記事カード
     expect(screen.getByTestId('article-1')).toBeInTheDocument()
@@ -187,7 +216,9 @@ describe('MediaArticlesPage', () => {
   })
 
   it('カテゴリフィルタが適用される', async () => {
-    const page = await MediaArticlesPage({ searchParams: { category: 'category-1' } })
+    const page = await MediaArticlesPage({
+      searchParams: { category: 'category-1' },
+    })
     render(page)
 
     // カテゴリslugでの検索が呼ばれる
@@ -229,8 +260,8 @@ describe('MediaArticlesPage', () => {
   })
 
   it('複数フィルタが同時に適用される', async () => {
-    const page = await MediaArticlesPage({ 
-      searchParams: { category: 'category-1', tag: 'tag-1' } 
+    const page = await MediaArticlesPage({
+      searchParams: { category: 'category-1', tag: 'tag-1' },
     })
     render(page)
 
@@ -267,7 +298,9 @@ describe('MediaArticlesPage', () => {
     const error = new Error('API Error')
     vi.mocked(getMediaArticlesList).mockRejectedValue(error)
 
-    await expect(MediaArticlesPage({ searchParams: {} })).rejects.toThrow('API Error')
+    await expect(MediaArticlesPage({ searchParams: {} })).rejects.toThrow(
+      'API Error'
+    )
   })
 
   it('1ページのみの場合はページネーションが表示されない', async () => {
