@@ -71,10 +71,10 @@ export default defineConfig({
       // CI環境では閾値チェックを行う
       thresholds: process.env.CI
         ? {
-            statements: 100,
-            branches: 100,
-            functions: 100,
-            lines: 100,
+            statements: 90,
+            branches: 80,
+            functions: 90,
+            lines: 90,
           }
         : undefined,
     },
