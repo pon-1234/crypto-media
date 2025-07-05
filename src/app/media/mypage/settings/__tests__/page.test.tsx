@@ -9,7 +9,7 @@ import { redirect } from 'next/navigation'
 import { getUser } from '@/lib/auth/membership'
 
 // next-authのモック
-vi.mock('next-auth/next', () => ({
+vi.mock('next-auth', () => ({
   getServerSession: vi.fn(),
 }))
 

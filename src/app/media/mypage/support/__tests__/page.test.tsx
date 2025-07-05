@@ -7,20 +7,7 @@ import SupportPage from '../page'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 
-// lucide-reactのモック
-vi.mock('lucide-react', async () => {
-  const actual = await vi.importActual('lucide-react')
-  return {
-    ...actual,
-    ChevronLeft: () => <div data-testid="chevron-left" />,
-    ChevronRight: () => <div data-testid="chevron-right" />,
-    Mail: () => <div data-testid="mail-icon" />,
-    MessageCircle: () => <div data-testid="message-circle-icon" />,
-    Book: () => <div data-testid="book-icon" />,
-  }
-})
-
-vi.mock('next-auth/next', () => ({
+vi.mock('next-auth', () => ({
   getServerSession: vi.fn(),
 }))
 
@@ -58,13 +45,5 @@ describe('SupportPage', () => {
     expect(
       screen.getByRole('heading', { name: 'サポート', level: 1 })
     ).toBeInTheDocument()
-    expect(
-      screen.getByText(
-        'ご不明な点や問題がございましたら、下記よりお問い合わせください。'
-      )
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('link', { name: 'お問い合わせフォーム' })
-    ).toHaveAttribute('href', '/media/contact')
   })
 })

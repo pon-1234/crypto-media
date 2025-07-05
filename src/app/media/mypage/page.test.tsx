@@ -187,7 +187,7 @@ describe('MyPage', () => {
 
       expect(screen.getByText('会員情報・お支払い')).toBeInTheDocument()
       expect(screen.getByText('プロフィール設定')).toBeInTheDocument()
-      expect(screen.getByText('ヘルプ・お問い合わせ')).toBeInTheDocument()
+      expect(screen.getByText('サポート')).toBeInTheDocument()
     })
 
     it('退会リンクを表示する', async () => {

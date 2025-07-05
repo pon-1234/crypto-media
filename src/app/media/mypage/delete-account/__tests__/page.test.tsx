@@ -14,9 +14,6 @@ vi.mock('@/lib/auth/membership')
 vi.mock('@/components/account/DeleteAccountForm', () => ({
   DeleteAccountForm: vi.fn(() => <div data-testid="delete-form" />),
 }))
-vi.mock('lucide-react', () => ({
-  ChevronLeft: () => <div />,
-}))
 
 describe('DeleteAccountPage', () => {
   beforeEach(() => {
