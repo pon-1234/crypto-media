@@ -91,12 +91,14 @@ vi.mock('sonner', () => ({
 // lucide-react のモック
 vi.mock('lucide-react', () => {
   // biome-ignore lint/suspicious/noExplicitAny: We are creating a generic mock for any icon component
-  const mockIcons: { [key: string]: React.ComponentType<any> } = {}
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  type IconProps = React.SVGProps<SVGSVGElement>
+  const mockIcons: { [key: string]: React.ComponentType<IconProps> } = {}
   
   return new Proxy(mockIcons, {
     get: (_target, prop: string) => {
       if (!mockIcons[prop]) {
-        mockIcons[prop] = React.forwardRef((props: any, ref) => 
+        mockIcons[prop] = React.forwardRef<SVGSVGElement, IconProps>((props, ref) => 
           React.createElement('svg', {
             'data-testid': `mock-${prop}`,
             ref,

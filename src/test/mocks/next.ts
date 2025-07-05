@@ -8,14 +8,14 @@ import React from 'react'
 
 // next/link のモック
 vi.mock('next/link', () => ({
-  default: React.forwardRef<HTMLAnchorElement, any>(({ children, href, ...props }, ref) =>
+  default: React.forwardRef<HTMLAnchorElement, React.ComponentPropsWithRef<'a'>>(({ children, href, ...props }, ref) =>
     React.createElement('a', { href, ref, ...props }, children)
   ),
 }))
 
 // next/image のモック
 vi.mock('next/image', () => ({
-  default: React.forwardRef<HTMLImageElement, any>(({ src, alt, ...props }, ref) =>
+  default: React.forwardRef<HTMLImageElement, React.ComponentPropsWithRef<'img'>>(({ src, alt, ...props }, ref) =>
     React.createElement('img', { src, alt, ref, ...props })
   ),
 }))
