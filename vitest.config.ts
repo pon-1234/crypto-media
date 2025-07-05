@@ -31,6 +31,41 @@ export default defineConfig({
       'src/app/api/**/*.test.ts',
       'src/lib/**/*.test.ts',
     ],
+    // カバレッジ設定
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      // 計測対象をsrcディレクトリに限定
+      include: ['src/**'],
+      // 計測から除外するファイル
+      exclude: [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/*.config.ts',
+        '**/*.config.js',
+        '**/*.d.ts',
+        'src/test/**',
+        'src/types/**',
+        'e2e/**',
+        '**/__tests__/**',
+        '**/*.test.ts',
+        '**/*.test.tsx',
+        // Next.jsの特殊ファイル
+        'src/app/layout.tsx',
+        'src/app/error.tsx',
+        'src/app/not-found.tsx',
+        'src/middleware.ts',
+      ],
+      // CI環境では閾値チェックを行う
+      thresholds: process.env.CI
+        ? {
+            statements: 100,
+            branches: 100,
+            functions: 100,
+            lines: 100,
+          }
+        : undefined,
+    },
   },
   resolve: {
     alias: {

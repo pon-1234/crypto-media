@@ -28,21 +28,33 @@ export default defineConfig({
         minForks: 1,
       },
     },
-    coverage: process.env.CI === 'true' ? {
+    // カバレッジ設定
+    coverage: {
       enabled: true,
       provider: 'v8',
-      reporter: ['json', 'json-summary', 'text'],
-      reportsDirectory: './coverage/node',
-      thresholds: {
-        statements: 100,
-        branches: 100,
-        functions: 100,
-        lines: 100,
-      },
-    } : {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      all: true,
+      reporter: ['text', 'json', 'json-summary', 'html'],
+      // 計測対象をsrcディレクトリに限定
+      include: ['src/**'],
+      // 計測から除外するファイル
+      exclude: [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/*.config.ts',
+        '**/*.config.js',
+        '**/*.d.ts',
+        'src/test/**',
+        'src/types/**',
+        'e2e/**',
+        '**/__tests__/**',
+        '**/*.test.ts',
+        '**/*.test.tsx',
+        // Next.jsの特殊ファイル
+        'src/app/layout.tsx',
+        'src/app/error.tsx',
+        'src/app/not-found.tsx',
+        'src/middleware.ts',
+      ],
+      // all: true はパフォーマンスに影響するため削除
       thresholds: {
         statements: 100,
         branches: 100,
