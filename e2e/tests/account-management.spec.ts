@@ -45,7 +45,27 @@ test.describe('アカウント管理', () => {
 
     await expect(page.getByText('パスワードを変更しました')).toBeVisible()
 
-    // TODO: 新しいパスワードで再ログインできることを確認するテストを追加
+    // ログアウトする
+    await page.getByRole('button', { name: 'ログアウト' }).click()
+    await expect(page).toHaveURL('/')
+
+    // 新しいパスワードで再ログインできることを確認
+    await page.goto('/login')
+    await page.getByLabel('メールアドレス').fill(process.env.TEST_USER_EMAIL!)
+    await page.getByLabel('パスワード').fill(newPassword)
+    await page.getByRole('button', { name: 'ログイン' }).click()
+    
+    // ログインが成功し、メディアページに遷移していることを確認
+    await expect(page.getByRole('heading', { name: 'メディア' })).toBeVisible()
+    await expect(page).toHaveURL(/\/media/)
+
+    // 元のパスワードに戻しておく（他のテストに影響しないように）
+    await page.goto('/media/mypage/settings')
+    await page.getByLabel('現在のパスワード').fill(newPassword)
+    await page.getByLabel('新しいパスワード', { exact: true }).fill(currentPassword)
+    await page.getByLabel('新しいパスワード（確認）').fill(currentPassword)
+    await page.getByRole('button', { name: 'パスワードを変更' }).click()
+    await expect(page.getByText('パスワードを変更しました')).toBeVisible()
   })
 
   test('現在のパスワードが間違っている場合、エラーが表示される', async ({

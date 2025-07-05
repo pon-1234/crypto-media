@@ -6,6 +6,7 @@ import {
   logWebhookEvent,
   WebhookTimer,
 } from '@/lib/stripe/webhook-security'
+import { sendEmail } from '@/lib/email/sendgrid'
 import Stripe from 'stripe'
 
 /**
@@ -313,7 +314,78 @@ export async function POST(request: NextRequest) {
             attemptCount: invoice.attempt_count,
           })
 
-          // TODO: メール通知の実装
+          // ユーザー情報を取得してメール通知
+          try {
+            // カスタマー情報からユーザーを検索
+            const userSnapshot = await adminDb
+              .collection('users')
+              .where('stripeCustomerId', '==', customerId)
+              .limit(1)
+              .get()
+
+            if (!userSnapshot.empty) {
+              const userDoc = userSnapshot.docs[0]
+              const userData = userDoc.data()
+              const userEmail = userData?.email
+
+              if (userEmail) {
+                // 支払い失敗メールを送信
+                await sendEmail({
+                  to: userEmail,
+                  subject: 'お支払いに関する重要なお知らせ',
+                  text: `いつもCrypto Mediaをご利用いただきありがとうございます。
+
+お客様のサブスクリプションのお支払い処理に失敗しました。
+
+請求金額: ¥${(invoice.amount_due / 100).toLocaleString()}
+お支払い試行回数: ${invoice.attempt_count}回
+
+サービスの継続利用のため、以下のリンクから支払い方法の更新をお願いいたします：
+${process.env.NEXT_PUBLIC_APP_URL}/media/mypage/subscription
+
+なお、お支払いが確認できない場合、サービスの利用が制限される可能性がございます。
+
+ご不明な点がございましたら、サポートまでお問い合わせください。
+
+Crypto Media サポートチーム`,
+                  html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                      <h2 style="color: #333;">お支払いに関する重要なお知らせ</h2>
+                      <p>いつもCrypto Mediaをご利用いただきありがとうございます。</p>
+                      <p>お客様のサブスクリプションのお支払い処理に失敗しました。</p>
+                      
+                      <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <p><strong>請求金額:</strong> ¥${(invoice.amount_due / 100).toLocaleString()}</p>
+                        <p><strong>お支払い試行回数:</strong> ${invoice.attempt_count}回</p>
+                      </div>
+                      
+                      <p>サービスの継続利用のため、以下のリンクから支払い方法の更新をお願いいたします：</p>
+                      <p style="text-align: center; margin: 30px 0;">
+                        <a href="${process.env.NEXT_PUBLIC_APP_URL}/media/mypage/subscription" 
+                           style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                          支払い方法を更新する
+                        </a>
+                      </p>
+                      
+                      <p style="color: #dc3545;">なお、お支払いが確認できない場合、サービスの利用が制限される可能性がございます。</p>
+                      
+                      <hr style="margin: 30px 0; border: none; border-top: 1px solid #e9ecef;">
+                      
+                      <p style="font-size: 14px; color: #6c757d;">
+                        ご不明な点がございましたら、サポートまでお問い合わせください。<br>
+                        Crypto Media サポートチーム
+                      </p>
+                    </div>
+                  `,
+                })
+
+                console.log(`Payment failure notification sent to ${userEmail}`)
+              }
+            }
+          } catch (emailError) {
+            console.error('Failed to send payment failure email:', emailError)
+            // メール送信の失敗はWebhook処理全体を失敗させない
+          }
         }
         break
       }
