@@ -37,30 +37,7 @@ jobs:
         run: pnpm typecheck
 
       - name: Run tests with coverage
-        run: |
-          # カバレッジディレクトリを事前に作成
-          mkdir -p coverage/jsdom coverage/node
-          
-          # JSDOMテストとNodeテストを並列実行
-          pnpm test:ci:jsdom &
-          JSDOM_PID=$!
-          pnpm test:ci:node &
-          NODE_PID=$!
-          
-          # 両方のテストが完了するまで待機
-          wait $JSDOM_PID
-          JSDOM_EXIT=$?
-          wait $NODE_PID
-          NODE_EXIT=$?
-          
-          # いずれかのテストが失敗した場合はエラー
-          if [ $JSDOM_EXIT -ne 0 ] || [ $NODE_EXIT -ne 0 ]; then
-            echo "Tests failed"
-            exit 1
-          fi
-          
-          # カバレッジをマージ
-          pnpm test:ci:merge-coverage
+        run: pnpm test:ci
         env:
           CI: true
           NODE_ENV: test

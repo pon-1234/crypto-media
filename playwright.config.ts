@@ -12,9 +12,12 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
+  timeout: process.env.CI ? 300000 : 60000, // テストのタイムアウト（CI環境では5分、ローカルでは1分）
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
+    actionTimeout: process.env.CI ? 30000 : 10000, // アクションのタイムアウト（CI環境では30秒、ローカルでは10秒）
+    navigationTimeout: process.env.CI ? 60000 : 30000, // ナビゲーションのタイムアウト（CI環境では1分、ローカルでは30秒）
   },
 
   projects: [

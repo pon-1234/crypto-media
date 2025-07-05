@@ -8,16 +8,14 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['src/app/api/**/*.test.ts', 'src/lib/**/*.test.ts'],
+    // テスト対象を明示的に指定
+    include: ['src/**/*.node.test.ts', 'src/app/api/**/*.test.ts', 'src/lib/**/*.test.ts'],
+    // JSDOMテストを明確に除外
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
-      '**/cypress/**',
-      '**/.{idea,git,cache,output,temp}/**',
       'e2e/**',
-      // JSXファイルは除外（JSDOMテスト用）
       '**/*.test.tsx',
-      '**/*.spec.tsx',
     ],
     environment: 'node',
     setupFiles: ['src/test/setup-node.ts'],

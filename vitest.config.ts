@@ -8,8 +8,8 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/test/setup.ts',
-    testTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒
-    hookTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒
+    testTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒、ローカルでは30秒
+    hookTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒、ローカルでは30秒
     // 並列実行の設定を追加
     pool: 'forks',
     poolOptions: {
@@ -20,15 +20,16 @@ export default defineConfig({
     },
     // テストの分離を改善
     isolate: true,
+    // テスト対象を明示的に指定
+    include: ['src/**/*.test.tsx'],
+    // Node.jsテストを明確に除外
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
-      '**/cypress/**',
-      '**/.{idea,git,cache,output,temp}/**',
-      'e2e/**', // E2Eテストを除外
-      // node環境で実行するテストを除外
-      './src/app/api/**/*.test.ts',
-      './src/lib/**/*.test.ts',
+      'e2e/**',
+      '**/*.node.test.ts',
+      'src/app/api/**/*.test.ts',
+      'src/lib/**/*.test.ts',
     ],
   },
   resolve: {

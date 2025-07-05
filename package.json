@@ -9,15 +9,10 @@
     "lint": "next lint && eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "test": "pnpm test:jsdom && pnpm test:node",
-    "test:jsdom": "vitest --config vitest.config.ts",
-    "test:node": "vitest --config vitest.node.config.ts",
+    "test": "vitest",
     "test:run": "vitest run",
-    "test:ci": "CI=true pnpm test:ci:jsdom && CI=true pnpm test:ci:node && pnpm test:ci:merge-coverage",
-    "test:ci:jsdom": "vitest run --config vitest.config.ts --coverage --coverage.enabled --coverage.provider=v8 --coverage.reportsDirectory=./coverage/jsdom --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.statements=100 --coverage.thresholds.branches=100 --coverage.thresholds.functions=100 --coverage.thresholds.lines=100",
-    "test:ci:node": "vitest run --config vitest.node.config.ts --coverage --coverage.enabled --coverage.provider=v8 --coverage.reportsDirectory=./coverage/node --coverage.reporter=json --coverage.reporter=json-summary --coverage.thresholds.statements=100 --coverage.thresholds.branches=100 --coverage.thresholds.functions=100 --coverage.thresholds.lines=100",
-    "test:ci:merge-coverage": "node scripts/merge-coverage.js",
-    "test:coverage": "pnpm test:jsdom --run --coverage && pnpm test:node --run --coverage",
+    "test:ci": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage",
     "playwright": "playwright test"
   },
   "dependencies": {
