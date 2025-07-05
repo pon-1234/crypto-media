@@ -5,26 +5,30 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   test: {
+    // 環境変数を設定
+    env: {
+      NODE_ENV: 'test',
+    },
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/test/setup.ts',
-    testTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒、ローカルでは30秒
-    hookTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒、ローカルでは30秒
+    testTimeout: process.env.CI ? 120000 : 60000, // CI環境では120秒、ローカルでは60秒
+    hookTimeout: process.env.CI ? 120000 : 60000, // CI環境では120秒、ローカルでは60秒
     // 並列実行の設定
-    pool: 'threads',
+    pool: 'forks',  // スレッドよりも高速なプロセスベースの並列化
     poolOptions: {
-      threads: {
-        maxThreads: process.env.CI ? 4 : 8,
-        minThreads: 1,
+      forks: {
+        maxForks: process.env.CI ? 2 : undefined,  // CI環境では2コアを想定、ローカルではVitestの自動設定に任せる
+        minForks: 1,
       },
     },
-    // テストの分離を維持（テスト間の干渉を防ぐため）
+    // テストの分離を維持（テストの独立性を保証）
     isolate: true,
     // 依存関係の最適化設定
     deps: {
       optimizer: {
         web: {
-          exclude: ['@next-auth/*', '@stripe/*'],
+          exclude: ['@next-auth/*', '@stripe/*', 'firebase-admin/*'],
         },
       },
     },

@@ -6,6 +6,7 @@
 import React from 'react'
 import { vi } from 'vitest'
 import '@testing-library/jest-dom'
+import './mocks/next'
 
 // CI環境変数を設定
 // NODE_ENVは読み取り専用のため、既に設定されていることを前提とする
@@ -86,42 +87,25 @@ vi.mock('sonner', () => ({
   },
 }))
 
-// next/navigation のモック
-vi.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: vi.fn(),
-    replace: vi.fn(),
-    refresh: vi.fn(),
-  }),
-  usePathname: () => '/',
-  useSearchParams: () => new URLSearchParams(),
-  redirect: vi.fn((path) => {
-    // redirectが呼ばれたことをテストで確認できるようにし、
-    // エラーをスローする代わりに情報をログに出力
-    console.log(`Mock redirect to: ${path}`)
-    // テストを停止させないために、ここではエラーをスローしない
-    // Vitest v1.x以降では、 vi.mock で redirect を上書きすると、
-    // エラーではなくなります。
-  }),
-}))
 
 // lucide-react のモック
 vi.mock('lucide-react', () => {
   // biome-ignore lint/suspicious/noExplicitAny: We are creating a generic mock for any icon component
-  return new Proxy<{ [key: string]: React.ComponentType<unknown> }>(
-    {},
-    {
-      get: (_target, prop) => {
-        const Component = (props: { [key: string]: unknown }) => {
-          // JSXの代わりにReact.createElementを使用
-          return React.createElement('div', {
-            'data-testid': `mock-${String(prop)}`,
+  const mockIcons: { [key: string]: React.ComponentType<any> } = {}
+  
+  return new Proxy(mockIcons, {
+    get: (_target, prop: string) => {
+      if (!mockIcons[prop]) {
+        mockIcons[prop] = React.forwardRef((props: any, ref) => 
+          React.createElement('svg', {
+            'data-testid': `mock-${prop}`,
+            ref,
             ...props,
           })
-        }
-        Component.displayName = `Mock${String(prop)}`
-        return Component
-      },
-    }
-  )
+        )
+        mockIcons[prop].displayName = `Mock${prop}`
+      }
+      return mockIcons[prop]
+    },
+  })
 })

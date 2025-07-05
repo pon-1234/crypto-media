@@ -21,11 +21,11 @@ export default defineConfig({
     setupFiles: ['src/test/setup-node.ts'],
     testTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒
     hookTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒
-    pool: 'threads',
+    pool: 'forks',  // スレッドよりも高速なプロセスベースの並列化
     poolOptions: {
-      threads: {
-        maxThreads: process.env.CI ? 4 : 8,
-        minThreads: 1,
+      forks: {
+        maxForks: process.env.CI ? 2 : undefined,  // CI環境では2コアを想定、ローカルではVitestの自動設定に任せる
+        minForks: 1,
       },
     },
     // テストの分離を維持（テスト間の干渉を防ぐため）
