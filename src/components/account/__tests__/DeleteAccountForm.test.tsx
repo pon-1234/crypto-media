@@ -39,10 +39,8 @@ describe('DeleteAccountForm', () => {
 
   it('メールアドレスと確認テキストが一致すると、削除ボタンが有効になる', async () => {
     render(<DeleteAccountForm {...defaultProps} />)
-    const emailInput = screen.getByLabelText(
-      '確認のため、登録メールアドレスを入力してください'
-    )
-    const textInput = screen.getByLabelText('「削除する」と入力してください')
+    const emailInput = screen.getByLabelText(/確認のため、登録メールアドレスを入力してください/)
+    const textInput = screen.getByLabelText(/「削除する」と入力してください/)
 
     await userEvent.type(emailInput, defaultProps.userEmail)
     await userEvent.type(textInput, '削除する')
@@ -56,10 +54,8 @@ describe('DeleteAccountForm', () => {
     vi.mocked(fetch).mockResolvedValueOnce(new Response(null, { status: 204 }))
     render(<DeleteAccountForm {...defaultProps} />)
 
-    const emailInput = screen.getByLabelText(
-      '確認のため、登録メールアドレスを入力してください'
-    )
-    const textInput = screen.getByLabelText('「削除する」と入力してください')
+    const emailInput = screen.getByLabelText(/確認のため、登録メールアドレスを入力してください/)
+    const textInput = screen.getByLabelText(/「削除する」と入力してください/)
     await userEvent.type(emailInput, defaultProps.userEmail)
     await userEvent.type(textInput, '削除する')
     fireEvent.click(
@@ -90,10 +86,8 @@ describe('DeleteAccountForm', () => {
     )
     render(<DeleteAccountForm {...defaultProps} />)
 
-    const emailInput = screen.getByLabelText(
-      '確認のため、登録メールアドレスを入力してください'
-    )
-    const textInput = screen.getByLabelText('「削除する」と入力してください')
+    const emailInput = screen.getByLabelText(/確認のため、登録メールアドレスを入力してください/)
+    const textInput = screen.getByLabelText(/「削除する」と入力してください/)
     await userEvent.type(emailInput, defaultProps.userEmail)
     await userEvent.type(textInput, '削除する')
     fireEvent.click(
@@ -120,10 +114,8 @@ describe('DeleteAccountForm', () => {
     vi.mocked(fetch).mockRejectedValueOnce(new Error('Network error'))
     render(<DeleteAccountForm {...defaultProps} />)
 
-    const emailInput = screen.getByLabelText(
-      '確認のため、登録メールアドレスを入力してください'
-    )
-    const textInput = screen.getByLabelText('「削除する」と入力してください')
+    const emailInput = screen.getByLabelText(/確認のため、登録メールアドレスを入力してください/)
+    const textInput = screen.getByLabelText(/「削除する」と入力してください/)
     await userEvent.type(emailInput, defaultProps.userEmail)
     await userEvent.type(textInput, '削除する')
     fireEvent.click(
@@ -144,10 +136,8 @@ describe('DeleteAccountForm', () => {
 
     render(<DeleteAccountForm {...defaultProps} />)
 
-    const emailInput = screen.getByLabelText(
-      '確認のため、登録メールアドレスを入力してください'
-    )
-    const textInput = screen.getByLabelText('「削除する」と入力してください')
+    const emailInput = screen.getByLabelText(/確認のため、登録メールアドレスを入力してください/)
+    const textInput = screen.getByLabelText(/「削除する」と入力してください/)
     await userEvent.type(emailInput, defaultProps.userEmail)
     await userEvent.type(textInput, '削除する')
 

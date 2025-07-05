@@ -35,7 +35,7 @@ describe('NotFound', () => {
 
     const mediaLink = screen.getByRole('link', { name: 'メディアサイトへ' })
     expect(mediaLink).toBeInTheDocument()
-    expect(mediaLink).toHaveAttribute('href', '/media')
+    expect(mediaLink).toHaveAttribute('href', '/media/')
   })
 
   it('お問い合わせリンクが表示される', () => {
@@ -43,7 +43,7 @@ describe('NotFound', () => {
 
     const contactLink = screen.getByRole('link', { name: 'お問い合わせ' })
     expect(contactLink).toBeInTheDocument()
-    expect(contactLink).toHaveAttribute('href', '/contact')
+    expect(contactLink).toHaveAttribute('href', '/contact/')
   })
 
   it('適切なスタイルクラスが適用されている', () => {

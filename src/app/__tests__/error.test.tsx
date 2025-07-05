@@ -61,7 +61,7 @@ describe('ErrorBoundary', () => {
 
     const contactLink = screen.getByRole('link', { name: 'お問い合わせ' })
     expect(contactLink).toBeInTheDocument()
-    expect(contactLink).toHaveAttribute('href', '/contact')
+    expect(contactLink).toHaveAttribute('href', '/contact/')
   })
 
   it('エラーがコンソールに記録される', () => {

@@ -186,7 +186,7 @@ describe('MyPage', () => {
       render(Component!)
 
       expect(screen.getByText('会員情報・お支払い')).toBeInTheDocument()
-      expect(screen.getByText('アカウント設定')).toBeInTheDocument()
+      expect(screen.getByText('プロフィール設定')).toBeInTheDocument()
       expect(screen.getByText('ヘルプ・お問い合わせ')).toBeInTheDocument()
     })
 
