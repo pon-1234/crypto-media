@@ -92,7 +92,8 @@ describe('Stripe Webhook - invoice.payment_failed', () => {
       get: vi.fn().mockResolvedValue(mockEventDoc),
       set: vi.fn(),
     }
-    vi.mocked(adminDb.runTransaction).mockImplementation(async (fn: (transaction: unknown) => unknown) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(adminDb.runTransaction).mockImplementation(async (fn: any) => {
       return fn(mockTransaction)
     })
 
@@ -107,7 +108,8 @@ describe('Stripe Webhook - invoice.payment_failed', () => {
       }],
     }
     
-    vi.mocked(adminDb.collection).mockImplementation((collection: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(adminDb.collection).mockImplementation((collection: string): any => {
       if (collection === 'users') {
         return {
           where: vi.fn().mockReturnThis(),
@@ -175,7 +177,8 @@ describe('Stripe Webhook - invoice.payment_failed', () => {
       get: vi.fn().mockResolvedValue(mockEventDoc),
       set: vi.fn(),
     }
-    vi.mocked(adminDb.runTransaction).mockImplementation(async (fn: (transaction: unknown) => unknown) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(adminDb.runTransaction).mockImplementation(async (fn: any) => {
       return fn(mockTransaction)
     })
 
@@ -184,7 +187,8 @@ describe('Stripe Webhook - invoice.payment_failed', () => {
       empty: true,
       docs: [],
     }
-    vi.mocked(adminDb.collection).mockImplementation((collection: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(adminDb.collection).mockImplementation((collection: string): any => {
       if (collection === 'users') {
         return {
           where: vi.fn().mockReturnThis(),
@@ -232,7 +236,8 @@ describe('Stripe Webhook - invoice.payment_failed', () => {
       get: vi.fn().mockResolvedValue(mockEventDoc),
       set: vi.fn(),
     }
-    vi.mocked(adminDb.runTransaction).mockImplementation(async (fn: (transaction: unknown) => unknown) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(adminDb.runTransaction).mockImplementation(async (fn: any) => {
       return fn(mockTransaction)
     })
 
@@ -246,7 +251,8 @@ describe('Stripe Webhook - invoice.payment_failed', () => {
         }),
       }],
     }
-    vi.mocked(adminDb.collection).mockImplementation((collection: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(adminDb.collection).mockImplementation((collection: string): any => {
       if (collection === 'users') {
         return {
           where: vi.fn().mockReturnThis(),
