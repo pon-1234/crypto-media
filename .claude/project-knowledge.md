@@ -26,6 +26,53 @@
 - **状態管理**: シンプルな用途ではReact Context APIを使用。複雑化する場合はZustandを検討。
 - **データフェッチ**: SWRまたはReact Query (TanStack Query) を使用し、キャッシュ戦略を統一する。
 
+## microCMS実装の技術的注意点
+
+### セレクトフィールドの配列対応
+
+microCMSでセレクトフィールドが「複数選択を許可」に設定されている場合、APIレスポンスは配列として返されます。この問題に対応するため、Zodスキーマで以下のような変換処理を実装しています：
+
+```typescript
+// src/lib/schema/article.schema.ts
+membershipLevel: z.union([
+  membershipLevelSchema, // 単一値の場合
+  z.array(z.string()).transform(arr => {
+    // 配列の場合は文字列パターンマッチングで値を判定
+    const value = arr[0]
+    if (!value) return 'public'
+    
+    if (value.includes('paid')) return 'paid'
+    if (value.includes('public')) return 'public'
+    
+    return 'public'
+  })
+])
+```
+
+### エラーハンドリング
+
+microCMSからのデータ取得でエラーが発生した場合、空のデータを返すようにフォールバック処理を実装しています：
+
+```typescript
+// src/lib/microcms/media-articles.ts
+catch (error) {
+  console.error('Failed to fetch media articles list:', error)
+  
+  // Zodのパースエラーの詳細を出力
+  if (error instanceof z.ZodError) {
+    console.error('Zod validation errors:', error.issues)
+  }
+  
+  // エラーの場合でも空のリストを返す
+  return {
+    contents: [],
+    totalCount: 0,
+    offset: 0,
+    limit: 100,
+  }
+}
+```
+
 ## URL構造と主要ページ一覧
 
 本プロジェクトの主要なURL構造は以下の通りです。詳細なサイトマップの原本は[こちら](ここにスプレッドシートへのリンクを貼る)。

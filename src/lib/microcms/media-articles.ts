@@ -11,6 +11,7 @@ import {
   type MicroCMSListResponse,
 } from '@/lib/schema'
 import type { MicroCMSQueries } from 'microcms-js-sdk'
+import { z } from 'zod'
 
 /**
  * メディア記事一覧を取得
@@ -20,15 +21,53 @@ import type { MicroCMSQueries } from 'microcms-js-sdk'
 export async function getMediaArticlesList(
   queries?: MicroCMSQueries
 ): Promise<MicroCMSListResponse<MediaArticle>> {
-  const response = await client.getList({
-    endpoint: 'media_articles',
-    queries: {
-      ...defaultQueries,
-      ...queries,
-    },
-  })
+  try {
+    console.log('Fetching media articles from microCMS...')
+    const response = await client.getList({
+      endpoint: 'media_articles',
+      queries: {
+        ...defaultQueries,
+        ...queries,
+      },
+    })
 
-  return mediaArticleListSchema.parse(response)
+    console.log('Raw response from microCMS:', JSON.stringify(response, null, 2))
+
+    // レスポンスが空の場合のデフォルト値
+    if (!response) {
+      console.warn('Empty response from microCMS, returning default empty list')
+      return {
+        contents: [],
+        totalCount: 0,
+        offset: 0,
+        limit: 100,
+      }
+    }
+
+    const parsed = mediaArticleListSchema.parse(response)
+    console.log('Successfully parsed articles:', parsed.contents.length)
+    return parsed
+  } catch (error) {
+    console.error('Failed to fetch media articles list:', error)
+    // エラーの詳細をログ出力
+    if (error instanceof Error) {
+      console.error('Error message:', error.message)
+      console.error('Error stack:', error.stack)
+    }
+    
+    // Zodのパースエラーの場合、詳細を出力
+    if (error instanceof z.ZodError) {
+      console.error('Zod validation errors:', error.issues)
+    }
+    
+    // エラーの場合でも空のリストを返す
+    return {
+      contents: [],
+      totalCount: 0,
+      offset: 0,
+      limit: 100,
+    }
+  }
 }
 
 /**

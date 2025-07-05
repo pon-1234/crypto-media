@@ -38,10 +38,27 @@ export type MembershipLevel = z.infer<typeof membershipLevelSchema>
 export const mediaArticleSchema = microCMSBaseSchema.extend({
   title: z.string().min(1).describe('記事タイトル'),
   slug: z.string().min(1).describe('URLスラッグ'),
-  type: articleTypeSchema.describe(
+  type: z.union([
+    articleTypeSchema,
+    z.array(articleTypeSchema).transform(arr => arr[0] || 'article') // 配列の場合は最初の要素を使用、空の場合はデフォルト値
+  ]).describe(
     '記事タイプ - article: 通常記事, survey_report: 調査レポート, media_news: メディアお知らせ'
   ),
-  membershipLevel: membershipLevelSchema.describe(
+  membershipLevel: z.union([
+    membershipLevelSchema,
+    z.array(z.string()).transform(arr => {
+      // 配列の最初の要素から値を抽出
+      const value = arr[0]
+      if (!value) return 'public'
+      
+      // "paid (有料会員限定)" -> "paid"
+      // "public (全員公開)" -> "public"
+      if (value.includes('paid')) return 'paid'
+      if (value.includes('public')) return 'public'
+      
+      return 'public' // デフォルト値
+    })
+  ]).describe(
     'アクセスレベル - public: 全ユーザー, paid: 有料会員のみ'
   ),
   content: z.string().min(1).describe('記事本文'),

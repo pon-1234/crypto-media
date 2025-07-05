@@ -175,8 +175,8 @@
 | :---------------- | :----------------------- | :--- | :---------------------------------------------------------------------------------------- |
 | `title`           | Text                     | ✓    | 記事タイトル                                                                              |
 | `slug`            | Text                     | ✓    | `/media/articles/[slug]` 等のURLスラッグ                                                  |
-| `type`            | Select                   | ✓    | **`article` (通常記事), `survey_report` (調査レポート), `media_news` (メディアお知らせ)** |
-| `membershipLevel` | Select                   | ✓    | `public` (全員公開), `paid` (有料会員限定)                                                |
+| `type`            | Select (複数選択)        | ✓    | **`article` (通常記事), `survey_report` (調査レポート), `media_news` (メディアお知らせ)** ※microCMSで複数選択になっている場合は配列として扱われる |
+| `membershipLevel` | Select (複数選択)        | ✓    | `public` (全員公開), `paid` (有料会員限定) ※microCMSで複数選択になっている場合は配列として扱われる                                              |
 | `content`         | RichText                 | ✓    | 本文                                                                                      |
 | `heroImage`       | Image                    | ✓    | OGP 兼用                                                                                  |
 | `category`        | **Reference (Single)**   | -    | **カテゴリ（単一選択）**                                                                  |
@@ -420,6 +420,49 @@ Claude Code で自動生成する際も同様。
 6. **`any`型の安易な使用**: TypeScriptの型安全性を維持するため、`any`型の使用は原則禁止とする。型が不明な場合は`unknown`型と型ガードを使用すること。やむを得ず使用する場合は、その理由をコメントで明記し、レビューで承認を得ること。
 
 違反が検知された場合、そのコミットは CI で自動 Reject される。
+
+---
+
+#### 12. microCMS設定の注意事項 ★（新設）
+
+##### 12.1 セレクトフィールドの設定
+
+microCMSのセレクトフィールドで「複数選択を許可」が有効になっている場合、APIレスポンスは配列として返されます。
+特に以下のフィールドについて注意が必要です：
+
+1. **`media_articles.type`**: 記事タイプは単一選択であるべきですが、複数選択が有効の場合は配列となります
+2. **`media_articles.membershipLevel`**: 会員レベルも同様に単一選択であるべきフィールドです
+3. **`experts.role`**: 執筆者・監修者の役割は複数選択を想定した設計です
+
+##### 12.2 選択肢の値設定
+
+microCMSのセレクトフィールドでは、以下の点に注意してください：
+
+- **選択肢のID**: スキーマで定義された値と完全に一致させる（例：`public`, `paid`）
+- **選択肢の表示名**: 日本語の表示名を含める場合でも、IDは英語のまま保持する
+  - ❌ 悪い例：ID: `paid (有料会員限定)`
+  - ✅ 良い例：ID: `paid`, 表示名: `有料会員限定`
+
+##### 12.3 Zodスキーマでの対応
+
+配列として返される可能性があるフィールドは、Zodスキーマで以下のように対応しています：
+
+```typescript
+// 配列の場合は最初の要素を取得し、適切な値に変換
+membershipLevel: z.union([
+  membershipLevelSchema,
+  z.array(z.string()).transform(arr => {
+    const value = arr[0]
+    if (!value) return 'public'
+    
+    // 文字列に含まれるキーワードから値を推測
+    if (value.includes('paid')) return 'paid'
+    if (value.includes('public')) return 'public'
+    
+    return 'public' // デフォルト値
+  })
+])
+```
 
 ---
 

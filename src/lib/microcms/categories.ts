@@ -17,10 +17,21 @@ import type {
 export const getCategories = async (
   queries?: MicroCMSQueries
 ): Promise<MicroCMSListResponse<Category>> => {
-  return await client.getList<Category>({
-    endpoint: 'categories',
-    queries,
-  })
+  try {
+    return await client.getList<Category>({
+      endpoint: 'categories',
+      queries,
+    })
+  } catch (error) {
+    console.error('Failed to fetch categories:', error)
+    // エラーの場合は空のリストを返す
+    return {
+      contents: [],
+      totalCount: 0,
+      offset: 0,
+      limit: 100,
+    }
+  }
 }
 
 /**

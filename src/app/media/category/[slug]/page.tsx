@@ -9,7 +9,7 @@ import {
   getMediaArticlesByCategory,
 } from '@/lib/microcms'
 
-export const dynamicParams = false
+export const dynamicParams = true
 
 interface CategoryPageProps {
   params: {
@@ -112,19 +112,40 @@ export default async function CategoryPage({
   }
 
   // Fetch category details
-  const category = await getCategoryBySlug(params.slug)
+  let category
+  let articlesResponse
+  
+  try {
+    category = await getCategoryBySlug(params.slug)
 
-  if (!category) {
-    notFound()
-    return null // This line won't be reached but TypeScript needs it
+    if (!category) {
+      notFound()
+      return null // This line won't be reached but TypeScript needs it
+    }
+
+    // Fetch articles for this category
+    articlesResponse = await getMediaArticlesByCategory(params.slug, {
+      limit,
+      offset,
+      orders: '-publishedAt',
+    })
+  } catch (error) {
+    console.error('Failed to fetch category data:', error)
+    // エラーの場合は空のデータで表示
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="mb-4 text-3xl font-bold">カテゴリが見つかりません</h1>
+          <p className="text-gray-600">指定されたカテゴリは存在しないか、データの取得に失敗しました。</p>
+          {process.env.NODE_ENV === 'development' && (
+            <p className="text-sm text-gray-400 mt-2">
+              Error: {error instanceof Error ? error.message : 'Unknown error'}
+            </p>
+          )}
+        </div>
+      </div>
+    )
   }
-
-  // Fetch articles for this category
-  const articlesResponse = await getMediaArticlesByCategory(params.slug, {
-    limit,
-    offset,
-    orders: '-publishedAt',
-  })
 
   // Prepare breadcrumb items
   const breadcrumbItems = [

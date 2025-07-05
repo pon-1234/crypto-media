@@ -26,6 +26,8 @@ const createMicroCMSClient = () => {
     throw new Error('MICROCMS_API_KEY is required')
   }
 
+  console.log('Creating microCMS client with domain:', process.env.MICROCMS_SERVICE_DOMAIN)
+
   return createClient({
     serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN,
     apiKey: process.env.MICROCMS_API_KEY,
