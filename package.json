@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:ci": "vitest run --coverage",
+    "test:ci": "vitest run --changed --coverage",
     "test:coverage": "vitest run --coverage",
     "playwright": "playwright test"
   },

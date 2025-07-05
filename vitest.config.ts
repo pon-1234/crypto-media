@@ -11,15 +11,13 @@ export default defineConfig({
     testTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒、ローカルでは30秒
     hookTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒、ローカルでは30秒
     // 並列実行の設定を追加
-    pool: 'forks',
-    poolOptions: {
-      forks: {
-        maxForks: process.env.CI ? 2 : 4, // CI環境では2つに制限
-        minForks: 1,
-      },
+    pool: 'threads',
+    // テストの分離を無効化してパフォーマンスを改善
+    isolate: false,
+    // 依存関係の外部化
+    deps: {
+      external: [/@next-auth\//, /@stripe\//],
     },
-    // テストの分離を改善
-    isolate: true,
     // テスト対象を明示的に指定
     include: ['src/**/*.test.tsx'],
     // Node.jsテストを明確に除外
