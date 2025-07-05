@@ -12,8 +12,8 @@ export default defineConfig({
     hookTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒、ローカルでは30秒
     // 並列実行の設定を追加
     pool: 'threads',
-    // テストの分離を無効化してパフォーマンスを改善
-    isolate: false,
+    // テストの分離を維持（テスト間の干渉を防ぐため）
+    isolate: true,
     // 依存関係の外部化
     deps: {
       external: [/@next-auth\//, /@stripe\//],
