@@ -10,8 +10,14 @@ export default defineConfig({
     setupFiles: './src/test/setup.ts',
     testTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒、ローカルでは30秒
     hookTimeout: process.env.CI ? 60000 : 30000, // CI環境では60秒、ローカルでは30秒
-    // 並列実行の設定を追加
+    // 並列実行の設定
     pool: 'threads',
+    poolOptions: {
+      threads: {
+        maxThreads: process.env.CI ? 4 : 8,
+        minThreads: 1,
+      },
+    },
     // テストの分離を維持（テスト間の干渉を防ぐため）
     isolate: true,
     // 依存関係の最適化設定
