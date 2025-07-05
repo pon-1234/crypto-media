@@ -7,6 +7,7 @@ import { cert } from 'firebase-admin/app'
 import { isTestOrCI } from '@/lib/env/detect'
 import { adminDb } from '@/lib/firebase/admin'
 import { verifyPassword } from '@/lib/auth/password'
+import type { User as NextAuthUser } from 'next-auth'
 
 /**
  * Firebase設定が有効かどうかを判定
@@ -14,6 +15,61 @@ import { verifyPassword } from '@/lib/auth/password'
 const hasValidFirebaseConfig =
   process.env.FIREBASE_ADMIN_PRIVATE_KEY &&
   process.env.FIREBASE_ADMIN_PRIVATE_KEY !== 'test-private-key'
+
+/**
+ * 認証ロジック
+ * @param credentials 認証情報
+ * @returns 認証されたユーザー情報、またはnull
+ */
+export async function authorize(
+  credentials: Record<string, string> | undefined
+): Promise<NextAuthUser | null> {
+  if (!credentials?.email || !credentials?.password) {
+    return null
+  }
+
+  try {
+    // Firestoreからユーザー情報を取得
+    const usersSnapshot = await adminDb
+      .collection('users')
+      .where('email', '==', credentials.email)
+      .limit(1)
+      .get()
+
+    if (usersSnapshot.empty) {
+      return null
+    }
+
+    const userDoc = usersSnapshot.docs[0]
+    const userData = userDoc.data()
+
+    // パスワードハッシュが存在しない場合（GoogleログインのみのユーザーなどE）
+    if (!userData.passwordHash) {
+      return null
+    }
+
+    // パスワードを検証
+    const isValid = await verifyPassword(
+      credentials.password,
+      userData.passwordHash
+    )
+
+    if (!isValid) {
+      return null
+    }
+
+    // 認証成功
+    return {
+      id: userDoc.id,
+      email: userData.email,
+      name: userData.name,
+      image: userData.image,
+    }
+  } catch (error) {
+    console.error('Authentication error:', error)
+    return null
+  }
+}
 
 /**
  * NextAuth.js設定
@@ -45,53 +101,8 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'メールアドレス', type: 'email' },
         password: { label: 'パスワード', type: 'password' },
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null
-        }
-
-        try {
-          // Firestoreからユーザー情報を取得
-          const usersSnapshot = await adminDb
-            .collection('users')
-            .where('email', '==', credentials.email)
-            .limit(1)
-            .get()
-
-          if (usersSnapshot.empty) {
-            return null
-          }
-
-          const userDoc = usersSnapshot.docs[0]
-          const userData = userDoc.data()
-
-          // パスワードハッシュが存在しない場合（GoogleログインのみのユーザーなどE）
-          if (!userData.passwordHash) {
-            return null
-          }
-
-          // パスワードを検証
-          const isValid = await verifyPassword(
-            credentials.password,
-            userData.passwordHash
-          )
-
-          if (!isValid) {
-            return null
-          }
-
-          // 認証成功
-          return {
-            id: userDoc.id,
-            email: userData.email,
-            name: userData.name,
-            image: userData.image,
-          }
-        } catch (error) {
-          console.error('Authentication error:', error)
-          return null
-        }
-      },
+      // 分離したauthorize関数を呼び出す
+      authorize,
     }),
   ],
   // テスト環境またはFirebase未設定の場合はFirestoreAdapterを使用しない
