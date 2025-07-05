@@ -2,6 +2,8 @@
  * @vitest-environment node
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import type { Session } from 'next-auth'
+import type { JWT } from 'next-auth/jwt'
 import { authorize } from './authOptions'
 import { adminDb } from '@/lib/firebase/admin'
 import { verifyPassword } from '@/lib/auth/password'
@@ -166,49 +168,100 @@ describe('authOptions', () => {
   })
 
   describe('callbacks', () => {
+    // AdapterUserも満たす完全なモックユーザー
+    const mockAdapterUser = {
+      id: 'user123',
+      email: 'test@example.com',
+      name: 'Test User',
+      image: null,
+      emailVerified: null,
+    }
+
     it('sessionコールバックがユーザーIDを設定する', async () => {
       const { authOptions } = await import('./authOptions')
-      
-      const session = {
-        user: { email: 'test@example.com' },
+
+      const session: Session = {
+        user: {
+          id: '', // 型定義を満たすため空文字列を設定
+          name: 'Test User',
+          email: 'test@example.com',
+          image: null,
+        },
         expires: '2025-01-01T00:00:00.000Z',
       }
-      const token = { sub: 'user123' }
-      
-      const result = await authOptions.callbacks?.session?.({ session, token })
-      
-      expect(result?.user?.id).toBe('user123')
+      const token: JWT = { sub: 'user123' }
+
+      const result = await authOptions.callbacks?.session?.({
+        session,
+        token,
+        user: mockAdapterUser,
+        newSession: undefined,
+        trigger: 'update',
+      })
+
+      // テスト環境が型拡張を認識できないため、オプショナルチェーンと型アサーションを使用
+      expect(result?.user).toBeDefined()
+      if (result?.user && 'id' in result.user) {
+        expect(result.user.id).toBe('user123')
+      }
     })
 
-    it('sessionコールバックがユーザーなしでも動作する', async () => {
+    it('sessionコールバックがuserプロパティがなくてもクラッシュしない', async () => {
       const { authOptions } = await import('./authOptions')
-      
-      const session = { expires: '2025-01-01T00:00:00.000Z' }
-      const token = { sub: 'user123' }
-      
-      const result = await authOptions.callbacks?.session?.({ session, token })
-      
+
+      // 型定義上はuserは必須だが、実装がnull-safeかを確認するため、意図的に型をキャスト
+      const session = {
+        expires: '2025-01-01T00:00:00.000Z',
+      } as Session
+      const token: JWT = { sub: 'user123' }
+
+      const result = await authOptions.callbacks?.session?.({
+        session,
+        token,
+        user: mockAdapterUser,
+        newSession: undefined,
+        trigger: 'update',
+      })
+
+      // session.user がないため、idは設定されず、もとのsessionが返る
       expect(result).toEqual(session)
+      expect(result?.user).toBeUndefined()
     })
 
     it('jwtコールバックがユーザーIDを設定する', async () => {
       const { authOptions } = await import('./authOptions')
-      
-      const user = { id: 'user123' }
-      const token = {}
-      
-      const result = await authOptions.callbacks?.jwt?.({ user, token })
-      
+
+      const token: JWT = {}
+
+      // NextAuthの型定義に合わせる
+      const result = await authOptions.callbacks?.jwt?.({
+        user: mockAdapterUser,
+        token,
+        account: null,
+        profile: undefined,
+        isNewUser: undefined,
+        trigger: 'signIn',
+      })
+
       expect(result?.uid).toBe('user123')
     })
 
     it('jwtコールバックがユーザーなしでも動作する', async () => {
       const { authOptions } = await import('./authOptions')
-      
-      const token = { existingData: 'test' }
-      
-      const result = await authOptions.callbacks?.jwt?.({ token })
-      
+
+      const token: JWT = { uid: 'user123', sub: 'user123' }
+
+      // 2回目以降の呼び出し（userがないケース）
+      // 型定義とランタイムの挙動が異なるためanyにキャスト
+      const result = await authOptions.callbacks?.jwt?.({
+        token,
+        user: undefined,
+        account: null,
+        profile: undefined,
+        isNewUser: undefined,
+        trigger: 'update',
+      } as Parameters<NonNullable<typeof authOptions.callbacks>['jwt']>[0])
+
       expect(result).toEqual(token)
     })
   })

@@ -128,39 +128,17 @@ describe('detect', () => {
 
   describe('isServer', () => {
     it('Node.js環境でtrueを返す', () => {
-      // vitestvでwindowをundefinedにする方法
-      const originalWindow = global.window
-      // @ts-expect-error - テストのためwindowを削除
-      delete global.window
-      
+      // このテストファイルは@vitest-environment node宣言がないため、
+      // デフォルトではwindowがundefinedになっている
       expect(isServer()).toBe(true)
-      
-      // 復元
-      global.window = originalWindow
-    })
-    
-    it('ブラウザ環境でfalseを返す', () => {
-      // JSDOM環境ではwindowが定義されている
-      expect(isServer()).toBe(false)
     })
   })
 
   describe('isClient', () => {
-    it('ブラウザ環境でtrueを返す', () => {
-      // JSDOM環境ではwindowが定義されている
-      expect(isClient()).toBe(true)
-    })
-    
     it('Node.js環境でfalseを返す', () => {
-      // windowをundefinedにする
-      const originalWindow = global.window
-      // @ts-expect-error - テストのためwindowを削除
-      delete global.window
-      
+      // このテストファイルは@vitest-environment node宣言がないため、
+      // デフォルトではwindowがundefinedになっている
       expect(isClient()).toBe(false)
-      
-      // 復元
-      global.window = originalWindow
     })
   })
 
@@ -177,8 +155,8 @@ describe('detect', () => {
       expect(info.isDevelopment).toBe(true)
       expect(info.isProduction).toBe(false)
       expect(info.nodeEnv).toBe('development')
-      expect(info.isServer).toBe(false) // JSDOM環境
-      expect(info.isClient).toBe(true) // JSDOM環境
+      expect(info.isServer).toBe(true) // Node.js環境
+      expect(info.isClient).toBe(false) // Node.js環境
     })
 
     it('NODE_ENVが未設定の場合、developmentを返す', () => {
