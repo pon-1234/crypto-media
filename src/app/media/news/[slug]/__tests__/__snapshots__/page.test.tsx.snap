@@ -22,12 +22,12 @@ exports[`MediaNewsDetailPage > supervisorとtagsを持つ記事を正しく表�
     <header
       className="mb-8"
     >
-      <ForwardRef(LinkComponent)
+      <ForwardRef
         className="mb-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700"
         href="/media/category/announcement"
       >
         お知らせ
-      </ForwardRef(LinkComponent)>
+      </ForwardRef>
       <h1
         className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl"
       >
@@ -41,31 +41,31 @@ exports[`MediaNewsDetailPage > supervisorとtagsを持つ記事を正しく表�
         >
           2024年01月01日
         </time>
-        <ForwardRef(LinkComponent)
+        <ForwardRef
           className="hover:text-gray-900"
           href="/media/experts/author"
         >
           執筆: 
           執筆者
-        </ForwardRef(LinkComponent)>
-        <ForwardRef(LinkComponent)
+        </ForwardRef>
+        <ForwardRef
           className="hover:text-gray-900"
           href="/media/experts/supervisor"
         >
           監修: 
           監修者
-        </ForwardRef(LinkComponent)>
+        </ForwardRef>
       </div>
       <div
         className="mt-4 flex flex-wrap gap-2"
       >
-        <ForwardRef(LinkComponent)
+        <ForwardRef
           className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200"
           href="/media/tag/update"
         >
           #
           Update
-        </ForwardRef(LinkComponent)>
+        </ForwardRef>
       </div>
     </header>
     <div
@@ -221,12 +221,12 @@ exports[`MediaNewsDetailPage > アクセス権限がない場合は Paywall を�
     <header
       className="mb-8"
     >
-      <ForwardRef(LinkComponent)
+      <ForwardRef
         className="mb-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700"
         href="/media/category/announcement"
       >
         お知らせ
-      </ForwardRef(LinkComponent)>
+      </ForwardRef>
       <h1
         className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl"
       >
@@ -240,13 +240,13 @@ exports[`MediaNewsDetailPage > アクセス権限がない場合は Paywall を�
         >
           2024年01月01日
         </time>
-        <ForwardRef(LinkComponent)
+        <ForwardRef
           className="hover:text-gray-900"
           href="/media/experts/author"
         >
           執筆: 
           執筆者
-        </ForwardRef(LinkComponent)>
+        </ForwardRef>
         <span
           className="rounded bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800"
         >
@@ -256,13 +256,13 @@ exports[`MediaNewsDetailPage > アクセス権限がない場合は Paywall を�
       <div
         className="mt-4 flex flex-wrap gap-2"
       >
-        <ForwardRef(LinkComponent)
+        <ForwardRef
           className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200"
           href="/media/tag/update"
         >
           #
           Update
-        </ForwardRef(LinkComponent)>
+        </ForwardRef>
       </div>
     </header>
     <spy
@@ -295,12 +295,12 @@ exports[`MediaNewsDetailPage > メディアニュース記事を正しく表示�
     <header
       className="mb-8"
     >
-      <ForwardRef(LinkComponent)
+      <ForwardRef
         className="mb-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700"
         href="/media/category/announcement"
       >
         お知らせ
-      </ForwardRef(LinkComponent)>
+      </ForwardRef>
       <h1
         className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl"
       >
@@ -314,24 +314,24 @@ exports[`MediaNewsDetailPage > メディアニュース記事を正しく表示�
         >
           2024年01月01日
         </time>
-        <ForwardRef(LinkComponent)
+        <ForwardRef
           className="hover:text-gray-900"
           href="/media/experts/author"
         >
           執筆: 
           執筆者
-        </ForwardRef(LinkComponent)>
+        </ForwardRef>
       </div>
       <div
         className="mt-4 flex flex-wrap gap-2"
       >
-        <ForwardRef(LinkComponent)
+        <ForwardRef
           className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200"
           href="/media/tag/update"
         >
           #
           Update
-        </ForwardRef(LinkComponent)>
+        </ForwardRef>
       </div>
     </header>
     <div
@@ -487,12 +487,12 @@ exports[`MediaNewsDetailPage > 関連記事の取得に失敗してもページ�
     <header
       className="mb-8"
     >
-      <ForwardRef(LinkComponent)
+      <ForwardRef
         className="mb-2 inline-block text-sm font-medium text-blue-600 hover:text-blue-700"
         href="/media/category/announcement"
       >
         お知らせ
-      </ForwardRef(LinkComponent)>
+      </ForwardRef>
       <h1
         className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl"
       >
@@ -506,24 +506,24 @@ exports[`MediaNewsDetailPage > 関連記事の取得に失敗してもページ�
         >
           2024年01月01日
         </time>
-        <ForwardRef(LinkComponent)
+        <ForwardRef
           className="hover:text-gray-900"
           href="/media/experts/author"
         >
           執筆: 
           執筆者
-        </ForwardRef(LinkComponent)>
+        </ForwardRef>
       </div>
       <div
         className="mt-4 flex flex-wrap gap-2"
       >
-        <ForwardRef(LinkComponent)
+        <ForwardRef
           className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200"
           href="/media/tag/update"
         >
           #
           Update
-        </ForwardRef(LinkComponent)>
+        </ForwardRef>
       </div>
     </header>
     <div

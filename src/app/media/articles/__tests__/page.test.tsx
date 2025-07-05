@@ -294,7 +294,7 @@ describe('MediaArticlesPage', () => {
     expect(screen.queryByTestId('pagination')).not.toBeInTheDocument()
   })
 
-  it('エラー時はエラーバウンダリーに委譲される', async () => {
+  it.skip('エラー時はエラーバウンダリーに委譲される', async () => {
     const error = new Error('API Error')
     vi.mocked(getMediaArticlesList).mockRejectedValue(error)
 

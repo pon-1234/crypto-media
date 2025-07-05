@@ -81,7 +81,7 @@ describe('SettingsPage', () => {
       membership: 'free',
     })
 
-    const { container } = render(await SettingsPage())
+    render(await SettingsPage())
 
     // タイトルが表示されていることを確認
     expect(
@@ -89,7 +89,8 @@ describe('SettingsPage', () => {
     ).toBeInTheDocument()
 
     // フォームが表示されていることを確認
-    expect(container.querySelector('form')).toBeInTheDocument()
+    expect(screen.getByTestId('profile-form')).toBeInTheDocument()
+    expect(screen.getByTestId('password-form')).toBeInTheDocument()
     expect(screen.getByText('表示名の変更')).toBeInTheDocument()
     expect(screen.getByText('パスワードの変更')).toBeInTheDocument()
   })

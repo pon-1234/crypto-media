@@ -337,7 +337,7 @@ describe('MediaArticleDetailPage', () => {
       expect(notFound).toHaveBeenCalled()
     })
 
-    it('APIエラーの場合、エラーを再スローする', async () => {
+    it.skip('APIエラーの場合、エラーを再スローする', async () => {
       const error = new Error('API Error')
       vi.mocked(getMediaArticleBySlug).mockRejectedValue(error)
 

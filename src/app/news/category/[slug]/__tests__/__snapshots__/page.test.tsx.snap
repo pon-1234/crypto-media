@@ -42,7 +42,7 @@ exports[`NewsCategoryPage > カテゴリ別ニュース一覧が正しく表示�
         <li
           className="py-4"
         >
-          <ForwardRef(LinkComponent)
+          <ForwardRef
             className="group block hover:bg-gray-50"
             href="/news/1"
           >
@@ -61,12 +61,12 @@ exports[`NewsCategoryPage > カテゴリ別ニュース一覧が正しく表示�
                 2024/1/1
               </time>
             </div>
-          </ForwardRef(LinkComponent)>
+          </ForwardRef>
         </li>
         <li
           className="py-4"
         >
-          <ForwardRef(LinkComponent)
+          <ForwardRef
             className="group block hover:bg-gray-50"
             href="/news/2"
           >
@@ -85,7 +85,7 @@ exports[`NewsCategoryPage > カテゴリ別ニュース一覧が正しく表示�
                 2024/1/2
               </time>
             </div>
-          </ForwardRef(LinkComponent)>
+          </ForwardRef>
         </li>
       </ul>
     </React.Fragment>
@@ -113,7 +113,7 @@ exports[`NewsCategoryPage > ページネーションが正しく動作する 1`]
         <li
           className="py-4"
         >
-          <ForwardRef(LinkComponent)
+          <ForwardRef
             className="group block hover:bg-gray-50"
             href="/news/1"
           >
@@ -132,12 +132,12 @@ exports[`NewsCategoryPage > ページネーションが正しく動作する 1`]
                 2024/1/1
               </time>
             </div>
-          </ForwardRef(LinkComponent)>
+          </ForwardRef>
         </li>
         <li
           className="py-4"
         >
-          <ForwardRef(LinkComponent)
+          <ForwardRef
             className="group block hover:bg-gray-50"
             href="/news/2"
           >
@@ -156,42 +156,42 @@ exports[`NewsCategoryPage > ページネーションが正しく動作する 1`]
                 2024/1/2
               </time>
             </div>
-          </ForwardRef(LinkComponent)>
+          </ForwardRef>
         </li>
       </ul>
       <div
         className="mt-8 flex justify-center space-x-2"
       >
-        <ForwardRef(LinkComponent)
+        <ForwardRef
           className="rounded border border-gray-300 px-3 py-2 text-sm hover:bg-gray-100"
           href="/news/category/press-release?page=1"
         >
           前へ
-        </ForwardRef(LinkComponent)>
-        <ForwardRef(LinkComponent)
+        </ForwardRef>
+        <ForwardRef
           className="rounded px-3 py-2 text-sm border border-gray-300 hover:bg-gray-100"
           href="/news/category/press-release?page=1"
         >
           1
-        </ForwardRef(LinkComponent)>
-        <ForwardRef(LinkComponent)
+        </ForwardRef>
+        <ForwardRef
           className="rounded px-3 py-2 text-sm bg-blue-500 text-white"
           href="/news/category/press-release?page=2"
         >
           2
-        </ForwardRef(LinkComponent)>
-        <ForwardRef(LinkComponent)
+        </ForwardRef>
+        <ForwardRef
           className="rounded px-3 py-2 text-sm border border-gray-300 hover:bg-gray-100"
           href="/news/category/press-release?page=3"
         >
           3
-        </ForwardRef(LinkComponent)>
-        <ForwardRef(LinkComponent)
+        </ForwardRef>
+        <ForwardRef
           className="rounded border border-gray-300 px-3 py-2 text-sm hover:bg-gray-100"
           href="/news/category/press-release?page=3"
         >
           次へ
-        </ForwardRef(LinkComponent)>
+        </ForwardRef>
       </div>
     </React.Fragment>
   </div>
