@@ -252,7 +252,7 @@ describe('authOptions', () => {
       const token: JWT = { uid: 'user123', sub: 'user123' }
 
       // 2回目以降の呼び出し（userがないケース）
-      // 型定義とランタイムの挙動が異なるためanyにキャスト
+      // 型定義とランタイムの挙動が異なるためunknownを経由してキャスト
       const result = await authOptions.callbacks?.jwt?.({
         token,
         user: undefined,
@@ -260,7 +260,7 @@ describe('authOptions', () => {
         profile: undefined,
         isNewUser: undefined,
         trigger: 'update',
-      } as Parameters<NonNullable<typeof authOptions.callbacks>['jwt']>[0])
+      } as unknown as Parameters<NonNullable<typeof authOptions.callbacks.jwt>>[0])
 
       expect(result).toEqual(token)
     })
