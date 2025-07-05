@@ -10,8 +10,8 @@ import { z } from 'zod'
  */
 export const microCMSBaseSchema = z.object({
   id: z.string().describe('コンテンツID'),
-  createdAt: z.string().describe('作成日時'),
-  updatedAt: z.string().describe('更新日時'),
+  createdAt: z.string().optional().describe('作成日時'),
+  updatedAt: z.string().optional().describe('更新日時'),
   publishedAt: z.string().optional().describe('公開日時'),
   revisedAt: z.string().optional().describe('改訂日時'),
 })

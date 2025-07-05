@@ -52,13 +52,24 @@ describe('microCMS Schemas', () => {
       expect(result).toEqual(validData)
     })
 
-    it('必須フィールドが欠けている場合はエラーになる', () => {
+    it('IDが欠けている場合はエラーになる', () => {
       const invalidData = {
-        id: 'test-id',
+        // id is missing
         createdAt: '2024-01-01T00:00:00.000Z',
-        // updatedAt is missing
+        updatedAt: '2024-01-01T00:00:00.000Z',
       }
       expect(() => microCMSBaseSchema.parse(invalidData)).toThrow()
+    })
+
+    it('createdAtとupdatedAtがなくてもパースできる', () => {
+      const validData = {
+        id: 'test-id',
+        // createdAt and updatedAt are optional
+      }
+      const result = microCMSBaseSchema.parse(validData)
+      expect(result.id).toBe('test-id')
+      expect(result.createdAt).toBeUndefined()
+      expect(result.updatedAt).toBeUndefined()
     })
   })
 

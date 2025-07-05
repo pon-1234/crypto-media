@@ -5,24 +5,26 @@ export default function Footer() {
 
   const corporateLinks = [
     { href: '/', label: 'トップ' },
-    { href: '/about', label: '会社概要' },
-    { href: '/service', label: 'サービス' },
-    { href: '/news', label: 'ニュース' },
-    { href: '/contact', label: 'お問い合わせ' },
+    { href: '/about/', label: '会社概要' },
+    { href: '/service/', label: '事業内容' },
+    { href: '/recruit/', label: '採用情報' },
+    { href: '/news/', label: 'お知らせ' },
+    { href: '/contact/', label: 'お問い合わせ' },
   ]
 
   const mediaLinks = [
-    { href: '/media', label: 'メディアトップ' },
-    { href: '/media/category/news', label: 'ニュース' },
-    { href: '/media/category/analysis', label: '分析' },
-    { href: '/media/category/learn', label: '学習' },
-    { href: '/media/category/trends', label: 'トレンド' },
+    { href: '/media/', label: 'メディアトップ' },
+    { href: '/media/articles/', label: '記事一覧' },
+    { href: '/media/category/', label: 'カテゴリ' },
+    { href: '/media/experts/', label: '執筆者・監修者' },
+    { href: '/media/feature/', label: '特集' },
+    { href: '/media/premium/', label: '有料限定記事' },
   ]
 
   const legalLinks = [
-    { href: '/terms', label: '利用規約' },
-    { href: '/privacy-policy', label: 'プライバシーポリシー' },
-    { href: '/dealing', label: '特定商取引法に基づく表記' },
+    { href: '/terms/', label: '利用規約' },
+    { href: '/privacy-policy/', label: '個人情報保護方針' },
+    { href: '/dealing/', label: '特定商取引法に基づく表記' },
   ]
 
   return (

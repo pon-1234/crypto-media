@@ -21,8 +21,9 @@ describe('Footer', () => {
 
     expect(corporateSection).toContainHTML('トップ')
     expect(corporateSection).toContainHTML('会社概要')
-    expect(corporateSection).toContainHTML('サービス')
-    expect(corporateSection).toContainHTML('ニュース')
+    expect(corporateSection).toContainHTML('事業内容')
+    expect(corporateSection).toContainHTML('採用情報')
+    expect(corporateSection).toContainHTML('お知らせ')
     expect(corporateSection).toContainHTML('お問い合わせ')
   })
 
@@ -33,25 +34,11 @@ describe('Footer', () => {
     const mediaSection = screen.getByText('メディア').closest('div')
 
     expect(mediaSection).toContainHTML('メディアトップ')
-
-    const newsLinks = screen.getAllByRole('link', { name: 'ニュース' })
-    const mediaNewsLink = newsLinks.find(
-      (link) => link.getAttribute('href') === '/media/category/news'
-    )
-    expect(mediaNewsLink).toBeDefined()
-
-    expect(screen.getByRole('link', { name: '分析' })).toHaveAttribute(
-      'href',
-      '/media/category/analysis'
-    )
-    expect(screen.getByRole('link', { name: '学習' })).toHaveAttribute(
-      'href',
-      '/media/category/learn'
-    )
-    expect(screen.getByRole('link', { name: 'トレンド' })).toHaveAttribute(
-      'href',
-      '/media/category/trends'
-    )
+    expect(mediaSection).toContainHTML('記事一覧')
+    expect(mediaSection).toContainHTML('カテゴリ')
+    expect(mediaSection).toContainHTML('執筆者・監修者')
+    expect(mediaSection).toContainHTML('特集')
+    expect(mediaSection).toContainHTML('有料限定記事')
   })
 
   it('should render all legal links', () => {
@@ -60,14 +47,14 @@ describe('Footer', () => {
     expect(screen.getByText('法的情報')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: '利用規約' })).toHaveAttribute(
       'href',
-      '/terms'
+      '/terms/'
     )
     expect(
-      screen.getByRole('link', { name: 'プライバシーポリシー' })
-    ).toHaveAttribute('href', '/privacy-policy')
+      screen.getByRole('link', { name: '個人情報保護方針' })
+    ).toHaveAttribute('href', '/privacy-policy/')
     expect(
       screen.getByRole('link', { name: '特定商取引法に基づく表記' })
-    ).toHaveAttribute('href', '/dealing')
+    ).toHaveAttribute('href', '/dealing/')
   })
 
   it('should render contact section with link', () => {
