@@ -295,6 +295,7 @@ describe('MediaArticleDetailPage', () => {
     it('CI環境ではダミーページを表示する', async () => {
       vi.stubEnv('CI', 'true')
       vi.stubEnv('NODE_ENV', 'production')
+      vi.stubEnv('VITEST', undefined)
 
       const Page = await MediaArticleDetailPage({
         params: { slug: 'test-article' },

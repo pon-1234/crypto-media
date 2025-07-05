@@ -21,6 +21,7 @@ import {
 import { ArticleCard } from '@/components/media/ArticleCard'
 import { Paywall } from '@/components/media/Paywall'
 import { hasAccess } from '@/lib/auth/membership'
+import { isCIBuild } from '@/lib/env/detect'
 
 export const dynamicParams = false
 
@@ -48,7 +49,7 @@ interface PageProps {
  */
 export async function generateStaticParams() {
   // CI環境では静的パラメータ生成をスキップ
-  if (process.env.CI === 'true' || !process.env.MICROCMS_API_KEY) {
+  if (isCIBuild() || !process.env.MICROCMS_API_KEY) {
     return []
   }
 
@@ -73,7 +74,7 @@ export async function generateMetadata({
   searchParams,
 }: PageProps): Promise<Metadata> {
   // CI環境ではデフォルトメタデータを返す
-  if (process.env.CI === 'true') {
+  if (isCIBuild()) {
     return {
       title: 'メディア記事 | Crypto Media',
       description:
@@ -140,12 +141,12 @@ export default async function MediaArticleDetailPage({
   searchParams,
 }: PageProps) {
   // CI環境かつテスト実行中でない場合のみダミーページを返す
-  if (process.env.CI === 'true' && process.env.NODE_ENV !== 'test') {
+  if (isCIBuild()) {
     return (
       <article className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
-            <h1 className="mb-4 text-3xl font-bold">メディア記事詳細</h1>
+            <h1 className="mb-4 text-3xl font-bold">メディア記事詳細 (CIビルド)</h1>
             <p className="text-gray-600">
               CI環境でのビルド用ダミーページです。
             </p>

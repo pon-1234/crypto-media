@@ -62,6 +62,14 @@ export function isTestOrCI(): boolean {
 }
 
 /**
+ * CI環境でのビルド中かどうかを判定（テスト実行中は除く）
+ * @returns CIビルド中の場合はtrue
+ */
+export function isCIBuild(): boolean {
+  return isCI() && !isTest()
+}
+
+/**
  * 環境情報を取得
  * @returns 環境情報オブジェクト
  */

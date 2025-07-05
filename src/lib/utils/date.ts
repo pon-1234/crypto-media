@@ -1,3 +1,6 @@
+import { format } from 'date-fns'
+import { ja } from 'date-fns/locale'
+
 /**
  * 日付フォーマット用ユーティリティ関数
  *
@@ -10,18 +13,16 @@
  * @returns フォーマットされた日付文字列 (例: 2025年1月1日)
  */
 export function formatDate(dateString: string): string {
-  const date = new Date(dateString)
-
-  if (isNaN(date.getTime())) {
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) {
+      return ''
+    }
+    // date-fnsはデフォルトでローカルタイムゾーンを使用する
+    return format(date, 'yyyy年M月d日', { locale: ja })
+  } catch {
     return ''
   }
-
-  return new Intl.DateTimeFormat('ja-JP', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'Asia/Tokyo',
-  }).format(date)
 }
 
 /**
@@ -30,18 +31,14 @@ export function formatDate(dateString: string): string {
  * @returns フォーマットされた日時文字列 (例: 2025年1月1日 12:00)
  */
 export function formatDateTime(dateString: string): string {
-  const date = new Date(dateString)
-
-  if (isNaN(date.getTime())) {
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) {
+      return ''
+    }
+    // date-fnsはデフォルトでローカルタイムゾーンを使用する
+    return format(date, 'yyyy年M月d日 HH:mm', { locale: ja })
+  } catch {
     return ''
   }
-
-  return new Intl.DateTimeFormat('ja-JP', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'Asia/Tokyo',
-  }).format(date)
 }
