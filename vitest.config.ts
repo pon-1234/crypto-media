@@ -14,9 +14,13 @@ export default defineConfig({
     pool: 'threads',
     // テストの分離を維持（テスト間の干渉を防ぐため）
     isolate: true,
-    // 依存関係の外部化
+    // 依存関係の最適化設定
     deps: {
-      external: [/@next-auth\//, /@stripe\//],
+      optimizer: {
+        web: {
+          exclude: ['@next-auth/*', '@stripe/*'],
+        },
+      },
     },
     // テスト対象を明示的に指定
     include: ['src/**/*.test.tsx'],
