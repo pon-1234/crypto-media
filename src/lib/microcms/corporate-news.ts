@@ -83,12 +83,12 @@ export async function getAllCorporateNewsIds(): Promise<string[]> {
 
 /**
  * カテゴリ別にコーポレートお知らせ一覧を取得する
- * TODO: microCMSにcategoryフィールドを追加後に実装を有効化
- *
+ * @doc カテゴリのスラッグでニュースをフィルタリング
  * @issue #35 - コーポレートサイトの未実装ページ作成
+ * @issue #41 - コーポレートニュースのカテゴリ機能
  */
 export async function getCorporateNewsListByCategory(
-  category: string,
+  categorySlug: string,
   queries?: MicroCMSQueries
 ): Promise<{
   contents: CorporateNews[]
@@ -97,26 +97,19 @@ export async function getCorporateNewsListByCategory(
   limit: number
 }> {
   try {
-    // TODO: categoryフィールド追加後に以下のコメントを解除
-    // const response = await client.get({
-    //   endpoint: 'corporate_news',
-    //   queries: {
-    //     ...queries,
-    //     filters: `category[equals]${category}`,
-    //   },
-    // })
-
-    // 仮実装: 通常の一覧を返す
     const response = await client.get({
       endpoint: 'corporate_news',
-      queries,
+      queries: {
+        ...queries,
+        filters: `category.slug[equals]${categorySlug}`,
+      },
     })
 
     return corporateNewsListSchema.parse(response)
   } catch (error) {
     handleError(
       error,
-      `Failed to fetch corporate news list for category: ${category}`
+      `Failed to fetch corporate news list for category: ${categorySlug}`
     )
     throw error
   }

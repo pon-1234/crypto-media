@@ -29,6 +29,11 @@ export { tagSchema, type Tag } from './tag.schema'
 export { featureSchema, type Feature } from './feature.schema'
 
 export {
+  corporateNewsCategorySchema,
+  type CorporateNewsCategory,
+} from './corporate-news-category.schema'
+
+export {
   mediaArticleSchema,
   type MediaArticle,
   type ArticleType,
@@ -45,6 +50,7 @@ export {
 // リストレスポンススキーマ
 import { createListResponseSchema } from './base.schema'
 import { corporateNewsSchema } from './corporate-news.schema'
+import { corporateNewsCategorySchema } from './corporate-news-category.schema'
 import { expertSchema } from './expert.schema'
 import { categorySchema } from './category.schema'
 import { tagSchema } from './tag.schema'
@@ -54,6 +60,8 @@ import { pageCorporateSchema } from './page-corporate.schema'
 
 export const corporateNewsListSchema =
   createListResponseSchema(corporateNewsSchema)
+export const corporateNewsCategoryListSchema =
+  createListResponseSchema(corporateNewsCategorySchema)
 export const expertListSchema = createListResponseSchema(expertSchema)
 export const categoryListSchema = createListResponseSchema(categorySchema)
 export const tagListSchema = createListResponseSchema(tagSchema)

@@ -4,6 +4,10 @@ import { notFound } from 'next/navigation'
 
 import { generatePageMetadata } from '@/lib/metadata/generateMetadata'
 import { getCorporateNewsListByCategory } from '@/lib/microcms/corporate-news'
+import {
+  getCorporateNewsCategoryBySlug,
+  getAllCorporateNewsCategorySlugs,
+} from '@/lib/microcms/corporate-news-categories'
 const ITEMS_PER_PAGE = 10
 
 /**
@@ -12,31 +16,34 @@ const ITEMS_PER_PAGE = 10
  * @issue #35 - コーポレートサイトの未実装ページ作成
  */
 type Props = {
-  params: Promise<{ slug: string }>
-  searchParams: Promise<{ page?: string }>
+  params: { slug: string }
+  searchParams: { page?: string }
 }
 
-// TODO: microCMSでカテゴリマスタを実装後、カテゴリの存在確認とカテゴリ名取得を行う
-const getCategoryName = (slug: string): string => {
-  // 仮実装: カテゴリ名のマッピング
-  const categoryMap: Record<string, string> = {
-    'press-release': 'プレスリリース',
-    'media-coverage': 'メディア掲載',
-    events: 'イベント情報',
-    announcements: 'お知らせ',
-  }
-  return categoryMap[slug] || slug
+/**
+ * 静的パラメータの生成
+ * @doc 全カテゴリのスラッグを事前生成
+ */
+export async function generateStaticParams() {
+  const slugs = await getAllCorporateNewsCategorySlugs()
+  return slugs.map((slug) => ({ slug }))
 }
 
 export default async function NewsCategoryPage({
   params,
   searchParams,
 }: Props) {
-  const { slug } = await params
-  const { page = '1' } = await searchParams
+  const { slug } = params
+  const { page = '1' } = searchParams
 
   const currentPage = parseInt(page, 10)
   const offset = (currentPage - 1) * ITEMS_PER_PAGE
+
+  // カテゴリ情報の取得と存在確認
+  const category = await getCorporateNewsCategoryBySlug(slug)
+  if (!category) {
+    notFound()
+  }
 
   try {
     const { contents, totalCount } = await getCorporateNewsListByCategory(
@@ -52,7 +59,7 @@ export default async function NewsCategoryPage({
     }
 
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE)
-    const categoryName = getCategoryName(slug)
+    const categoryName = category.name
 
     return (
       <main className="container mx-auto px-4 py-8">
@@ -144,8 +151,9 @@ export default async function NewsCategoryPage({
  * Generate metadata for the page
  */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const categoryName = getCategoryName(slug)
+  const { slug } = params
+  const category = await getCorporateNewsCategoryBySlug(slug)
+  const categoryName = category?.name || slug
 
   return generatePageMetadata({
     title: `${categoryName}のニュース一覧`,

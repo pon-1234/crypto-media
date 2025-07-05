@@ -5,6 +5,7 @@
  */
 import { z } from 'zod'
 import { microCMSBaseSchema } from './base.schema'
+import { corporateNewsCategorySchema } from './corporate-news-category.schema'
 
 /**
  * コーポレートサイト用のお知らせスキーマ
@@ -13,8 +14,7 @@ import { microCMSBaseSchema } from './base.schema'
 export const corporateNewsSchema = microCMSBaseSchema.extend({
   title: z.string().min(1).describe('お知らせのタイトル'),
   content: z.string().min(1).describe('お知らせの本文'),
-  // TODO: カテゴリフィールドをmicroCMSに追加後、以下のコメントを解除
-  // category: z.string().describe('お知らせのカテゴリ').optional(),
+  category: corporateNewsCategorySchema.optional().describe('お知らせのカテゴリ'),
 })
 
 /**

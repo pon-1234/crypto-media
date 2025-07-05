@@ -112,7 +112,7 @@ describe('corporate-news API', () => {
   })
 
   describe('getCorporateNewsListByCategory', () => {
-    it('カテゴリ別にお知らせ一覧を取得できる（仮実装）', async () => {
+    it('カテゴリ別にお知らせ一覧を取得できる', async () => {
       const mockResponse = {
         contents: [createMockNews()],
         totalCount: 1,
@@ -125,7 +125,9 @@ describe('corporate-news API', () => {
 
       expect(client.get).toHaveBeenCalledWith({
         endpoint: 'corporate_news',
-        queries: undefined,
+        queries: {
+          filters: 'category.slug[equals]some-category',
+        },
       })
       expect(result).toEqual(mockResponse)
     })

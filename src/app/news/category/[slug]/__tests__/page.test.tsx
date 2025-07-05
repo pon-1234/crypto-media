@@ -5,6 +5,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { notFound } from 'next/navigation'
 import NewsCategoryPage, { generateMetadata } from '../page'
 import { getCorporateNewsListByCategory } from '@/lib/microcms/corporate-news'
+import { getCorporateNewsCategoryBySlug } from '@/lib/microcms/corporate-news-categories'
 import { generatePageMetadata } from '@/lib/metadata/generateMetadata'
 import type { CorporateNews } from '@/lib/schema'
 
@@ -16,6 +17,11 @@ vi.mock('next/navigation', () => ({
 
 vi.mock('@/lib/microcms/corporate-news', () => ({
   getCorporateNewsListByCategory: vi.fn(),
+}))
+
+vi.mock('@/lib/microcms/corporate-news-categories', () => ({
+  getCorporateNewsCategoryBySlug: vi.fn(),
+  getAllCorporateNewsCategorySlugs: vi.fn(),
 }))
 
 vi.mock('@/lib/metadata/generateMetadata', () => ({
@@ -44,10 +50,19 @@ describe('NewsCategoryPage', () => {
     },
   ]
 
-  const mockParams = Promise.resolve({ slug: 'press-release' })
-  const mockSearchParams = Promise.resolve({ page: '1' })
+  const mockParams = { slug: 'press-release' }
+  const mockSearchParams = { page: '1' }
 
   it('カテゴリ別ニュース一覧が正しく表示される', async () => {
+    vi.mocked(getCorporateNewsCategoryBySlug).mockResolvedValue({
+      id: 'cat1',
+      name: 'プレスリリース',
+      slug: 'press-release',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+      publishedAt: '2024-01-01T00:00:00Z',
+      revisedAt: '2024-01-01T00:00:00Z',
+    })
     vi.mocked(getCorporateNewsListByCategory).mockResolvedValue({
       contents: mockNews,
       totalCount: 2,
@@ -71,6 +86,15 @@ describe('NewsCategoryPage', () => {
   })
 
   it('ニュースが0件の場合、最初のページではnotFoundを呼ぶ', async () => {
+    vi.mocked(getCorporateNewsCategoryBySlug).mockResolvedValue({
+      id: 'cat1',
+      name: 'プレスリリース',
+      slug: 'press-release',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+      publishedAt: '2024-01-01T00:00:00Z',
+      revisedAt: '2024-01-01T00:00:00Z',
+    })
     vi.mocked(getCorporateNewsListByCategory).mockResolvedValue({
       contents: [],
       totalCount: 0,
@@ -89,6 +113,15 @@ describe('NewsCategoryPage', () => {
   })
 
   it('2ページ目以降でニュースが0件の場合は空のリストを表示', async () => {
+    vi.mocked(getCorporateNewsCategoryBySlug).mockResolvedValue({
+      id: 'cat1',
+      name: 'プレスリリース',
+      slug: 'press-release',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+      publishedAt: '2024-01-01T00:00:00Z',
+      revisedAt: '2024-01-01T00:00:00Z',
+    })
     vi.mocked(getCorporateNewsListByCategory).mockResolvedValue({
       contents: [],
       totalCount: 20,
@@ -98,13 +131,22 @@ describe('NewsCategoryPage', () => {
 
     const page = await NewsCategoryPage({
       params: mockParams,
-      searchParams: Promise.resolve({ page: '3' }),
+      searchParams: { page: '3' },
     })
 
     expect(page).toMatchSnapshot()
   })
 
   it('ページネーションが正しく動作する', async () => {
+    vi.mocked(getCorporateNewsCategoryBySlug).mockResolvedValue({
+      id: 'cat1',
+      name: 'プレスリリース',
+      slug: 'press-release',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+      publishedAt: '2024-01-01T00:00:00Z',
+      revisedAt: '2024-01-01T00:00:00Z',
+    })
     vi.mocked(getCorporateNewsListByCategory).mockResolvedValue({
       contents: mockNews,
       totalCount: 25,
@@ -114,7 +156,7 @@ describe('NewsCategoryPage', () => {
 
     const page = await NewsCategoryPage({
       params: mockParams,
-      searchParams: Promise.resolve({ page: '2' }),
+      searchParams: { page: '2' },
     })
 
     expect(getCorporateNewsListByCategory).toHaveBeenCalledWith(
@@ -128,6 +170,15 @@ describe('NewsCategoryPage', () => {
   })
 
   it('API呼び出しでエラーが発生した場合はnotFoundを呼ぶ', async () => {
+    vi.mocked(getCorporateNewsCategoryBySlug).mockResolvedValue({
+      id: 'cat1',
+      name: 'プレスリリース',
+      slug: 'press-release',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+      publishedAt: '2024-01-01T00:00:00Z',
+      revisedAt: '2024-01-01T00:00:00Z',
+    })
     vi.mocked(getCorporateNewsListByCategory).mockRejectedValue(
       new Error('API Error')
     )
@@ -142,8 +193,30 @@ describe('NewsCategoryPage', () => {
     expect(notFound).toHaveBeenCalled()
   })
 
+  it('カテゴリが存在しない場合はnotFoundを呼ぶ', async () => {
+    vi.mocked(getCorporateNewsCategoryBySlug).mockResolvedValue(null)
+
+    await expect(
+      NewsCategoryPage({
+        params: mockParams,
+        searchParams: mockSearchParams,
+      })
+    ).rejects.toThrow('NEXT_NOT_FOUND')
+
+    expect(notFound).toHaveBeenCalled()
+  })
+
   describe('generateMetadata', () => {
     it('適切なメタデータを生成する', async () => {
+      vi.mocked(getCorporateNewsCategoryBySlug).mockResolvedValue({
+        id: 'cat1',
+        name: 'プレスリリース',
+        slug: 'press-release',
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-01T00:00:00Z',
+        publishedAt: '2024-01-01T00:00:00Z',
+        revisedAt: '2024-01-01T00:00:00Z',
+      })
       const mockMetadata = {
         title: 'プレスリリースのニュース一覧 | 株式会社Example',
         description: 'プレスリリースに関する最新のニュースをご覧いただけます。',
@@ -164,7 +237,8 @@ describe('NewsCategoryPage', () => {
     })
 
     it('未知のカテゴリの場合はslugをそのまま使用する', async () => {
-      const unknownSlugParams = Promise.resolve({ slug: 'unknown-category' })
+      vi.mocked(getCorporateNewsCategoryBySlug).mockResolvedValue(null)
+      const unknownSlugParams = { slug: 'unknown-category' }
 
       await generateMetadata({
         params: unknownSlugParams,
