@@ -25,8 +25,14 @@ type Props = {
  * @doc 全カテゴリのスラッグを事前生成
  */
 export async function generateStaticParams() {
-  const slugs = await getAllCorporateNewsCategorySlugs()
-  return slugs.map((slug) => ({ slug }))
+  try {
+    const slugs = await getAllCorporateNewsCategorySlugs()
+    return slugs.map((slug) => ({ slug }))
+  } catch (error) {
+    // エンドポイントが存在しない場合は空配列を返す
+    console.warn('Failed to generate static params for news categories:', error)
+    return []
+  }
 }
 
 export default async function NewsCategoryPage({
